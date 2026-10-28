@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --radius: 0.75rem;
+  --brand: oklch(38% 0.045 165);
+  --brand-foreground: oklch(97% 0.02 90);
+  --gold: oklch(78% 0.12 78);
+  --gold-foreground: oklch(25% 0.03 165);
+  --background: oklch(32% 0.04 165);
+  --foreground: oklch(96% 0.015 85);
+  --surface: oklch(36% 0.045 165);
+  --surface-elevated: oklch(41% 0.045 165);
+  --card: oklch(36% 0.045 165 / 0.65);
+  --card-foreground: oklch(96% 0.015 85);
+  --popover: oklch(32% 0.04 165);
+  --popover-foreground: oklch(96% 0.015 85);
+  --primary: oklch(78% 0.12 78);
+  --primary-foreground: oklch(22% 0.03 165);
+  --secondary: oklch(42% 0.05 165);
+  --secondary-foreground: oklch(96% 0.015 85);
+  --muted: oklch(38% 0.04 165);
+  --muted-foreground: oklch(78% 0.02 85);
+  --accent: oklch(78% 0.12 78);
+  --accent-foreground: oklch(22% 0.03 165);
+  --destructive: oklch(62% 0.19 25);
+  --destructive-foreground: oklch(98% 0.01 85);
+  --border: oklch(96% 0.015 85 / 0.14);
+  --input: oklch(96% 0.015 85 / 0.14);
+  --ring: oklch(78% 0.12 78);
+  --gradient-hero: linear-gradient(135deg, oklch(28% 0.045 165) 0%, oklch(40% 0.05 160) 100%);
+  --gradient-gold: linear-gradient(135deg, oklch(82% 0.12 82), oklch(72% 0.13 70));
+  --gradient-glow: radial-gradient(circle at 30% 20%, oklch(78% 0.12 78 / 0.25), transparent 60%);
+  --shadow-elegant: 0 20px 60px -20px oklch(0% 0 0 / 0.45);
+  --shadow-gold: 0 12px 40px -12px oklch(78% 0.12 78 / 0.5);
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+h1, h2, h3, .font-display {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.025em;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.text-gradient-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.shadow-gold {
+  box-shadow: var(--shadow-gold);
+}
+
+.shadow-elegant {
+  box-shadow: var(--shadow-elegant);
+}
+
+.bg-hero {
+  background: var(--gradient-hero);
+}
+
+.container-x {
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+

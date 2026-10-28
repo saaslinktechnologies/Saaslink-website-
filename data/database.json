@@ -1,0 +1,1396 @@
+{
+  "settings": {
+    "companyName": "SaaSLink Technologies Ltd",
+    "tagline": "Technology with Intelligence. Software with Purpose.",
+    "companyTagline": "Enterprise Software Engineering, Cloud Systems & Digital Operations",
+    "description": "SaaSLink Technologies Ltd is a premier enterprise digital engineering partner architecting modern software platforms, cloud ecosystems, and intelligent business workflows.",
+    "email": "contact@saaslink.tech",
+    "companyEmail": "contact@saaslink.tech",
+    "phone": "+254 720 000 000 / +254 733 000 000",
+    "companyPhone": "+254 720 000 000 / +254 733 000 000",
+    "address": "Delta Corner Tower, Westlands, Nairobi, Kenya",
+    "companyAddress": "Delta Corner Tower, Westlands, Nairobi, Kenya",
+    "city": "Nairobi",
+    "country": "Kenya",
+    "website": "https://saaslink.tech",
+    "companyWebsite": "https://saaslink.tech",
+    "taxId": "P051982341Z",
+    "logoUrl": "/assets/saaslink-logo.svg",
+    "currency": "USD",
+    "currencySymbol": "$",
+    "defaultTaxRate": 16,
+    "quotationPrefix": "QUO-2026-",
+    "quotationNextSeq": 1004,
+    "invoicePrefix": "INV-2026-",
+    "invoiceNextSeq": 1003,
+    "receiptPrefix": "RCT-2026-",
+    "receiptNextSeq": 1003,
+    "paymentInstructions": "Bank: Standard Chartered Bank Ltd\nAccount Name: SaaSLink Technologies Ltd\nA/C No: 0102049284000\nSwift Code: SCBLKENX\nBranch: Westlands, Nairobi\nFor mobile transfers: M-Pesa Paybill 400200, Account: Invoice Number",
+    "termsAndConditions": "1. Quotation validity is 30 days from date of issue.\n2. Standard milestone billing: 40% Mobilization, 30% User Acceptance Testing, 30% Production Handover.\n3. Source code IP transfers upon final payment settlement.\n4. Comprehensive 90-day post-launch warranty and SLA included.",
+    "privacyPolicy": "SaaSLink Technologies Ltd enforces rigorous data confidentiality, ISO 27001-aligned information security, and GDPR-compliant record processing for all enterprise clients.",
+    "socials": {
+      "linkedin": "https://linkedin.com/company/saaslink-technologies",
+      "twitter": "https://x.com/saaslinktech",
+      "github": "https://github.com/saaslink-technologies"
+    },
+    "emailNotifications": {
+      "leadAlerts": true,
+      "quoteAlerts": true,
+      "paymentAlerts": true,
+      "alertEmail": "operations@saaslink.tech"
+    },
+    "defaultSeo": {
+      "metaTitle": "SaaSLink Technologies | Enterprise Software & Cloud Platforms",
+      "metaDescription": "Custom software engineering, cloud infrastructure, and intelligent business management platforms for high-growth enterprises and institutions.",
+      "ogImage": "/assets/og-cover.png",
+      "keywords": "enterprise software, cloud architecture, custom development, web apps, business automation, Nairobi, Africa tech, ERP"
+    },
+    "heroSection": {
+      "badge": "Enterprise Engineering & Cloud Systems",
+      "headline": "We engineer digital platforms that",
+      "highlightWord": "accelerate business.",
+      "subheadline": "SaaSLink Technologies builds robust software systems, mission-critical cloud infrastructure, and custom business platforms engineered for high reliability, scale, and commercial value.",
+      "ctaPrimaryText": "Request a Quotation",
+      "ctaSecondaryText": "Explore Our Work"
+    }
+  },
+  "users": [
+    {
+      "id": "usr_super_01",
+      "name": "Alexandre Kamau",
+      "email": "admin@saaslink.tech",
+      "passwordHash": "$2b$10$uX6qpa5wI/55Fff6H4d3KO8.CIoDQnPwZf7qD0qdZHbZ50ZGkNZpW",
+      "role": "Super Administrator",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+      "phone": "+254 711 000 111",
+      "isActive": true,
+      "createdAt": "2026-01-10T08:00:00.000Z"
+    },
+    {
+      "id": "usr_finance_01",
+      "name": "Beatrice Ochieng",
+      "email": "finance@saaslink.tech",
+      "passwordHash": "$2b$10$uX6qpa5wI/55Fff6H4d3KO8.CIoDQnPwZf7qD0qdZHbZ50ZGkNZpW",
+      "role": "Finance",
+      "avatarUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80",
+      "phone": "+254 722 000 222",
+      "isActive": true,
+      "createdAt": "2026-01-15T09:30:00.000Z"
+    },
+    {
+      "id": "usr_sales_01",
+      "name": "David Mwangi",
+      "email": "sales@saaslink.tech",
+      "passwordHash": "$2b$10$uX6qpa5wI/55Fff6H4d3KO8.CIoDQnPwZf7qD0qdZHbZ50ZGkNZpW",
+      "role": "Sales",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+      "phone": "+254 733 000 333",
+      "isActive": true,
+      "createdAt": "2026-01-20T10:00:00.000Z"
+    }
+  ],
+  "clients": [
+    {
+      "id": "cli_001",
+      "name": "Victoria Logistics Group",
+      "company": "Victoria Freight & Logistics Ltd",
+      "email": "contracts@victoriagroup.com",
+      "phone": "+254 701 999 888",
+      "address": "Mombasa Road Gateway Park, Unit B4",
+      "city": "Nairobi",
+      "country": "Kenya",
+      "taxId": "P051892837A",
+      "contactPerson": "Marcus Thorne (COO)",
+      "notes": "Enterprise client with multi-country freight routing operations. 3 active projects in pipeline.",
+      "status": "Active",
+      "createdAt": "2026-01-18T11:00:00.000Z",
+      "updatedAt": "2026-02-12T14:30:00.000Z"
+    },
+    {
+      "id": "cli_002",
+      "name": "Apex Health Systems",
+      "company": "Apex Healthcare Holdings Ltd",
+      "email": "it-procure@apexhealth.co",
+      "phone": "+254 720 111 444",
+      "address": "Upper Hill Medical Towers, Suite 802",
+      "city": "Nairobi",
+      "country": "Kenya",
+      "taxId": "P059281729B",
+      "contactPerson": "Dr. Sarah Ndwiga",
+      "notes": "Automated clinic diagnostics integration and telemedicine system rollout.",
+      "status": "Active",
+      "createdAt": "2026-02-01T09:15:00.000Z",
+      "updatedAt": "2026-02-28T16:00:00.000Z"
+    },
+    {
+      "id": "cli_003",
+      "name": "Strathridge International Academy",
+      "company": "Strathridge Educational Trust",
+      "email": "bursar@strathridge.ac.ke",
+      "phone": "+254 733 222 555",
+      "address": "Karen Plains Road, Campus 1",
+      "city": "Nairobi",
+      "country": "Kenya",
+      "taxId": "P051112233C",
+      "contactPerson": "Elijah Kariuki",
+      "notes": "Campus ERP modernization, student portal, and automated fee collections.",
+      "status": "Active",
+      "createdAt": "2026-02-14T08:00:00.000Z",
+      "updatedAt": "2026-03-01T10:00:00.000Z"
+    }
+  ],
+  "leads": [
+    {
+      "id": "lead_001",
+      "fullName": "Grace Wambui",
+      "email": "gwambui@kenvestproperties.com",
+      "phone": "+254 722 888 111",
+      "company": "Kenvest Commercial Real Estate",
+      "serviceOfInterest": "PropLink ERP Property Management System",
+      "budgetRange": "$15,000 - $30,000",
+      "timeline": "Within 2 months",
+      "message": "Looking for a comprehensive commercial property ERP to manage tenant leases, utility reconciliations, and maintenance dispatching across 14 commercial plazas.",
+      "type": "quote",
+      "status": "Proposal Sent",
+      "notes": "Proposal QUO-2026-1002 sent on Feb 26th. Awaiting board sign-off.",
+      "createdAt": "2026-02-20T11:45:00.000Z",
+      "updatedAt": "2026-02-26T15:00:00.000Z"
+    },
+    {
+      "id": "lead_002",
+      "fullName": "Tariq Al-Mansoor",
+      "email": "tariq@redseaenergy.com",
+      "phone": "+971 50 123 4567",
+      "company": "Red Sea Energy Distribution",
+      "serviceOfInterest": "Custom Software & Cloud Systems",
+      "budgetRange": "$50,000+",
+      "timeline": "Immediate (1 month)",
+      "message": "Need an IoT telemetry portal collecting pipeline flow sensor readings and generating automated compliance dashboards.",
+      "type": "consultation",
+      "status": "Qualified",
+      "notes": "Discovery call held on March 2nd. Technical scope specification being finalized.",
+      "createdAt": "2026-03-01T14:20:00.000Z",
+      "updatedAt": "2026-03-03T09:00:00.000Z"
+    },
+    {
+      "id": "lead_003",
+      "fullName": "Brian Omondi",
+      "email": "bomondi@finlinkafrica.com",
+      "phone": "+254 701 444 333",
+      "company": "FinLink Microfinance",
+      "serviceOfInterest": "Business Automation & Integration",
+      "budgetRange": "$10,000 - $25,000",
+      "timeline": "1-3 months",
+      "message": "Requesting quotation for automated credit score algorithm API and automated disbursement reconciliation via M-Pesa B2C.",
+      "type": "quote",
+      "status": "New",
+      "notes": "Needs immediate technical callback.",
+      "createdAt": "2026-03-08T16:10:00.000Z",
+      "updatedAt": "2026-03-08T16:10:00.000Z"
+    }
+  ],
+  "quotations": [
+    {
+      "id": "quo_1001",
+      "quotationNumber": "QUO-2026-1001",
+      "clientId": "cli_001",
+      "clientName": "Marcus Thorne",
+      "clientCompany": "Victoria Freight & Logistics Ltd",
+      "clientEmail": "contracts@victoriagroup.com",
+      "clientPhone": "+254 701 999 888",
+      "clientAddress": "Mombasa Road Gateway Park, Nairobi",
+      "issueDate": "2026-01-22",
+      "expiryDate": "2026-02-22",
+      "currency": "USD",
+      "items": [
+        {
+          "id": "qi_1",
+          "type": "service",
+          "description": "Core Telematics & Fleet Tracking Dispatching Engine Architecture",
+          "quantity": 1,
+          "unitPrice": 14500,
+          "discount": 0,
+          "total": 14500
+        },
+        {
+          "id": "qi_2",
+          "type": "service",
+          "description": "Cross-Border Customs API Clearing Integration (KRA & URA)",
+          "quantity": 1,
+          "unitPrice": 6200,
+          "discount": 0,
+          "total": 6200
+        },
+        {
+          "id": "qi_3",
+          "type": "service",
+          "description": "Driver Mobile PWA with Offline Manifest Sync & Digital POD Signatures",
+          "quantity": 1,
+          "unitPrice": 5800,
+          "discount": 500,
+          "total": 5300
+        }
+      ],
+      "subtotal": 26500,
+      "discountPercent": 1.89,
+      "discountAmount": 500,
+      "taxRate": 16,
+      "taxAmount": 4160,
+      "total": 30160,
+      "notes": "Development timeline: 10 weeks. Includes 90 days technical SLA and training for 40 fleet controllers.",
+      "terms": "Payment schedule: 40% upon signing, 40% at UAT staging signoff, 20% upon production deployment.",
+      "status": "Converted to Invoice",
+      "convertedInvoiceId": "inv_1001",
+      "createdAt": "2026-01-22T10:00:00.000Z",
+      "updatedAt": "2026-02-05T12:00:00.000Z"
+    },
+    {
+      "id": "quo_1002",
+      "quotationNumber": "QUO-2026-1002",
+      "clientId": "cli_002",
+      "clientName": "Dr. Sarah Ndwiga",
+      "clientCompany": "Apex Healthcare Holdings Ltd",
+      "clientEmail": "it-procure@apexhealth.co",
+      "clientPhone": "+254 720 111 444",
+      "clientAddress": "Upper Hill Medical Towers, Nairobi",
+      "issueDate": "2026-02-10",
+      "expiryDate": "2026-03-12",
+      "currency": "USD",
+      "items": [
+        {
+          "id": "qi_4",
+          "type": "service",
+          "description": "HL7 / FHIR Electronic Health Records Cloud Synchronization Hub",
+          "quantity": 1,
+          "unitPrice": 18000,
+          "discount": 0,
+          "total": 18000
+        },
+        {
+          "id": "qi_5",
+          "type": "service",
+          "description": "Patient Teleconsultation Portal with WebRTC Secure Video & Prescription QR",
+          "quantity": 1,
+          "unitPrice": 9500,
+          "discount": 500,
+          "total": 9000
+        }
+      ],
+      "subtotal": 27500,
+      "discountPercent": 1.82,
+      "discountAmount": 500,
+      "taxRate": 16,
+      "taxAmount": 4320,
+      "total": 31320,
+      "notes": "HIPAA and ISO 27001 compliant end-to-end data encryption architecture.",
+      "terms": "Valid for 30 calendar days from issue date.",
+      "status": "Accepted",
+      "createdAt": "2026-02-10T14:30:00.000Z",
+      "updatedAt": "2026-02-25T11:00:00.000Z"
+    },
+    {
+      "id": "quo_1003",
+      "quotationNumber": "QUO-2026-1003",
+      "clientId": "cli_003",
+      "clientName": "Elijah Kariuki",
+      "clientCompany": "Strathridge Educational Trust",
+      "clientEmail": "bursar@strathridge.ac.ke",
+      "clientPhone": "+254 733 222 555",
+      "clientAddress": "Karen Plains Road, Nairobi",
+      "issueDate": "2026-02-28",
+      "expiryDate": "2026-03-30",
+      "currency": "USD",
+      "items": [
+        {
+          "id": "qi_6",
+          "type": "product",
+          "description": "EduLink 360 Institutional School Management Platform Enterprise License",
+          "quantity": 1,
+          "unitPrice": 8500,
+          "discount": 0,
+          "total": 8500
+        },
+        {
+          "id": "qi_7",
+          "type": "service",
+          "description": "Legacy Data Migration & Custom Automated Fee Collection Gateway",
+          "quantity": 1,
+          "unitPrice": 3800,
+          "discount": 300,
+          "total": 3500
+        }
+      ],
+      "subtotal": 12300,
+      "discountPercent": 2.44,
+      "discountAmount": 300,
+      "taxRate": 16,
+      "taxAmount": 1920,
+      "total": 13920,
+      "notes": "Deployment scheduled before the start of Term 2 academic calendar.",
+      "terms": "Includes 12 months hosting, tier-1 maintenance, and continuous cloud backups.",
+      "status": "Sent",
+      "createdAt": "2026-02-28T09:00:00.000Z",
+      "updatedAt": "2026-02-28T10:15:00.000Z"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv_1001",
+      "invoiceNumber": "INV-2026-1001",
+      "quotationId": "quo_1001",
+      "quotationNumber": "QUO-2026-1001",
+      "clientId": "cli_001",
+      "clientName": "Victoria Logistics Group",
+      "clientCompany": "Victoria Freight & Logistics Ltd",
+      "clientEmail": "contracts@victoriagroup.com",
+      "clientAddress": "Mombasa Road Gateway Park, Unit B4, Nairobi",
+      "issueDate": "2026-02-06",
+      "dueDate": "2026-02-20",
+      "currency": "USD",
+      "items": [
+        {
+          "id": "ii_1",
+          "description": "Mobilization Fee (40%): Core Telematics & Fleet Tracking Dispatching Engine",
+          "quantity": 1,
+          "unitPrice": 12064,
+          "total": 12064
+        }
+      ],
+      "subtotal": 12064,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "taxRate": 16,
+      "taxAmount": 1930.24,
+      "total": 13994.24,
+      "amountPaid": 13994.24,
+      "balanceDue": 0,
+      "notes": "Milestone 1 invoice. Full payment confirmed.",
+      "paymentInstructions": "Standard Chartered Bank Ltd, Account Name: SaaSLink Technologies Ltd, A/C: 0102049284000",
+      "status": "Paid",
+      "createdAt": "2026-02-06T11:00:00.000Z",
+      "updatedAt": "2026-02-12T14:00:00.000Z"
+    },
+    {
+      "id": "inv_1002",
+      "invoiceNumber": "INV-2026-1002",
+      "quotationId": "quo_1001",
+      "quotationNumber": "QUO-2026-1001",
+      "clientId": "cli_001",
+      "clientName": "Victoria Logistics Group",
+      "clientCompany": "Victoria Freight & Logistics Ltd",
+      "clientEmail": "contracts@victoriagroup.com",
+      "clientAddress": "Mombasa Road Gateway Park, Unit B4, Nairobi",
+      "issueDate": "2026-02-26",
+      "dueDate": "2026-03-12",
+      "currency": "USD",
+      "items": [
+        {
+          "id": "ii_2",
+          "description": "Milestone 2 (40%): Cross-Border Customs Integration & Driver PWA Testing",
+          "quantity": 1,
+          "unitPrice": 12064,
+          "total": 12064
+        }
+      ],
+      "subtotal": 12064,
+      "discountPercent": 0,
+      "discountAmount": 0,
+      "taxRate": 16,
+      "taxAmount": 1930.24,
+      "total": 13994.24,
+      "amountPaid": 5000,
+      "balanceDue": 8994.24,
+      "notes": "Milestone 2 progress billing. Partial payment received.",
+      "paymentInstructions": "Standard Chartered Bank Ltd, Account Name: SaaSLink Technologies Ltd, A/C: 0102049284000",
+      "status": "Partially Paid",
+      "createdAt": "2026-02-26T14:00:00.000Z",
+      "updatedAt": "2026-03-02T16:00:00.000Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay_1001",
+      "receiptNumber": "RCT-2026-1001",
+      "invoiceId": "inv_1001",
+      "invoiceNumber": "INV-2026-1001",
+      "clientId": "cli_001",
+      "clientName": "Victoria Freight & Logistics Ltd",
+      "paymentDate": "2026-02-12",
+      "amount": 13994.24,
+      "currency": "USD",
+      "paymentMethod": "Bank Transfer",
+      "paymentReference": "FTX-90218492-SCB",
+      "notes": "Full settlement of Milestone 1 mobilization invoice.",
+      "recordedBy": "Beatrice Ochieng",
+      "createdAt": "2026-02-12T14:05:00.000Z"
+    },
+    {
+      "id": "pay_1002",
+      "receiptNumber": "RCT-2026-1002",
+      "invoiceId": "inv_1002",
+      "invoiceNumber": "INV-2026-1002",
+      "clientId": "cli_001",
+      "clientName": "Victoria Freight & Logistics Ltd",
+      "paymentDate": "2026-03-02",
+      "amount": 5000,
+      "currency": "USD",
+      "paymentMethod": "Bank Transfer",
+      "paymentReference": "FTX-90291044-SCB",
+      "notes": "First installment towards Milestone 2 deliverables.",
+      "recordedBy": "Beatrice Ochieng",
+      "createdAt": "2026-03-02T16:05:00.000Z"
+    }
+  ],
+  "receipts": [
+    {
+      "id": "rct_1001",
+      "receiptNumber": "RCT-2026-1001",
+      "paymentId": "pay_1001",
+      "invoiceId": "inv_1001",
+      "invoiceNumber": "INV-2026-1001",
+      "clientId": "cli_001",
+      "clientName": "Victoria Logistics Group",
+      "clientCompany": "Victoria Freight & Logistics Ltd",
+      "paymentDate": "2026-02-12",
+      "amount": 13994.24,
+      "currency": "USD",
+      "paymentMethod": "Bank Transfer",
+      "paymentReference": "FTX-90218492-SCB",
+      "notes": "Official payment receipt for INV-2026-1001. All funds cleared.",
+      "createdAt": "2026-02-12T14:05:00.000Z"
+    },
+    {
+      "id": "rct_1002",
+      "receiptNumber": "RCT-2026-1002",
+      "paymentId": "pay_1002",
+      "invoiceId": "inv_1002",
+      "invoiceNumber": "INV-2026-1002",
+      "clientId": "cli_001",
+      "clientName": "Victoria Logistics Group",
+      "clientCompany": "Victoria Freight & Logistics Ltd",
+      "paymentDate": "2026-03-02",
+      "amount": 5000,
+      "currency": "USD",
+      "paymentMethod": "Bank Transfer",
+      "paymentReference": "FTX-90291044-SCB",
+      "notes": "Part-payment receipt for INV-2026-1002. Outstanding balance: $8,994.24.",
+      "createdAt": "2026-03-02T16:05:00.000Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "prj_001",
+      "clientId": "cli_001",
+      "clientName": "Victoria Freight & Logistics Ltd",
+      "name": "Victoria Cross-Border Fleet & Telematics OS",
+      "code": "PRJ-VIC-01",
+      "description": "End-to-end connected logistics management engine featuring real-time GPS telemetry, multi-border customs clearing APIs, automated consignment manifests, and offline driver mobile applications.",
+      "scope": "Cloud infrastructure on Kubernetes, MySQL 8 cluster, React frontend, Go dispatch microservices, and React Native mobile driver suite.",
+      "startDate": "2026-02-08",
+      "targetEndDate": "2026-04-20",
+      "status": "Active",
+      "budget": 30160,
+      "currency": "USD",
+      "progress": 65,
+      "assignedMembers": [
+        "Alexandre Kamau",
+        "David Mwangi"
+      ],
+      "quotationId": "quo_1001",
+      "invoiceId": "inv_1001",
+      "createdAt": "2026-02-06T15:00:00.000Z",
+      "updatedAt": "2026-03-05T12:00:00.000Z"
+    },
+    {
+      "id": "prj_002",
+      "clientId": "cli_002",
+      "clientName": "Apex Healthcare Holdings Ltd",
+      "name": "Apex CareConnect Integrated Clinical Portal",
+      "code": "PRJ-APX-02",
+      "description": "Multi-hospital clinical workflow suite unifying patient medical history, automated lab report routing, telemedicine video rooms, and medical insurance pre-authorization APIs.",
+      "scope": "HIPAA-compliant cloud platform with microservices architecture and zero-trust authentication.",
+      "startDate": "2026-02-28",
+      "targetEndDate": "2026-05-30",
+      "status": "Planning",
+      "budget": 31320,
+      "currency": "USD",
+      "progress": 15,
+      "assignedMembers": [
+        "Alexandre Kamau"
+      ],
+      "quotationId": "quo_1002",
+      "createdAt": "2026-02-25T14:00:00.000Z",
+      "updatedAt": "2026-03-01T10:00:00.000Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "tsk_001",
+      "projectId": "prj_001",
+      "projectName": "Victoria Cross-Border Fleet & Telematics OS",
+      "title": "Complete KRA Customs System Electronic Data Interchange (EDI) webhook testing",
+      "description": "Verify 200 payload responses for real-time truck manifest registration at Malaba border checkpoint.",
+      "assignee": "Alexandre Kamau",
+      "priority": "High",
+      "dueDate": "2026-03-15",
+      "status": "In Progress",
+      "createdAt": "2026-03-01T09:00:00.000Z",
+      "updatedAt": "2026-03-07T11:00:00.000Z"
+    },
+    {
+      "id": "tsk_002",
+      "projectId": "prj_001",
+      "projectName": "Victoria Cross-Border Fleet & Telematics OS",
+      "title": "Offline SQLite sync cache optimization for driver Android build",
+      "description": "Ensure queued proof-of-delivery photos automatically upload when cellular signal is restored.",
+      "assignee": "David Mwangi",
+      "priority": "Medium",
+      "dueDate": "2026-03-18",
+      "status": "To Do",
+      "createdAt": "2026-03-02T10:00:00.000Z",
+      "updatedAt": "2026-03-02T10:00:00.000Z"
+    },
+    {
+      "id": "tsk_003",
+      "projectId": "prj_002",
+      "projectName": "Apex CareConnect Integrated Clinical Portal",
+      "title": "FHIR JSON schema mapping specification signoff with Chief Medical Informatics Officer",
+      "description": "Validate lab result data structures for hematology and radiology diagnostic feeds.",
+      "assignee": "Alexandre Kamau",
+      "priority": "Urgent",
+      "dueDate": "2026-03-12",
+      "status": "Review",
+      "createdAt": "2026-03-03T11:30:00.000Z",
+      "updatedAt": "2026-03-08T15:00:00.000Z"
+    }
+  ],
+  "services": [
+    {
+      "id": "srv_01",
+      "title": "Custom Software Development for Multiple Sectors",
+      "slug": "custom-software-development",
+      "category": "Software Engineering",
+      "shortDescription": "Purpose-built software platforms, bespoke multi-branch ERP modules, and custom relational backends designed for Kenyan corporates, non-profits, healthcare, and faith institutions.",
+      "fullDescription": "We design and construct production-grade enterprise software systems from the ground up. By combining clean domain-driven architecture, robust relational schema modeling (MySQL/PostgreSQL), and resilient API contracts, we replace brittle legacy spreadsheets with software that perfectly matches your organization's real-world operational rules.",
+      "iconName": "Code2",
+      "features": [
+        "Sector-Specific Architectural Design (Corporates, NGOs, Churches, Healthcare)",
+        "Multi-Branch ERP & Operational Workflow Construction",
+        "Role-Based Granular Access Control (RBAC) & Immutable Audit Trails",
+        "Automated CI/CD Testing & High-Throughput REST APIs"
+      ],
+      "benefits": [
+        "Zero recurring per-seat vendor licensing constraints",
+        "100% intellectual property and full source code ownership",
+        "Unrivaled alignment with your proprietary operational logic"
+      ],
+      "faqs": [
+        {
+          "question": "Do we own the source code upon delivery?",
+          "answer": "Yes. SaaSLink delivers all source code repositories, migration scripts, container specifications, and documentation with 100% intellectual property ownership transferred to your organization."
+        },
+        {
+          "question": "What sectors have you built custom systems for?",
+          "answer": "We have engineered and deployed systems for commercial distribution, automotive supply chains, healthcare/hospitals, schools and colleges, water boards, faith ministries, and civil society non-profits."
+        }
+      ],
+      "displayOrder": 1,
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Custom Software Development for Kenyan Sectors | SaaSLink Technologies",
+      "seoDescription": "Bespoke enterprise software systems engineered for corporates, non-profits, and institutions by SaaSLink Technologies Ltd."
+    },
+    {
+      "id": "srv_02",
+      "title": "Process Automation & Paperless Operations",
+      "slug": "process-automation-digital",
+      "category": "Automation",
+      "shortDescription": "Convert manual paper vouchers, physical receipt books, and Excel chaos into automated digital workflows with real-time M-Pesa Paybill matching.",
+      "fullDescription": "Kenyan organizations lose hundreds of billable hours and millions in revenue to manual bookkeeping, lost paper forms, and delayed reconciliations. We build automated middleware, webhook listeners, digital approval workflows, and instant M-Pesa ledger synchronizers that eliminate human entry error.",
+      "iconName": "Cpu",
+      "features": [
+        "M-Pesa Daraja STK Push & Automated Paybill / C2B Ledger Matching",
+        "Digital Requisition, Multi-Tier Voucher & Purchase Order Approvals",
+        "Paperless Tablet Field Inspection & Offline Survey Synchronization",
+        "Automated SMS Receipts, Invoices & Balance Alerts"
+      ],
+      "benefits": [
+        "Reclaim up to 35 hours per week of manual clerical reconciliation",
+        "Zero human data transfer errors between field branches and headquarters",
+        "Instant cashflow visibility across all collection points"
+      ],
+      "displayOrder": 2,
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Process Automation & M-Pesa Reconciliation | SaaSLink Technologies",
+      "seoDescription": "Automate manual business processes, paper vouchers, and M-Pesa Paybill reconciliations with SaaSLink Technologies."
+    },
+    {
+      "id": "srv_03",
+      "title": "Corporate, NGO & Institutional Modern Websites",
+      "slug": "modern-websites-portals",
+      "category": "Web Platforms",
+      "shortDescription": "High-converting, responsive websites, client extranets, member portals, and e-commerce platforms engineered for Kenyan audiences.",
+      "fullDescription": "From high-impact corporate brand showcases to citizen engagement portals and church congregation intranets, we engineer responsive web platforms with ultra-fast page speeds, native mobile money checkout, and clean content management. Every interface is crafted to build credibility and drive engagement.",
+      "iconName": "LayoutDashboard",
+      "features": [
+        "Mobile-first responsive UX optimized for East African bandwidth",
+        "Integrated M-Pesa Express & Card Payment Checkout Gates",
+        "Secure Member, Donor, and Client Extranet Portals",
+        "Comprehensive SEO, Social Share Cards & Schema Markup"
+      ],
+      "benefits": [
+        "Turn web visitors into qualified client and donor inquiries",
+        "Deliver sub-second load times on both mobile smartphones and desktops",
+        "Bank-grade authentication and session protection"
+      ],
+      "displayOrder": 3,
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Corporate & NGO Web Development Kenya | SaaSLink Technologies",
+      "seoDescription": "Modern, high-performance corporate websites, donor portals, and web platforms by SaaSLink Technologies."
+    },
+    {
+      "id": "srv_04",
+      "title": "Cloud Architecting & Deployment",
+      "slug": "cloud-infrastructure-devops",
+      "category": "Infrastructure",
+      "shortDescription": "Multi-cloud hosting (AWS, Google Cloud, Docker VPS) with zero-downtime cutovers, automated multi-region backups, and cybersecurity hardening.",
+      "fullDescription": "We architect and operate bulletproof cloud hosting environments that withstand heavy traffic spikes and maintain mission-critical uptime. We configure Docker containerization, automated infrastructure-as-code, daily encrypted snapshots, and disaster recovery pipelines.",
+      "iconName": "CloudCog",
+      "features": [
+        "Automated container deployments with Docker and Kubernetes",
+        "Database replication, point-in-time recovery & encryption-at-rest",
+        "Local Kenyan VPS and Global Cloud (AWS/GCP) Hybrid Hosting",
+        "24/7 proactive metrics, error telemetry & performance alerts"
+      ],
+      "benefits": [
+        "99.98% uptime SLA guarantee for mission-critical operations",
+        "Predictable, optimized cloud infrastructure hosting expenditure",
+        "Rapid disaster recovery with automated daily offsite snapshots"
+      ],
+      "displayOrder": 4,
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Cloud Architecting & DevOps Deployment Kenya | SaaSLink Technologies",
+      "seoDescription": "Scalable cloud deployments, Docker containerization, and automated backups by SaaSLink Technologies."
+    },
+    {
+      "id": "srv_05",
+      "title": "Systems Optimization & Performance Engineering",
+      "slug": "systems-optimization-performance",
+      "category": "Optimization",
+      "shortDescription": "Stop server crashes and sluggish load times. We audit slow relational databases, tune query indexes, refactor bottlenecked code, and eliminate lag.",
+      "fullDescription": "As systems scale, unoptimized SQL queries and bloated monolithic code cause agonizing delays and server freezes during peak usage hours. SaaSLink conducts deep architectural audits, tunes MySQL/PostgreSQL schema indexes, eliminates N+1 query bottlenecks, and hardens application security against vulnerabilities.",
+      "iconName": "LineChart",
+      "features": [
+        "Database Schema Indexing, Normalization & SQL Query Optimization",
+        "Server Latency Elimination & Peak Traffic Stress Testing",
+        "Legacy Code Refactoring & Microservice Decoupling",
+        "Security Posture Audits & Kenya DPA 2019 Compliance"
+      ],
+      "benefits": [
+        "Reduce query execution latency by up to 80% without expensive new hardware",
+        "Prevent costly server outages during end-month billing and reporting rushes",
+        "Prolong the lifespan of existing core software assets"
+      ],
+      "displayOrder": 5,
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Systems Optimization & Database Tuning Kenya | SaaSLink Technologies",
+      "seoDescription": "Database indexing, query acceleration, legacy refactoring, and server optimization by SaaSLink Technologies."
+    }
+  ],
+  "products": [
+    {
+      "id": "prd_masuma",
+      "name": "MASUMA ERP System",
+      "slug": "masuma-erp",
+      "tagline": "Multi-Branch Enterprise Resource Planning & Distribution Engine",
+      "shortDescription": "The enterprise ERP standard for automotive spare parts, wholesale distributors, and multi-warehouse supply networks with native KRA eTIMS.",
+      "fullDescription": "MASUMA ERP is purpose-built for high-volume wholesale, retail distribution, and automotive parts networks. It unifies inventory across multiple warehouses and branch showrooms, features chassis/VIN fitment lookups, generates real-time KRA eTIMS compliant cryptographic QR invoices, and manages multi-tier purchase order approvals.",
+      "logoUrl": "/assets/masuma-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&auto=format&fit=crop&q=80",
+      "screenshots": [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80"
+      ],
+      "features": [
+        "Multi-Warehouse Real-Time Inventory Synchronization",
+        "KRA eTIMS Verified Cryptographic QR Tax Invoicing",
+        "Chassis / VIN Number Part Fitment & Catalogue Search",
+        "Wholesale Tiered Volume Pricing & Retail Branch POS",
+        "Automated Kenyan Payroll (PAYE, SHA, NSSF, Housing Levy)"
+      ],
+      "benefits": [
+        "Eliminate stock mismatches across physical branches and warehouses",
+        "100% compliant with Kenya Revenue Authority eTIMS mandates",
+        "Cut monthly inventory reconciliation time from 5 days to 20 minutes"
+      ],
+      "industries": [
+        "Automotive Parts",
+        "Wholesale Distributors",
+        "Multi-Branch Retailers",
+        "Import & Distribution"
+      ],
+      "techStack": [
+        "TypeScript",
+        "React",
+        "Node.js",
+        "MySQL 8",
+        "KRA eTIMS API"
+      ],
+      "pricingModel": "Enterprise Dedicated Cloud or On-Premise License",
+      "demoUrl": "/contact?product=masuma-erp",
+      "ctaLabel": "Request MASUMA ERP Demo",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "MASUMA ERP System | Automotive & Multi-Branch Enterprise ERP Kenya",
+      "seoDescription": "Multi-warehouse inventory synchronization, eTIMS KRA tax invoicing, and wholesale distribution ERP by SaaSLink Technologies."
+    },
+    {
+      "id": "prd_raphamis",
+      "name": "RaphaMIS Hospital Management System",
+      "slug": "raphamis-hmis",
+      "tagline": "Complete Clinical Workflow, EMR & Hospital Information Platform",
+      "shortDescription": "Connected HMIS uniting patient triage, doctor consultation queues, Electronic Medical Records (EMR), laboratory testing, pharmacy dispensing, and SHA/NHIF billing.",
+      "fullDescription": "RaphaMIS transforms hospitals and medical clinics from paper-file delays to seamless digital clinical delivery. From the moment a patient checks into triage to doctor consultation, electronic prescriptions, laboratory diagnostic queues, and automated cashiering, RaphaMIS secures patient records and prevents billing revenue leakages.",
+      "logoUrl": "/assets/raphamis-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&auto=format&fit=crop&q=80",
+      "screenshots": [
+        "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&auto=format&fit=crop&q=80"
+      ],
+      "features": [
+        "Outpatient (OPD) & Inpatient (IPD) Bed Management & Triage",
+        "Electronic Medical Records (EMR) & Clinical Consultation Notes",
+        "Diagnostic Laboratory (LIMS) Queue & Digital Result Dispatch",
+        "Pharmacy Batch Inventory, Expiry Warnings & Dispensing Control",
+        "Social Health Authority (SHA/NHIF) & Private Insurance Pre-Auth"
+      ],
+      "benefits": [
+        "Reduce patient waiting time from 3 hours to under 25 minutes",
+        "Cut private and SHA insurance claim rejections by 64%",
+        "Eliminate medication leakage and unrecorded pharmacy sales"
+      ],
+      "industries": [
+        "Hospitals & Medical Centres",
+        "Specialist Outpatient Clinics",
+        "Diagnostic Laboratories",
+        "Faith-Based Health Missions"
+      ],
+      "techStack": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "PostgreSQL / MySQL",
+        "HL7 FHIR"
+      ],
+      "pricingModel": "Hospital Tiered Appliance or Managed Cloud SLA",
+      "demoUrl": "/contact?product=raphamis",
+      "ctaLabel": "Book RaphaMIS Demo",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "RaphaMIS Hospital Management System | Clinical EMR & Hospital ERP Kenya",
+      "seoDescription": "Comprehensive hospital management, clinical EMR, pharmacy inventory, and SHA/NHIF insurance billing by SaaSLink Technologies."
+    },
+    {
+      "id": "prd_aura",
+      "name": "Aura Utility Management System",
+      "slug": "aura-utilities",
+      "tagline": "Smart Metering, Water Board Billing & Automated Token Vending",
+      "shortDescription": "Smart utility operating platform for water service providers, community boreholes, irrigation schemes, and sub-metered power grids with automated token vending.",
+      "fullDescription": "Aura Utility Management automates revenue collection and leak detection for water service companies, community boreholes, and commercial sub-metered estates. Features mobile meter reader apps, tiered consumption tariffs, automated water token vending via M-Pesa, and non-revenue water recovery telemetry.",
+      "logoUrl": "/assets/aura-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1544816155-12df9643f363?w=1200&auto=format&fit=crop&q=80",
+      "screenshots": [],
+      "features": [
+        "Customer Meter Account Profiling & Geotagged Locations",
+        "Tiered Block Consumption Tariffs & Automated Monthly Bill Run",
+        "Automated M-Pesa Water Token Generation & Instant SMS Receipts",
+        "Field Meter Reader Mobile App with GPS & Photo Proof",
+        "Non-Revenue Water Loss Detection Comparing Bulk & Branch Meters"
+      ],
+      "benefits": [
+        "Recover up to 42% of previously lost non-revenue water",
+        "Achieve 94%+ on-time monthly utility bill collection via M-Pesa",
+        "Instant prepaid token delivery directly to customer mobile phones"
+      ],
+      "industries": [
+        "County Water Service Providers (WSPs)",
+        "Community Water Associations",
+        "Borehole Operators",
+        "Sub-Metered Estates"
+      ],
+      "techStack": [
+        "TypeScript",
+        "Node.js",
+        "MySQL",
+        "M-Pesa Daraja API",
+        "Africa's Talking SMS"
+      ],
+      "pricingModel": "Utility Meter Subscription or Enterprise Municipal License",
+      "demoUrl": "/contact?product=aura",
+      "ctaLabel": "Request Aura Utility Demo",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Aura Utility Management System | Smart Water & Meter Billing Kenya",
+      "seoDescription": "Automated water billing, prepaid token vending, M-Pesa collection, and leak detection by SaaSLink Technologies."
+    },
+    {
+      "id": "prd_propcloud",
+      "name": "PropCloud360 Property Management System",
+      "slug": "propcloud360",
+      "tagline": "Commercial & Residential Real Estate Portfolio Operating System",
+      "shortDescription": "Cloud property operating platform managing thousands of units across East Africa with automated M-Pesa rent collections, tenant portals, and landlord remittance payouts.",
+      "fullDescription": "PropCloud360 eliminates property management headaches. It handles unit vacancy grids, digital lease agreements, automated monthly rent invoices via SMS, instant M-Pesa Paybill matching, tenant photo maintenance ticketing, and one-click multi-owner landlord remittance payout statements.",
+      "logoUrl": "/assets/propcloud-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80",
+      "screenshots": [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80"
+      ],
+      "features": [
+        "Visual Unit Inventory, Tenant Screening & Lease Expiry Alerts",
+        "Automated Monthly Rent Demands with M-Pesa STK Push",
+        "Instant M-Pesa Paybill Rent Reconciliation with Zero Lag",
+        "Tenant Portal for Photo Maintenance Requests & Work Orders",
+        "One-Click Landlord Remittance Statements with Commission Deductions"
+      ],
+      "benefits": [
+        "Reduce rent arrears by up to 88% through automated SMS reminders",
+        "Generate owner statements in under 30 seconds with complete audit proof",
+        "Track technician maintenance dispatch and tenant approvals digitally"
+      ],
+      "industries": [
+        "Commercial Plazas",
+        "Residential Estates",
+        "Property Management Agencies",
+        "Landlords & REITs"
+      ],
+      "techStack": [
+        "React",
+        "Node.js",
+        "MySQL 8",
+        "M-Pesa Daraja C2B",
+        "AWS Cloud"
+      ],
+      "pricingModel": "Tiered per managed unit or enterprise white-label license",
+      "demoUrl": "/contact?product=propcloud360",
+      "ctaLabel": "Book PropCloud360 Demo",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "PropCloud360 | Property Management Software & Rent Automation Kenya",
+      "seoDescription": "Automate rent collection, tenant leases, M-Pesa Paybill reconciliation, and landlord statements with PropCloud360."
+    },
+    {
+      "id": "prd_emis",
+      "name": "EMIS Education Management System",
+      "slug": "emis-education",
+      "tagline": "Institutional School Governance, CBC Grading & Academic Operations Suite",
+      "shortDescription": "Comprehensive academic ERP powering primary, secondary, and tertiary colleges with CBC grading, M-Pesa fee receipts, biometric gate attendance, and parent SMS alerts.",
+      "fullDescription": "EMIS digitizes the entire student and institutional lifecycle. From admission inquiries, automated fee invoicing, and instant M-Pesa Paybill matching to digital CBC competency report cards, exam ranking, biometric/RFID gate attendance, and conflict-free timetables.",
+      "logoUrl": "/assets/emis-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&auto=format&fit=crop&q=80",
+      "screenshots": [
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&auto=format&fit=crop&q=80"
+      ],
+      "features": [
+        "Student Enrollment, Bio Profiles & CBC Assessment Matrix",
+        "Instant M-Pesa Paybill Fee Reconciliation & Parent SMS Receipts",
+        "Parent Mobile Portal for Fee Balance & Printable Report Cards",
+        "Conflict-Free School Timetabling & Teacher Allocation",
+        "Biometric / RFID Student Gate Check-in Telemetry"
+      ],
+      "benefits": [
+        "Eliminate manual bank slip verification with instant automated matching",
+        "Increase on-time fee settlement to over 92% through automated SMS alerts",
+        "100% compliant with Ministry of Education CBC reporting standards"
+      ],
+      "industries": [
+        "K-12 Day & Boarding Schools",
+        "International Academies",
+        "Tertiary Colleges",
+        "Vocational Institutes"
+      ],
+      "techStack": [
+        "Next.js",
+        "Node.js",
+        "MySQL",
+        "Africa's Talking SMS",
+        "Tailwind CSS"
+      ],
+      "pricingModel": "Per-student annual licensing with dedicated server hosting",
+      "demoUrl": "/contact?product=emis-education",
+      "ctaLabel": "Explore EMIS System",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "EMIS Education Management System | School ERP Kenya",
+      "seoDescription": "CBC grading, automated school fee collection via M-Pesa, parent SMS portals, and timetable management by SaaSLink Technologies."
+    },
+    {
+      "id": "prd_ecclesiah",
+      "name": "Ecclesiah Church Management System",
+      "slug": "ecclesiah-church",
+      "tagline": "Parish Administration, Member Stewardship & Financial Ministry System",
+      "shortDescription": "Faith-based administration software for churches and dioceses to manage membership records, cell groups, tithes & offerings M-Pesa reconciliation, and building pledge campaigns.",
+      "fullDescription": "Ecclesiah brings financial transparency, administrative ease, and pastoral care together. It manages member profiles, family trees, and sacramental registers while automating Sunday tithes, thanksgiving, and sadaka reconciliation via M-Pesa Paybill. It tracks building pledges (harambee) and sends targeted bulk SMS to ministry departments.",
+      "logoUrl": "/assets/ecclesiah-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1438032005730-c779502df39b?w=1200&auto=format&fit=crop&q=80",
+      "screenshots": [],
+      "features": [
+        "Member Directory, Family Heads & Sacramental Registries",
+        "Automated Tithes, Thanksgiving & Offering M-Pesa Reconciliation",
+        "Building Fund Pledges (Harambee) & Special Project Tracking",
+        "Cell Groups, Home Fellowships & Department Roster Management",
+        "Targeted Congregational Bulk SMS & Pastoral Event Alerts"
+      ],
+      "benefits": [
+        "100% accurate Sunday giving reconciliation with automated thank-you SMS",
+        "Zero lost member records across multi-service and multi-parish branches",
+        "Instant financial accountability reports for parish councils and trustees"
+      ],
+      "industries": [
+        "Churches & Megaministries",
+        "Dioceses & Parishes",
+        "Faith-Based Charities",
+        "Community Fellowships"
+      ],
+      "techStack": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "MySQL 8",
+        "M-Pesa Daraja Paybill"
+      ],
+      "pricingModel": "Tiered Congregational Size License with Cloud Hosting",
+      "demoUrl": "/contact?product=ecclesiah-church",
+      "ctaLabel": "Request Ecclesiah Demo",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Ecclesiah Church Management System | Church ERP Kenya",
+      "seoDescription": "Church member directory, automated tithes & offerings reconciliation via M-Pesa, pledge tracking, and bulk SMS by SaaSLink Technologies."
+    },
+    {
+      "id": "prd_hakihali",
+      "name": "Haki Hali Civic Transparency System",
+      "slug": "haki-hali-civic",
+      "tagline": "Public Accountability, Civic Education & Non-Profit Transparency Platform",
+      "shortDescription": "Public interest platform for NGOs, civil society organizations, and donor programs to track public budgets, conduct offline mobile surveys, and generate audit-proof donor compliance reports.",
+      "fullDescription": "Haki Hali empowers non-profits, civil society, donor programs, and community advocates to deliver verifiable impact. It features public budget expenditure tracking, civic education modules, offline-first mobile survey collection with GPS timestamps, citizen feedback loops, and immutable audit logs that satisfy USAID, EU, and UN donor compliance.",
+      "logoUrl": "/assets/hakihali-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&auto=format&fit=crop&q=80",
+      "screenshots": [],
+      "features": [
+        "Public Budget & County Project Expenditure Tracking",
+        "Civic Education Learning Modules & Community Resources",
+        "Offline-First Field Survey Collection with GPS Timestamping",
+        "Citizen Grievance & Service Delivery Feedback Loop",
+        "Donor Grant Accountability & Audit-Proof Compliance Reports"
+      ],
+      "benefits": [
+        "100% donor audit clean rate for multi-currency humanitarian grants",
+        "Enable field data collectors to work in remote rural areas with zero internet",
+        "Immutable audit trails preventing unauthorized tampering with records"
+      ],
+      "industries": [
+        "Non-Profits & NGOs",
+        "Civil Society Organizations",
+        "Donor-Funded Programs",
+        "Community Advocacy Groups"
+      ],
+      "techStack": [
+        "React PWA",
+        "Node.js & Python",
+        "PostgreSQL",
+        "Offline IndexedDB",
+        "Cryptographic Audit Hash"
+      ],
+      "pricingModel": "Non-Profit Program License with Dedicated Technical Support",
+      "demoUrl": "/contact?product=haki-hali",
+      "ctaLabel": "Request Haki Hali Demo",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Haki Hali Civic Transparency System | NGO & Donor Accountability Platform Kenya",
+      "seoDescription": "Civic education, public budget tracking, offline field surveys, and donor compliance reporting by SaaSLink Technologies."
+    }
+  ],
+  "portfolio": [
+    {
+      "id": "case_01",
+      "title": "Victoria Logistics: Cross-Border Fleet Operating System",
+      "slug": "victoria-logistics-fleet-operating-system",
+      "client": "Victoria Freight & Logistics Ltd",
+      "industry": "Supply Chain & Logistics",
+      "projectType": "Enterprise Cloud System & Mobile App",
+      "status": "Completed",
+      "completionDate": "November 2025",
+      "shortSummary": "Architected an integrated telematics, border clearance, and driver manifest platform serving 240+ heavy freight transport vehicles across East Africa.",
+      "fullCaseStudy": "Victoria Freight operated with siloed tracking spreadsheets and paper-based border documentation that frequently caused 48-hour delays at border checkpoints between Kenya, Uganda, and Rwanda. SaaSLink Technologies engineered a unified dispatching engine featuring real-time GPS telemetry, direct KRA/URA customs API clearing integration, and offline-capable driver mobile applications.",
+      "challenge": "Paper customs documents were prone to loss, border clearing required manual phone coordination, and drivers had no reliable internet connectivity on long rural transit routes.",
+      "solution": "We engineered a resilient cloud platform backed by a clustered MySQL database, high-throughput Go dispatch microservices, and a React Native mobile application utilizing local SQLite storage that syncs automatically when signal is restored.",
+      "results": [
+        "64% reduction in average border customs turnaround clearance time",
+        "Zero lost cargo manifests across 14,000+ completed hauls",
+        "Complete real-time fuel and mileage accountability across 240 vehicles"
+      ],
+      "technologies": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "MySQL 8",
+        "Docker",
+        "GPS Telemetry APIs"
+      ],
+      "servicesProvided": [
+        "Custom Software Engineering",
+        "Cloud DevOps",
+        "Mobile PWA Development"
+      ],
+      "projectUrl": "https://victoriagroup.com",
+      "featuredImage": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&auto=format&fit=crop&q=80",
+      "isFeatured": true,
+      "isPublished": true
+    },
+    {
+      "id": "case_02",
+      "title": "Apex Health: Telemedicine & Electronic Records Cloud Hub",
+      "slug": "apex-health-telemedicine-ehr-platform",
+      "client": "Apex Healthcare Holdings Ltd",
+      "industry": "Healthcare & Diagnostics",
+      "projectType": "Clinical Web Platform & Patient Portal",
+      "status": "Completed",
+      "completionDate": "January 2026",
+      "shortSummary": "Designed and deployed an ISO 27001 compliant electronic health record system uniting 6 specialist outpatient clinics and 45,000+ patient records.",
+      "fullCaseStudy": "Apex Healthcare needed a secure digital platform to connect diagnostic labs with consulting physicians and provide patients with confidential, instant access to lab test results and video consultations.",
+      "challenge": "Strict regulatory privacy requirements, disparate diagnostic laboratory machines outputting proprietary data formats, and the need for zero-latency video telemedicine.",
+      "solution": "SaaSLink architected a HIPAA-aligned medical portal utilizing WebRTC for encrypted video consultations, HL7 FHIR standards for diagnostic data interchange, and role-gated doctor/patient access levels.",
+      "results": [
+        "Diagnostic result delivery time dropped from 36 hours to 4 minutes",
+        "45,000+ active registered patient profiles secured",
+        "99.98% platform availability across all medical branches"
+      ],
+      "technologies": [
+        "Next.js",
+        "TypeScript",
+        "MySQL",
+        "WebRTC",
+        "HL7 FHIR",
+        "Tailwind CSS"
+      ],
+      "servicesProvided": [
+        "Web Application Development",
+        "UI/UX Design",
+        "Systems Integration"
+      ],
+      "featuredImage": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&auto=format&fit=crop&q=80",
+      "isFeatured": true,
+      "isPublished": true
+    },
+    {
+      "id": "case_03",
+      "title": "Municipal Automated Revenue & Permit Licensing Portal",
+      "slug": "municipal-revenue-licensing-portal",
+      "client": "County Government Directorate of Revenue",
+      "industry": "Public Sector & Governance",
+      "projectType": "Digital Transformation & Payment Engine",
+      "status": "Completed",
+      "completionDate": "August 2025",
+      "shortSummary": "Replaced manual receipt books with an instant self-service digital permit and single-business-permit licensing system with instant QR verification.",
+      "fullCaseStudy": "The directorate faced revenue leakages, fraudulent duplicate paper receipts, and long citizen queues for annual business permits. SaaSLink engineered an automated public portal allowing business owners to apply, upload compliance certifications, pay via integrated mobile money, and download tamper-evident QR verified permits instantly.",
+      "challenge": "Eliminating revenue diversion, authenticating field enforcement officers with mobile QR scanners, and handling 100,000+ annual business license renewals within a 6-week seasonal rush.",
+      "solution": "Engineered a horizontally scalable cloud architecture with high-concurrency MySQL transaction handling, automated bank and M-Pesa IPN validation, and cryptographic digital permit generation.",
+      "results": [
+        "42% increase in collected municipal revenue within the first financial year",
+        "Citizen queue wait times reduced from 4 hours to 90 seconds online",
+        "Over 85,000 digital permits verified via enforcement mobile tablets"
+      ],
+      "technologies": [
+        "TypeScript",
+        "Express",
+        "MySQL",
+        "Redis",
+        "Digital Signatures",
+        "Tailwind"
+      ],
+      "servicesProvided": [
+        "Custom Software Development",
+        "Business Automation",
+        "Cloud Hardening"
+      ],
+      "featuredImage": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80",
+      "isFeatured": true,
+      "isPublished": true
+    }
+  ],
+  "articles": [
+    {
+      "id": "art_01",
+      "title": "Architecting Resilient Relational Databases for Enterprise Scale in Africa",
+      "slug": "architecting-resilient-relational-databases-enterprise-scale",
+      "category": "Engineering & Architecture",
+      "tags": [
+        "MySQL",
+        "Database Design",
+        "Cloud Architecture",
+        "High Availability"
+      ],
+      "author": "Alexandre Kamau",
+      "authorRole": "Chief Technology Architect",
+      "authorAvatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&auto=format&fit=crop&q=80",
+      "summary": "A deep dive into connection pooling, query indexing strategies, and disaster recovery replication patterns when operating mission-critical software across regional network conditions.",
+      "content": "### The Imperative of Relational Rigor\n\nWhen constructing enterprise systems—whether for logistics routing, institutional billing, or financial ledger reconciliation—the structural integrity of your relational database is your most valuable asset. While trendy document stores offer quick prototyping, enterprise systems inevitably demand referential integrity, ACID transactional guarantees, and deterministic foreign key relationships.\n\n#### 1. Why Foreign Keys and Constraints Are Non-Negotiable\nIn a billing workflow, allowing an invoice item to point to an orphaned quotation ID or a payment to execute without a matching client record creates devastating operational liabilities. By enforcing foreign key constraints at the MySQL engine level rather than relying solely on fragile application code, you create a hardware-enforced guarantee that your business records remain pristine.\n\n#### 2. Connection Pooling Without Startup Throttles\nIn serverless and containerized cloud environments, naive database connection patterns can exhaust database connection pools in seconds. Implementing intelligent pooling with bounded connection limits, health checks on acquire, and strict timeouts ensures your application handles sudden traffic bursts without crashing database daemons.\n\n#### 3. Designing for Point-In-Time Recovery\nA database without verified automated restoration testing is merely a hope, not a strategy. We walk through automated daily logical dumps, binary log archiving, and zero-downtime replication topologies that keep your business operating through any infrastructure incident.",
+      "readTime": "6 min read",
+      "isPublished": true,
+      "publishedAt": "2026-02-18",
+      "seoTitle": "Architecting Relational Databases for Enterprise Scale | SaaSLink Insights",
+      "seoDescription": "Proven engineering patterns for high-availability MySQL databases and enterprise transactional systems."
+    },
+    {
+      "id": "art_02",
+      "title": "The Hidden Cost of Off-the-Shelf SaaS vs. Bespoke Digital Platforms",
+      "slug": "hidden-cost-off-the-shelf-saas-vs-bespoke-platforms",
+      "category": "Business Strategy",
+      "tags": [
+        "Digital Transformation",
+        "ROI",
+        "Custom Software",
+        "Enterprise Tech"
+      ],
+      "author": "David Mwangi",
+      "authorRole": "Head of Solutions Consulting",
+      "authorAvatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&auto=format&fit=crop&q=80",
+      "summary": "Why growing African enterprises are moving away from expensive foreign per-user SaaS licenses in favor of custom-built software assets that compound company equity.",
+      "content": "### The Illusion of Cheap Monthly Subscriptions\n\nFor a startup with 3 employees, paying $40 per user per month for an American or European CRM seems trivial. But as an organization scales to 80, 200, or 500 team members, SaaS subscription costs quickly balloon into tens of thousands of dollars paid annually in foreign currency.\n\n#### 1. The Currency Exposure Penalty\nWhen exchange rates fluctuate, your software operating expenses can jump 25% overnight without a single new feature delivered. By investing capital expenditure into a proprietary custom platform, you stabilize costs permanently.\n\n#### 2. The Operational Misfit Problem\nGeneric software forces your operational teams to bend their real-world processes to fit the software's rigid terminology. When your software doesn't natively understand M-Pesa reconciliations, local tax withholding regimes, or regional courier routing, your staff end up running secondary manual Excel spreadsheets anyway.\n\n#### 3. Transforming Software from an Expense to a Balance Sheet Asset\nWhen you commission custom software with SaaSLink Technologies, you retain full source code intellectual property. That software becomes a proprietary enterprise asset that enhances your company valuation and protects your unique business advantage.",
+      "readTime": "5 min read",
+      "isPublished": true,
+      "publishedAt": "2026-03-01"
+    }
+  ],
+  "team": [
+    {
+      "id": "tm_01",
+      "name": "Alexandre Kamau",
+      "position": "Chief Technology Architect & Co-Founder",
+      "bio": "Over 14 years architecting fault-tolerant cloud platforms, distributed systems, and enterprise data backends. Previously led engineering teams across fintech and pan-African logistics networks.",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
+      "skills": [
+        "Distributed Systems",
+        "MySQL / PostgreSQL Architecture",
+        "Go & Node.js",
+        "Cloud DevOps"
+      ],
+      "socialLinks": {
+        "linkedin": "https://linkedin.com",
+        "github": "https://github.com"
+      },
+      "displayOrder": 1,
+      "isActive": true
+    },
+    {
+      "id": "tm_02",
+      "name": "Beatrice Ochieng",
+      "position": "Head of Product Operations & Finance",
+      "bio": "Chartered accountant and software product strategist with extensive experience in commercial quotation modeling, statutory tax compliance, and enterprise ERP implementations.",
+      "avatarUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=80",
+      "skills": [
+        "ERP Architecture",
+        "Financial Systems",
+        "Process Engineering",
+        "Risk & Compliance"
+      ],
+      "socialLinks": {
+        "linkedin": "https://linkedin.com"
+      },
+      "displayOrder": 2,
+      "isActive": true
+    },
+    {
+      "id": "tm_03",
+      "name": "David Mwangi",
+      "position": "Director of Enterprise Solutions",
+      "bio": "Specialist in bridging complex business requirements with technical execution. Has managed over 40 successful digital transformation deliveries for commercial and public sector clients.",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80",
+      "skills": [
+        "Solution Architecture",
+        "Systems Integration",
+        "Client Advisory",
+        "Agile Delivery"
+      ],
+      "socialLinks": {
+        "linkedin": "https://linkedin.com"
+      },
+      "displayOrder": 3,
+      "isActive": true
+    },
+    {
+      "id": "tm_04",
+      "name": "Faith Chebet",
+      "position": "Lead UX Designer & Frontend Architect",
+      "bio": "Specializes in crafting human-centric, high-density web platforms and accessible design systems that turn complex enterprise workflows into intuitive, pleasant digital experiences.",
+      "avatarUrl": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&auto=format&fit=crop&q=80",
+      "skills": [
+        "Design Systems",
+        "React 19 & Tailwind",
+        "Mobile-First UX",
+        "Accessibility (WCAG)"
+      ],
+      "displayOrder": 4,
+      "isActive": true
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "tst_01",
+      "clientName": "James M. Kariuki",
+      "position": "Managing Director",
+      "organization": "AfriAuto Spare Parts & Distribution Ltd",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+      "content": "Deploying MASUMA ERP replaced our chaotic multi-warehouse Excel sheets and ended our KRA eTIMS penalties overnight. Every counter sale across our 4 branches reconciles to eTIMS and our central inventory in real time.",
+      "rating": 5,
+      "relatedProject": "MASUMA Enterprise ERP & Distribution System",
+      "displayPriority": 1,
+      "isPublished": true
+    },
+    {
+      "id": "tst_02",
+      "clientName": "Dr. Miriam Wanjiku",
+      "position": "Medical Director & Surgeon",
+      "organization": "Rapha Medical Centre & Maternity",
+      "avatarUrl": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&auto=format&fit=crop&q=80",
+      "content": "RaphaMIS transformed our outpatient and in-patient wards. Doctors input digital prescriptions at bedside, pharmacy dispenses against digital stock, and our SHA/NHIF claim rejections dropped from 35% to less than 2%.",
+      "rating": 5,
+      "relatedProject": "RaphaMIS Hospital Management System",
+      "displayPriority": 2,
+      "isPublished": true
+    },
+    {
+      "id": "tst_03",
+      "clientName": "Bishop Peter O. Odhiambo",
+      "position": "Senior Pastor & Presiding Overseer",
+      "organization": "Glory Harvest Fellowship & Diocesan Ministries",
+      "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80",
+      "content": "Ecclesiah brought complete transparency to our financial stewardship. Sunday tithes and project pledges given via Paybill match automatically to each congregant's account with instant thank-you SMS receipts.",
+      "rating": 5,
+      "relatedProject": "Ecclesiah Church Management System",
+      "displayPriority": 3,
+      "isPublished": true
+    },
+    {
+      "id": "tst_04",
+      "clientName": "Eng. Dennis Kiprop",
+      "position": "Commercial Services Manager",
+      "organization": "Aura Water & Borehole Management Association",
+      "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80",
+      "content": "Aura Utility ended meter-reading tampering and paper disconnection warnings. Residents pay via M-Pesa, smart meters vend tokens automatically, and our non-revenue water recovery improved collections by 74%.",
+      "rating": 5,
+      "relatedProject": "Aura Utility & Smart Water Management",
+      "displayPriority": 4,
+      "isPublished": true
+    }
+  ],
+  "media": [
+    {
+      "id": "med_01",
+      "fileName": "saaslink-office-engineering.jpg",
+      "fileUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1000&auto=format&fit=crop&q=80",
+      "fileType": "image/jpeg",
+      "fileSize": 420800,
+      "altText": "SaaSLink Technologies Engineering Team collaborating in Nairobi office",
+      "caption": "Engineering & architecture sprint session",
+      "createdAt": "2026-01-12T10:00:00.000Z"
+    },
+    {
+      "id": "med_02",
+      "fileName": "cloud-servers-datacenter.jpg",
+      "fileUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&auto=format&fit=crop&q=80",
+      "fileType": "image/jpeg",
+      "fileSize": 580200,
+      "altText": "Secure enterprise cloud server racks and optical infrastructure",
+      "caption": "High-availability infrastructure tier",
+      "createdAt": "2026-01-15T12:00:00.000Z"
+    }
+  ],
+  "navigation": [
+    {
+      "id": "nav_1",
+      "label": "Services",
+      "path": "/services",
+      "location": "both",
+      "order": 1,
+      "isExternal": false
+    },
+    {
+      "id": "nav_2",
+      "label": "Products & Platforms",
+      "path": "/products",
+      "location": "both",
+      "order": 2,
+      "isExternal": false
+    },
+    {
+      "id": "nav_3",
+      "label": "Case Studies",
+      "path": "/portfolio",
+      "location": "both",
+      "order": 3,
+      "isExternal": false
+    },
+    {
+      "id": "nav_4",
+      "label": "About Us",
+      "path": "/about",
+      "location": "both",
+      "order": 4,
+      "isExternal": false
+    },
+    {
+      "id": "nav_5",
+      "label": "Insights",
+      "path": "/blog",
+      "location": "both",
+      "order": 5,
+      "isExternal": false
+    },
+    {
+      "id": "nav_6",
+      "label": "Contact",
+      "path": "/contact",
+      "location": "both",
+      "order": 6,
+      "isExternal": false
+    }
+  ],
+  "activityLogs": [
+    {
+      "id": "act_01",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "CREATED_QUOTATION",
+      "resource": "quotations",
+      "resourceId": "quo_1001",
+      "details": "Generated QUO-2026-1001 for Victoria Logistics Group ($30,160.00)",
+      "timestamp": "2026-01-22T10:00:00.000Z"
+    },
+    {
+      "id": "act_02",
+      "userId": "usr_finance_01",
+      "userName": "Beatrice Ochieng",
+      "action": "RECORDED_PAYMENT",
+      "resource": "payments",
+      "resourceId": "pay_1001",
+      "details": "Recorded payment of $13,994.24 against INV-2026-1001 (Receipt RCT-2026-1001)",
+      "timestamp": "2026-02-12T14:05:00.000Z"
+    },
+    {
+      "id": "act_03",
+      "userId": "usr_sales_01",
+      "userName": "David Mwangi",
+      "action": "QUALIFIED_LEAD",
+      "resource": "leads",
+      "resourceId": "lead_001",
+      "details": "Moved lead Grace Wambui (Kenvest Commercial) to Proposal Sent status",
+      "timestamp": "2026-02-26T15:00:00.000Z"
+    }
+  ]
+}
