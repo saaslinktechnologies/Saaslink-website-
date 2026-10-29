@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Settings, Save, Building, CreditCard, 
-  FileText, ShieldCheck, CheckCircle2, AlertCircle 
+  FileText, ShieldCheck, CheckCircle2, AlertCircle,
+  Upload, Image as ImageIcon, RefreshCw, Trash2, 
+  Layers, Check, ExternalLink, HelpCircle
 } from 'lucide-react';
 import { GlobalSettings } from '../../types.ts';
 
@@ -16,15 +18,111 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 }) => {
   const [formData, setFormData] = useState<GlobalSettings>({ 
     ...settings,
+    companyName: settings?.companyName || 'SaaSLink Technologies Ltd',
     companyAddress: settings?.companyAddress || settings?.address || '',
     companyEmail: settings?.companyEmail || settings?.email || '',
     companyPhone: settings?.companyPhone || settings?.phone || '',
     companyWebsite: settings?.companyWebsite || settings?.website || '',
     companyTagline: settings?.companyTagline || settings?.tagline || '',
+    logoUrl: settings?.logoUrl || '/assets/saaslink-logo.svg',
     taxId: settings?.taxId || 'P051982341Z',
   });
+
+  // Sync if settings prop updates externally
+  useEffect(() => {
+    if (settings) {
+      setFormData(prev => ({
+        ...prev,
+        ...settings,
+        logoUrl: settings.logoUrl || prev.logoUrl || '/assets/saaslink-logo.svg',
+      }));
+    }
+  }, [settings]);
+
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  // Logo specific states
+  const [savingLogo, setSavingLogo] = useState(false);
+  const [logoSuccess, setLogoSuccess] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState('');
+  const [uploadedFileSize, setUploadedFileSize] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const processLogoFile = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setLogoError('Invalid file type. Please select an image (PNG, SVG, JPG, WebP, GIF).');
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setLogoError('File size exceeds 8MB limit. Please compress or select a smaller image.');
+      return;
+    }
+
+    setLogoError(null);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      setFormData(prev => ({ ...prev, logoUrl: result }));
+      setUploadedFileName(file.name);
+      setUploadedFileSize((file.size / 1024).toFixed(1) + ' KB');
+    };
+    reader.onerror = () => {
+      setLogoError('Failed to read file from disk. Please try again.');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processLogoFile(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processLogoFile(file);
+    }
+  };
+
+  const handleApplyLogoNow = async () => {
+    if (!formData.logoUrl) return;
+    setSavingLogo(true);
+    setLogoSuccess(false);
+    setLogoError(null);
+    try {
+      await onSaveSettings({ logoUrl: formData.logoUrl });
+      setLogoSuccess(true);
+      setTimeout(() => setLogoSuccess(false), 3500);
+    } catch (err: any) {
+      setLogoError(err?.message || 'Failed to update logo');
+    } finally {
+      setSavingLogo(false);
+    }
+  };
+
+  const handleResetToDefault = () => {
+    setFormData(prev => ({ ...prev, logoUrl: '/assets/saaslink-logo.svg' }));
+    setUploadedFileName('');
+    setUploadedFileSize('');
+    setLogoError(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +131,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     try {
       const payload: GlobalSettings = {
         ...formData,
+        logoUrl: formData.logoUrl,
         address: formData.companyAddress || formData.address,
         email: formData.companyEmail || formData.email,
         phone: formData.companyPhone || formData.phone,
@@ -57,12 +156,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             Enterprise & Platform Configuration
           </h2>
           <p className="text-xs text-slate-400">
-            Define corporate branding, tax identifiers, billing prefixes, and official settlement instructions.
+            Define corporate branding, logo assets, tax identifiers, billing prefixes, and settlement coordinates.
           </p>
         </div>
 
         {savedSuccess && (
-          <div className="px-3.5 py-1.5 rounded-xl bg-emerald-950 border border-emerald-800 text-emerald-300 text-xs font-semibold flex items-center gap-1.5">
+          <div className="px-3.5 py-1.5 rounded-xl bg-emerald-950 border border-emerald-800 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 animate-fadeIn">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>Settings saved successfully!</span>
           </div>
@@ -70,6 +169,173 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 text-xs">
+        
+        {/* SECTION: Brand & Logo Management */}
+        <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider">
+              <ImageIcon className="w-4 h-4" />
+              <span>Corporate Brand & Logo Emblem</span>
+            </div>
+            {logoSuccess && (
+              <span className="text-emerald-400 text-xs flex items-center gap-1 font-semibold animate-pulse">
+                <Check className="w-3.5 h-3.5" /> Logo updated across platform!
+              </span>
+            )}
+          </div>
+
+          <p className="text-slate-400 text-xs leading-relaxed">
+            Upload or change your official company logo. This logo immediately reflects across the public website navigation bar, footer lockup, admin console header, and generated client quotations and invoices.
+          </p>
+
+          {/* Logo Previews (Dark & Light) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Dark Website Header Preview */}
+            <div className="p-4 rounded-xl bg-[oklch(0.24_0.035_165)] border border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[oklch(0.85_0.14_85)] via-[oklch(0.78_0.12_78)] to-[oklch(0.68_0.13_65)] p-0.5 shadow-gold shrink-0">
+                  <div className="w-full h-full bg-[oklch(0.22_0.03_165)] rounded-[10px] flex items-center justify-center overflow-hidden">
+                    {formData.logoUrl ? (
+                      <img 
+                        src={formData.logoUrl} 
+                        alt="Logo Preview" 
+                        className="w-full h-full object-contain p-1" 
+                      />
+                    ) : (
+                      <Layers className="w-6 h-6 text-[oklch(0.85_0.14_85)]" />
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-white font-bold text-sm">
+                      {formData.companyName || 'SaaSLink'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">Website Header (Dark Preview)</span>
+                </div>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-[oklch(0.85_0.12_80)] border border-white/10">
+                Navbar Preview
+              </span>
+            </div>
+
+            {/* Light / Print Invoice Preview */}
+            <div className="p-4 rounded-xl bg-white border border-slate-200 flex items-center justify-between text-slate-900 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 p-1">
+                  {formData.logoUrl ? (
+                    <img 
+                      src={formData.logoUrl} 
+                      alt="Logo Print Preview" 
+                      className="w-full h-full object-contain" 
+                    />
+                  ) : (
+                    <Layers className="w-6 h-6 text-slate-700" />
+                  )}
+                </div>
+                <div>
+                  <span className="font-bold text-sm text-slate-900 block">
+                    {formData.companyName || 'SaaSLink Technologies'}
+                  </span>
+                  <span className="text-[10px] text-slate-500 font-mono">Invoice / Print (Light Preview)</span>
+                </div>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                Print Preview
+              </span>
+            </div>
+          </div>
+
+          {/* Interactive Upload Box */}
+          <div 
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`border-2 border-dashed rounded-xl p-5 text-center transition-all cursor-pointer ${
+              isDragging 
+                ? 'border-cyan-400 bg-cyan-950/30' 
+                : 'border-slate-800 bg-slate-950 hover:border-slate-700'
+            }`}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <input 
+              type="file" 
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/png, image/jpeg, image/svg+xml, image/webp, image/gif"
+              className="hidden" 
+            />
+
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                <Upload className="w-5 h-5" />
+              </div>
+
+              <div>
+                <span className="text-white font-semibold">Click to browse file</span> or drag & drop your logo here
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Supports SVG, PNG, WebP, JPG (Recommended: transparent background, min 256x256px, max 8MB)
+                </p>
+              </div>
+
+              {uploadedFileName && (
+                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-cyan-950 border border-cyan-800 text-cyan-300 text-xs font-mono">
+                  <Check className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Selected: {uploadedFileName} ({uploadedFileSize})</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {logoError && (
+            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+              <span>{logoError}</span>
+            </div>
+          )}
+
+          {/* Direct URL Input & Quick Actions */}
+          <div className="space-y-2 pt-1">
+            <label className="block text-slate-300 font-semibold">
+              Or specify direct Logo URL / Asset Path:
+            </label>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="text"
+                placeholder="e.g. /assets/saaslink-logo.svg or https://example.com/logo.png"
+                value={formData.logoUrl?.startsWith('data:') ? 'Custom uploaded image (Base64 Data URL)' : formData.logoUrl || ''}
+                onChange={(e) => {
+                  setFormData({ ...formData, logoUrl: e.target.value });
+                  setUploadedFileName('');
+                }}
+                className="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono focus:outline-none focus:border-cyan-400 text-xs"
+              />
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleApplyLogoNow}
+                  disabled={savingLogo || !formData.logoUrl}
+                  className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {savingLogo ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                  <span>{savingLogo ? 'Applying...' : 'Apply Logo Now'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResetToDefault}
+                  className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Reset to default SVG emblem"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Reset Default</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         
         {/* Section 1: Corporate Entity */}
         <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
@@ -134,6 +400,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono focus:outline-none focus:border-cyan-400"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-slate-300 font-semibold mb-1">Company Tagline / Subtitle</label>
+            <input
+              type="text"
+              value={formData.companyTagline}
+              onChange={(e) => setFormData({ ...formData, companyTagline: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400"
+              placeholder="Software & Cloud Systems"
+            />
           </div>
 
           <div>

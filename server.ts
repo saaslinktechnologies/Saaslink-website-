@@ -1,17 +1,12 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
 import { apiRouter } from './src/server/api.ts';
 import { initMysqlIfAvailable } from './src/server/db.ts';
 
 dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 
 // Global safety guards to prevent unhandled crashes
 process.on('uncaughtException', (err) => {

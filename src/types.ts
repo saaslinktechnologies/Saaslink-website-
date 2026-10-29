@@ -91,6 +91,8 @@ export interface Service {
   displayOrder: number;
   isFeatured: boolean;
   isPublished: boolean;
+  videoUrl?: string;
+  galleryImages?: string[];
   seoTitle?: string;
   seoDescription?: string;
 }
@@ -111,6 +113,8 @@ export interface Product {
   techStack: string[];
   pricingModel?: string;
   demoUrl?: string;
+  videoUrl?: string;
+  galleryImages?: string[];
   ctaLabel?: string;
   isFeatured: boolean;
   isPublished: boolean;
@@ -137,7 +141,9 @@ export interface PortfolioProject {
   servicesProvided: string[];
   projectUrl?: string;
   featuredImage: string;
+  videoUrl?: string;
   gallery?: string[];
+  galleryImages?: string[];
   isFeatured: boolean;
   isPublished: boolean;
   seoTitle?: string;
@@ -183,6 +189,8 @@ export interface Article {
   authorRole: string;
   authorAvatar?: string;
   coverImage: string;
+  videoUrl?: string;
+  galleryImages?: string[];
   summary: string;
   content: string;
   readTime: string;

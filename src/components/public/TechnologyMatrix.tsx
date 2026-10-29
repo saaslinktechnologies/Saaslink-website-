@@ -126,7 +126,7 @@ export const TechnologyMatrix: React.FC = () => {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+        <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center sm:justify-center gap-2 mb-10 sm:mb-12 pb-2 sm:pb-0 px-2 sm:px-0 -mx-4 sm:mx-0 px-4 sm:px-0">
           {[
             { id: 'all', label: 'All Technologies' },
             { id: 'languages', label: 'Languages & Frameworks' },
@@ -137,7 +137,7 @@ export const TechnologyMatrix: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer min-h-[44px] flex items-center justify-center whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] text-[oklch(0.22_0.03_165)] shadow-gold font-bold'
                   : 'bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10'
@@ -153,7 +153,7 @@ export const TechnologyMatrix: React.FC = () => {
           {filtered.map((item, idx) => (
             <div
               key={idx}
-              className={`p-6 rounded-3xl border transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between backdrop-blur-md ${
+              className={`p-5 sm:p-6 rounded-2xl sm:rounded-3xl border transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between backdrop-blur-md ${
                 item.highlight 
                   ? 'bg-[oklch(0.34_0.045_165/0.8)] border-[oklch(0.78_0.12_78/0.4)] shadow-elegant' 
                   : 'bg-[oklch(0.31_0.04_165/0.6)] border-white/10 hover:border-white/20'

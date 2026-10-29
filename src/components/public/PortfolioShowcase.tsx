@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Briefcase, ArrowUpRight, TrendingUp, CheckCircle2, 
-  ExternalLink, Layers, ArrowRight, ShieldCheck 
+  ExternalLink, Layers, ArrowRight, ShieldCheck, Play 
 } from 'lucide-react';
 import { PortfolioProject } from '../../types.ts';
 
@@ -123,9 +123,17 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
                   <span className="text-xs font-semibold text-[oklch(0.85_0.12_80)]">
                     {item.industry}
                   </span>
-                  <span className="text-slate-400 text-xs">
-                    {item.client || item.clientName}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {item.videoUrl && (
+                      <span className="px-2 py-0.5 rounded-full bg-black/60 border border-[oklch(0.78_0.12_78/0.4)] text-[10px] font-mono text-[oklch(0.85_0.12_80)] flex items-center gap-1">
+                        <Play className="w-2.5 h-2.5 fill-[oklch(0.85_0.12_80)]" />
+                        <span>Video</span>
+                      </span>
+                    )}
+                    <span className="text-slate-400 text-xs">
+                      {item.client || item.clientName}
+                    </span>
+                  </div>
                 </div>
 
                 <h3 className="text-lg font-bold text-white group-hover:text-[oklch(0.85_0.12_80)] transition-colors font-sans">

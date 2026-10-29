@@ -77,22 +77,47 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Mobile Top Header */}
       <div className="md:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
-            <Layers className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 overflow-hidden shrink-0">
+            {settings?.logoUrl ? (
+              <img
+                src={settings.logoUrl}
+                alt={settings.companyName || 'Logo'}
+                className="w-full h-full object-contain p-1"
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.display = 'none';
+                  const fallback = e.currentTarget.parentElement?.querySelector('.admin-mobile-logo-fallback');
+                  if (fallback) (fallback as HTMLElement).style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div className={`admin-mobile-logo-fallback items-center justify-center ${settings?.logoUrl ? 'hidden' : 'flex'}`}>
+              <Layers className="w-4 h-4 text-cyan-400" />
+            </div>
           </div>
           <div>
-            <span className="font-display font-bold text-sm text-white">SaaSLink OS</span>
-            <span className="text-[10px] text-cyan-400 block font-mono">MySQL 8.0</span>
+            <span className="font-display font-bold text-sm text-white">
+              {settings?.companyName ? settings.companyName.split(' ')[0] : 'SaaSLink'} OS
+            </span>
+            <span className="text-[10px] text-cyan-400 block font-mono">Enterprise Console</span>
           </div>
         </div>
 
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-lg bg-slate-800 text-slate-300"
+          className="min-w-[44px] min-h-[44px] p-2.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
+          aria-label="Toggle navigation menu"
         >
           {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
+
+      {/* Mobile Drawer Backdrop Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/70 z-30 md:hidden backdrop-blur-xs transition-opacity duration-200"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* Sidebar Navigation */}
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-slate-900/95 md:bg-slate-900 border-r border-slate-800 flex flex-col justify-between transition-transform duration-300 md:translate-x-0 md:static ${
@@ -102,17 +127,31 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           {/* Brand Header */}
           <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 p-0.5 shadow-md shadow-cyan-500/20">
-                <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                  <Layers className="w-4 h-4 text-cyan-400" />
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 p-0.5 shadow-md shadow-cyan-500/20 shrink-0">
+                <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center overflow-hidden">
+                  {settings?.logoUrl ? (
+                    <img
+                      src={settings.logoUrl}
+                      alt={settings.companyName || 'Logo'}
+                      className="w-full h-full object-contain p-1"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLElement).style.display = 'none';
+                        const fallback = e.currentTarget.parentElement?.querySelector('.admin-sidebar-logo-fallback');
+                        if (fallback) (fallback as HTMLElement).style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div className={`admin-sidebar-logo-fallback items-center justify-center ${settings?.logoUrl ? 'hidden' : 'flex'}`}>
+                    <Layers className="w-4 h-4 text-cyan-400" />
+                  </div>
                 </div>
               </div>
               <div className="text-left">
                 <div className="font-display font-bold text-sm text-white flex items-center gap-1">
-                  <span>SaaSLink</span>
+                  <span>{settings?.companyName ? settings.companyName.split(' ')[0] : 'SaaSLink'}</span>
                   <span className="text-cyan-400">OS</span>
                 </div>
-                <p className="text-[10px] text-slate-400 font-mono">Business Management</p>
+                <p className="text-[10px] text-slate-400 font-mono">Enterprise Suite</p>
               </div>
             </div>
           </div>

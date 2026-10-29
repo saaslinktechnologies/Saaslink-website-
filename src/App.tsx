@@ -83,8 +83,8 @@ export default function App() {
   // Public & Operational Data
   const [settings, setSettings] = useState<GlobalSettings>({
     companyName: 'SaaSLink Technologies Ltd',
-    tagline: 'Enterprise Software Engineering, Cloud Systems & Digital Operations',
-    companyTagline: 'Enterprise Software Engineering, Cloud Systems & Digital Operations',
+    tagline: 'Software & Cloud Systems',
+    companyTagline: 'Software & Cloud Systems',
     description: 'SaaSLink Technologies Ltd is a premier enterprise digital engineering partner architecting modern software platforms, cloud ecosystems, and intelligent business workflows.',
     email: 'contact@saaslink.tech',
     companyEmail: 'contact@saaslink.tech',
@@ -555,25 +555,33 @@ export default function App() {
       const method = id ? 'PATCH' : 'POST';
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        },
         body: JSON.stringify(data),
       });
       if (res.ok) {
-        fetchPublicContent();
-        fetchAdminData();
+        await fetchPublicContent();
+        await fetchAdminData();
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error saving CMS entity:', err);
     }
   };
 
   const handleDeleteCmsEntity = async (entityType: string, id: string) => {
     try {
-      await fetch(`/api/admin/cms/${entityType}/${id}`, { method: 'DELETE' });
-      fetchPublicContent();
-      fetchAdminData();
+      await fetch(`/api/admin/cms/${entityType}/${id}`, { 
+        method: 'DELETE',
+        headers: {
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        }
+      });
+      await fetchPublicContent();
+      await fetchAdminData();
     } catch (err) {
-      console.error(err);
+      console.error('Error deleting CMS entity:', err);
     }
   };
 
@@ -608,15 +616,19 @@ export default function App() {
     try {
       const res = await fetch('/api/admin/settings', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        },
         body: JSON.stringify(newSettings),
       });
       if (res.ok) {
         const updated = await res.json();
-        setSettings(updated);
+        setSettings(prev => ({ ...prev, ...updated }));
+        fetchPublicContent();
       }
     } catch (err) {
-      console.error(err);
+      console.error('Failed to save settings:', err);
     }
   };
 
@@ -781,8 +793,10 @@ export default function App() {
         {adminSection === 'media' && (
           <MediaView
             media={media}
+            currentLogoUrl={settings?.logoUrl}
             onAddMedia={handleAddMedia}
             onDeleteMedia={handleDeleteMedia}
+            onSetAsLogo={(url) => handleSaveSettings({ logoUrl: url })}
           />
         )}
 

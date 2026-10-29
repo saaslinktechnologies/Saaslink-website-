@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, ArrowRight, Clock, User } from 'lucide-react';
+import { BookOpen, ArrowRight, Clock, User, Play, Video } from 'lucide-react';
 import { Article } from '../../types.ts';
 
 interface InsightsSectionProps {
@@ -52,6 +52,13 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({
                   <div className="absolute top-4 left-4 px-3 py-1 rounded-md bg-slate-950/80 backdrop-blur-md border border-slate-800 text-xs font-semibold text-cyan-400">
                     {article.category}
                   </div>
+
+                  {article.videoUrl && (
+                    <div className="absolute top-4 right-4 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-amber-500/40 text-[11px] font-mono font-bold text-amber-300 flex items-center gap-1.5 shadow-lg">
+                      <Play className="w-3 h-3 fill-amber-300" />
+                      <span>Video Included</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-7 space-y-4">

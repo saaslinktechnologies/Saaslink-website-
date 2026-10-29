@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="pijoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5DE98" />
+      <stop offset="50%" stop-color="#E5C158" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+    <linearGradient id="pijoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1B2925" />
+      <stop offset="100%" stop-color="#111B18" />
+    </linearGradient>
+    <filter id="pijoGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#E5C158" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <rect width="120" height="120" rx="26" fill="url(#pijoBg)" stroke="url(#pijoGrad)" stroke-width="2" />
+
+  <!-- Footwear & Shopping Bag Emblem -->
+  <g filter="url(#pijoGlow)">
+    <!-- Shopping Bag Handle -->
+    <path d="M48 40C48 33.3726 53.3726 28 60 28C66.6274 28 72 33.3726 72 40" stroke="url(#pijoGrad)" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Bag Outline -->
+    <path d="M36 40H84L80 88H40L36 40Z" fill="url(#pijoGrad)" fill-opacity="0.15" stroke="url(#pijoGrad)" stroke-width="2.5" stroke-linejoin="round" />
+    
+    <!-- Stylized Sneaker / Shoe Silhouette on Bag -->
+    <path d="M46 72C48 70 51 68 56 68L64 68C67 66 69 61 72 59C73.5 58 75 58.5 75.5 60C76 61.5 75 63 74 65L71 68L76 68C77.5 68 78 69 77.5 70.5L75 74C74 75 72.5 75.5 70 75.5H48C46 75.5 45 74 46 72Z" fill="url(#pijoGrad)" />
+    
+    <!-- Sole Accent -->
+    <path d="M44 76H76" stroke="url(#pijoGrad)" stroke-width="2.5" stroke-linecap="round" />
+  </g>
+</svg>

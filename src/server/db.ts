@@ -90,7 +90,7 @@ function createInitialDataset(): DatabaseSchema {
     settings: {
       companyName: 'SaaSLink Technologies Ltd',
       tagline: 'Technology with Intelligence. Software with Purpose.',
-      companyTagline: 'Enterprise Software Engineering, Cloud Systems & Digital Operations',
+      companyTagline: 'Software & Cloud Systems',
       description: 'SaaSLink Technologies Ltd is a premier enterprise digital engineering partner architecting modern software platforms, cloud ecosystems, and intelligent business workflows.',
       email: 'contact@saaslink.tech',
       companyEmail: 'contact@saaslink.tech',
@@ -1330,7 +1330,7 @@ export function getDb(): DatabaseSchema {
       if (!cachedDb.settings.companyEmail) cachedDb.settings.companyEmail = cachedDb.settings.email || 'contact@saaslink.tech';
       if (!cachedDb.settings.companyPhone) cachedDb.settings.companyPhone = cachedDb.settings.phone || '+254 720 000 000 / +254 733 000 000';
       if (!cachedDb.settings.companyWebsite) cachedDb.settings.companyWebsite = cachedDb.settings.website || 'https://saaslink.tech';
-      if (!cachedDb.settings.companyTagline) cachedDb.settings.companyTagline = cachedDb.settings.tagline || 'Enterprise Software Engineering, Cloud Systems & Digital Operations';
+      if (!cachedDb.settings.companyTagline) cachedDb.settings.companyTagline = cachedDb.settings.tagline || 'Software & Cloud Systems';
       if (!cachedDb.settings.taxId) cachedDb.settings.taxId = 'P051982341Z';
     }
     return cachedDb!;

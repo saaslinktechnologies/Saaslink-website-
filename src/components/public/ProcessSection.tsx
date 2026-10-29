@@ -51,18 +51,18 @@ export const ProcessSection: React.FC = () => {
   ];
 
   return (
-    <section id="process" className="py-24 bg-slate-900/30 border-y border-slate-800">
+    <section id="process" className="py-20 sm:py-24 bg-[oklch(0.28_0.038_165)] border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-semibold text-cyan-400">
-            <span>Engineering Discipline</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white tracking-tight">
-            Predictable delivery from blueprint to cloud deployment
+        <div className="max-w-3xl mx-auto text-center space-y-4 mb-12 sm:mb-16">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[oklch(0.85_0.12_80)]">
+            Engineering Discipline
+          </p>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight font-sans">
+            Predictable Delivery from <span className="text-gradient-gold">Blueprint to Cloud Cutover</span>
           </h2>
-          <p className="text-slate-400 text-base sm:text-lg">
+          <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto font-normal">
             Our systematic 6-stage delivery methodology eliminates budget surprises, scope creep, and operational downtime.
           </p>
         </div>
@@ -74,29 +74,29 @@ export const ProcessSection: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="p-7 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 transition-all text-left flex flex-col justify-between"
+                className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl bg-[oklch(0.32_0.045_165/0.8)] border border-white/10 hover:border-[oklch(0.78_0.12_78/0.4)] transition-all duration-300 text-left flex flex-col justify-between shadow-elegant backdrop-blur-md"
               >
                 <div>
                   <div className="flex items-center justify-between mb-5">
-                    <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400">
+                    <div className="w-12 h-12 rounded-xl bg-[oklch(0.78_0.12_78/0.15)] border border-[oklch(0.78_0.12_78/0.3)] flex items-center justify-center text-[oklch(0.85_0.12_80)]">
                       <IconComponent className="w-6 h-6" />
                     </div>
-                    <span className="font-mono text-2xl font-bold text-slate-700">
+                    <span className="font-mono text-2xl font-bold text-slate-500">
                       {step.num}
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-display font-bold text-white mb-2">
+                  <h3 className="text-lg font-bold text-white mb-2 font-sans">
                     {step.title}
                   </h3>
 
-                  <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
                     {step.description}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-800 flex items-center gap-2 text-xs text-cyan-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center gap-2 text-xs text-[oklch(0.85_0.12_80)]">
+                  <CheckCircle2 className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0" />
                   <span className="font-medium">Deliverable: {step.deliverable}</span>
                 </div>
               </div>

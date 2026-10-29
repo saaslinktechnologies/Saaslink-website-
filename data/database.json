@@ -2,7 +2,7 @@
   "settings": {
     "companyName": "SaaSLink Technologies Ltd",
     "tagline": "Technology with Intelligence. Software with Purpose.",
-    "companyTagline": "Enterprise Software Engineering, Cloud Systems & Digital Operations",
+    "companyTagline": "Software & Cloud Systems",
     "description": "SaaSLink Technologies Ltd is a premier enterprise digital engineering partner architecting modern software platforms, cloud ecosystems, and intelligent business workflows.",
     "email": "contact@saaslink.tech",
     "companyEmail": "contact@saaslink.tech",
@@ -140,6 +140,32 @@
     }
   ],
   "leads": [
+    {
+      "id": "lead_1793279139669_ozkk",
+      "fullName": "Eng. Patrick Njoroge",
+      "email": "pnjoroge@apexlogistics.co.ke",
+      "phone": "+254712345678",
+      "company": "Apex Global Logistics",
+      "serviceOfInterest": "Custom Software Development",
+      "budgetRange": "KSh 1,500,000 - 3,500,000",
+      "timeline": "1 - 3 Months",
+      "message": "We need a centralized tracking system for our transit trucks between Mombasa and Kampala.",
+      "type": "contact",
+      "status": "New",
+      "createdAt": "2026-10-29T13:05:39.669Z",
+      "updatedAt": "2026-10-29T13:05:39.669Z"
+    },
+    {
+      "id": "lead_1793211914581_epnc",
+      "fullName": "Mobile QA Test",
+      "email": "qa@test.co.ke",
+      "serviceOfInterest": "PropCloud360 Property Management",
+      "message": "Testing mobile responsiveness and quote planner",
+      "type": "quote",
+      "status": "New",
+      "createdAt": "2026-10-28T18:25:14.581Z",
+      "updatedAt": "2026-10-28T18:25:14.581Z"
+    },
     {
       "id": "lead_001",
       "fullName": "Grace Wambui",
@@ -703,6 +729,116 @@
   ],
   "products": [
     {
+      "id": "prd_propcloud",
+      "name": "PropCloud360 Property Management System",
+      "slug": "propcloud360",
+      "tagline": "Verified Real Estate Cloud Suite with Real-Time Video Tour",
+      "shortDescription": "Cloud property operating platform managing thousands of units across East Africa with automated M-Pesa rent collections, tenant portals, and landlord remittance payouts.",
+      "fullDescription": "PropCloud360 eliminates property management headaches. It handles unit vacancy grids, digital lease agreements, automated monthly rent invoices via SMS, instant M-Pesa Paybill matching, tenant photo maintenance ticketing, and one-click multi-owner landlord remittance payout statements.",
+      "logoUrl": "/assets/propcloud-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "screenshots": [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&auto=format&fit=crop&q=80"
+      ],
+      "galleryImages": [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&auto=format&fit=crop&q=80"
+      ],
+      "features": [
+        "Visual Unit Inventory, Tenant Screening & Lease Expiry Alerts",
+        "Automated Monthly Rent Demands with M-Pesa STK Push",
+        "Instant M-Pesa Paybill Rent Reconciliation with Zero Lag",
+        "Tenant Portal for Photo Maintenance Requests & Work Orders",
+        "One-Click Landlord Remittance Statements with Commission Deductions"
+      ],
+      "benefits": [
+        "Reduce rent arrears by up to 88% through automated SMS reminders",
+        "Generate owner statements in under 30 seconds with complete audit proof",
+        "Track technician maintenance dispatch and tenant approvals digitally"
+      ],
+      "industries": [
+        "Commercial Plazas",
+        "Residential Estates",
+        "Property Management Agencies",
+        "Landlords & REITs"
+      ],
+      "techStack": [
+        "React",
+        "Node.js",
+        "MySQL 8",
+        "M-Pesa Daraja C2B",
+        "AWS Cloud"
+      ],
+      "pricingModel": "Tiered per managed unit or enterprise white-label license",
+      "demoUrl": "/contact?product=propcloud360",
+      "ctaLabel": "Book PropCloud360 Demo",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "PropCloud360 | Property Management Software & Rent Automation Kenya",
+      "seoDescription": "Automate rent collection, tenant leases, M-Pesa Paybill reconciliation, and landlord statements with PropCloud360.",
+      "updatedAt": "2026-10-29T13:05:52.447Z"
+    },
+    {
+      "id": "prd_pijoshop",
+      "name": "Pijo Shop Automated Inventory & Marketplace",
+      "slug": "pijo-shop",
+      "tagline": "Automated Inventory Management & Multi-Channel Marketplace for Fashion & Footwear SMEs (app.pijo.shop)",
+      "shortDescription": "Cloud inventory management, barcode variant tracking (sizes/colors/half-sizes), point-of-sale (POS), and multi-vendor marketplace engine designed specifically for footwear and fashion merchants across East Africa (as seen on app.pijo.shop).",
+      "fullDescription": "Pijo Shop (accessible live at app.pijo.shop) eliminates chaotic stockouts and multi-channel sales bottlenecks for fashion and footwear retailers, boutique shoe brands, and apparel importers. It provides matrix variant tracking (shoe sizes EU/UK/US 35-46, colorways, widths, and materials), instant stock synchronization between physical shops and the online marketplace, automated WhatsApp/SMS order notifications, M-Pesa automated cashiering, and parcel courier dispatch integrations (G4S, Fargo, Sendy, local riders).",
+      "logoUrl": "/assets/pijoshop-icon.svg",
+      "heroImage": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1200&auto=format&fit=crop&q=80",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "screenshots": [
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80"
+      ],
+      "galleryImages": [
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80"
+      ],
+      "features": [
+        "Footwear & Fashion Matrix Inventory (Sizes 35-46, Half-Sizes, Colors, Widths, Materials)",
+        "Barcode / QR Scanner Integration & Multi-Store Physical Shop Inventory Sync",
+        "Multi-Channel Marketplace Engine Connecting Merchants to Buyers (app.pijo.shop)",
+        "Integrated Point-of-Sale (POS) with Instant M-Pesa STK Push Confirmation",
+        "Automated WhatsApp Order Invoices, Delivery Tracking Links & Rider Waybills",
+        "Fast-Moving SKU Analytics, Dead-Stock Alerts & Automated Supplier Restocking"
+      ],
+      "benefits": [
+        "Eliminate double-selling across Instagram/TikTok DMs, physical retail shops, and online marketplace",
+        "Cut fashion and shoe inventory reconciliation time by 85%",
+        "Speed up customer checkout to under 12 seconds with instant automated M-Pesa verification"
+      ],
+      "industries": [
+        "Fashion Retailers",
+        "Footwear Boutiques",
+        "Shoe Importers & Wholesalers",
+        "Apparel Brands",
+        "SME Merchants"
+      ],
+      "techStack": [
+        "React / Next.js",
+        "Node.js",
+        "PostgreSQL / MySQL",
+        "M-Pesa Daraja STK Push",
+        "WhatsApp Business Cloud API",
+        "Redis Cache"
+      ],
+      "pricingModel": "SME Merchant Monthly Subscription & Commission-Free Growth Tier",
+      "demoUrl": "https://app.pijo.shop",
+      "ctaLabel": "Launch Pijo Shop Demo (app.pijo.shop)",
+      "isFeatured": true,
+      "isPublished": true,
+      "seoTitle": "Pijo Shop | Automated Inventory Management & Marketplace for Fashion & Footwear SMEs",
+      "seoDescription": "Automated inventory management, shoe variant matrix, POS, and online marketplace for fashion and footwear SMEs in Kenya (app.pijo.shop)."
+    },
+    {
       "id": "prd_masuma",
       "name": "MASUMA ERP System",
       "slug": "masuma-erp",
@@ -835,51 +971,6 @@
       "isPublished": true,
       "seoTitle": "Aura Utility Management System | Smart Water & Meter Billing Kenya",
       "seoDescription": "Automated water billing, prepaid token vending, M-Pesa collection, and leak detection by SaaSLink Technologies."
-    },
-    {
-      "id": "prd_propcloud",
-      "name": "PropCloud360 Property Management System",
-      "slug": "propcloud360",
-      "tagline": "Commercial & Residential Real Estate Portfolio Operating System",
-      "shortDescription": "Cloud property operating platform managing thousands of units across East Africa with automated M-Pesa rent collections, tenant portals, and landlord remittance payouts.",
-      "fullDescription": "PropCloud360 eliminates property management headaches. It handles unit vacancy grids, digital lease agreements, automated monthly rent invoices via SMS, instant M-Pesa Paybill matching, tenant photo maintenance ticketing, and one-click multi-owner landlord remittance payout statements.",
-      "logoUrl": "/assets/propcloud-icon.svg",
-      "heroImage": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80",
-      "screenshots": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80"
-      ],
-      "features": [
-        "Visual Unit Inventory, Tenant Screening & Lease Expiry Alerts",
-        "Automated Monthly Rent Demands with M-Pesa STK Push",
-        "Instant M-Pesa Paybill Rent Reconciliation with Zero Lag",
-        "Tenant Portal for Photo Maintenance Requests & Work Orders",
-        "One-Click Landlord Remittance Statements with Commission Deductions"
-      ],
-      "benefits": [
-        "Reduce rent arrears by up to 88% through automated SMS reminders",
-        "Generate owner statements in under 30 seconds with complete audit proof",
-        "Track technician maintenance dispatch and tenant approvals digitally"
-      ],
-      "industries": [
-        "Commercial Plazas",
-        "Residential Estates",
-        "Property Management Agencies",
-        "Landlords & REITs"
-      ],
-      "techStack": [
-        "React",
-        "Node.js",
-        "MySQL 8",
-        "M-Pesa Daraja C2B",
-        "AWS Cloud"
-      ],
-      "pricingModel": "Tiered per managed unit or enterprise white-label license",
-      "demoUrl": "/contact?product=propcloud360",
-      "ctaLabel": "Book PropCloud360 Demo",
-      "isFeatured": true,
-      "isPublished": true,
-      "seoTitle": "PropCloud360 | Property Management Software & Rent Automation Kenya",
-      "seoDescription": "Automate rent collection, tenant leases, M-Pesa Paybill reconciliation, and landlord statements with PropCloud360."
     },
     {
       "id": "prd_emis",
@@ -1123,6 +1214,26 @@
   ],
   "articles": [
     {
+      "title": "Automating East African Cross-Border Logistics Systems",
+      "slug": "cross-border-logistics-automation",
+      "category": "Systems Engineering",
+      "readTime": "7 min read",
+      "author": "Alexandre Kamau",
+      "authorRole": "Chief Architect",
+      "coverImage": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "galleryImages": [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800"
+      ],
+      "summary": "How event-driven architectures eliminate 48-hour customs delays at Malaba border checkpoint.",
+      "content": "### Cross-Border Operational Realities\n\nHandling continuous telematics telemetry requires resilient local edge buffering.\n\n- Real-time GPS caching\n- Offline-first SQLite database sync\n- Automated KRA EDI clearance",
+      "isPublished": true,
+      "id": "art_mvtk40do",
+      "createdAt": "2026-10-29T13:06:01.068Z",
+      "updatedAt": "2026-10-29T13:06:01.068Z"
+    },
+    {
       "id": "art_01",
       "title": "Architecting Resilient Relational Databases for Enterprise Scale in Africa",
       "slug": "architecting-resilient-relational-databases-enterprise-scale",
@@ -1137,6 +1248,11 @@
       "authorRole": "Chief Technology Architect",
       "authorAvatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
       "coverImage": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&auto=format&fit=crop&q=80",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "galleryImages": [
+        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&auto=format&fit=crop&q=80"
+      ],
       "summary": "A deep dive into connection pooling, query indexing strategies, and disaster recovery replication patterns when operating mission-critical software across regional network conditions.",
       "content": "### The Imperative of Relational Rigor\n\nWhen constructing enterprise systems—whether for logistics routing, institutional billing, or financial ledger reconciliation—the structural integrity of your relational database is your most valuable asset. While trendy document stores offer quick prototyping, enterprise systems inevitably demand referential integrity, ACID transactional guarantees, and deterministic foreign key relationships.\n\n#### 1. Why Foreign Keys and Constraints Are Non-Negotiable\nIn a billing workflow, allowing an invoice item to point to an orphaned quotation ID or a payment to execute without a matching client record creates devastating operational liabilities. By enforcing foreign key constraints at the MySQL engine level rather than relying solely on fragile application code, you create a hardware-enforced guarantee that your business records remain pristine.\n\n#### 2. Connection Pooling Without Startup Throttles\nIn serverless and containerized cloud environments, naive database connection patterns can exhaust database connection pools in seconds. Implementing intelligent pooling with bounded connection limits, health checks on acquire, and strict timeouts ensures your application handles sudden traffic bursts without crashing database daemons.\n\n#### 3. Designing for Point-In-Time Recovery\nA database without verified automated restoration testing is merely a hope, not a strategy. We walk through automated daily logical dumps, binary log archiving, and zero-downtime replication topologies that keep your business operating through any infrastructure incident.",
       "readTime": "6 min read",
@@ -1362,6 +1478,66 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act_1793279161069_wmnqu",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "CREATED_ARTICLES",
+      "resource": "articles",
+      "resourceId": "art_mvtk40do",
+      "details": "Created CMS item Automating East African Cross-Border Logistics Systems",
+      "timestamp": "2026-10-29T13:06:01.069Z"
+    },
+    {
+      "id": "act_1793279152449_eiu5i",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "UPDATED_PRODUCTS",
+      "resource": "products",
+      "resourceId": "prd_propcloud",
+      "details": "Updated CMS item PropCloud360 Property Management System",
+      "timestamp": "2026-10-29T13:05:52.449Z"
+    },
+    {
+      "id": "act_1793279139670_iqd6c",
+      "userId": "public_guest",
+      "userName": "Eng. Patrick Njoroge",
+      "action": "SUBMITTED_LEAD",
+      "resource": "leads",
+      "resourceId": "lead_1793279139669_ozkk",
+      "details": "New contact lead from Apex Global Logistics",
+      "timestamp": "2026-10-29T13:05:39.670Z"
+    },
+    {
+      "id": "act_1793211914582_d5u2n",
+      "userId": "public_guest",
+      "userName": "Mobile QA Test",
+      "action": "SUBMITTED_LEAD",
+      "resource": "leads",
+      "resourceId": "lead_1793211914581_epnc",
+      "details": "New quote lead from Mobile QA Test",
+      "timestamp": "2026-10-28T18:25:14.582Z"
+    },
+    {
+      "id": "act_1793210504374_b6gtm",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "UPDATED_LOGO",
+      "resource": "settings",
+      "resourceId": "logo",
+      "details": "Updated corporate logo image asset",
+      "timestamp": "2026-10-28T18:01:44.374Z"
+    },
+    {
+      "id": "act_1793210500534_mgrx7",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "UPDATED_SETTINGS",
+      "resource": "settings",
+      "resourceId": "global",
+      "details": "Updated enterprise global configuration & branding",
+      "timestamp": "2026-10-28T18:01:40.534Z"
+    },
     {
       "id": "act_01",
       "userId": "usr_super_01",

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   ChevronDown, ArrowRight, Building2, HeartPulse, Droplets, 
   Home, GraduationCap, Church, Scale, Code2, Cpu, CloudCog, 
-  Gauge, Globe2, CheckCircle2, Menu, X, Layers
+  Gauge, Globe2, CheckCircle2, Menu, X, Layers, ShoppingBag
 } from 'lucide-react';
 import { GlobalSettings, NavigationItem, Product, Service } from '../../types.ts';
 
@@ -19,8 +19,26 @@ interface HeaderProps {
   onSelectService?: (service: Service) => void;
 }
 
-// 7 core sector software platforms
+// 8 core sector software platforms - Started with PropCloud360 and Pijo Shop as requested
 const PLATFORMS = [
+  {
+    id: 'prd_propcloud',
+    name: 'PropCloud360',
+    slug: 'propcloud360',
+    category: 'Commercial & Property',
+    sector: 'Real Estate & Properties',
+    desc: 'Property operating system, automated tenant lease agreements, and automated M-Pesa rent reconciliation.',
+    icon: Home,
+  },
+  {
+    id: 'prd_pijoshop',
+    name: 'Pijo Shop (app.pijo.shop)',
+    slug: 'pijo-shop',
+    category: 'Fashion & Retail Commerce',
+    sector: 'Footwear & Fashion SMEs',
+    desc: 'Automated shoe & fashion matrix inventory, barcode POS, and multi-channel marketplace at app.pijo.shop.',
+    icon: ShoppingBag,
+  },
   {
     id: 'prd_masuma',
     name: 'MASUMA ERP System',
@@ -31,18 +49,9 @@ const PLATFORMS = [
     icon: Building2,
   },
   {
-    id: 'prd_propcloud',
-    name: 'PropCloud360',
-    slug: 'propcloud360',
-    category: 'Commercial & Trade',
-    sector: 'Real Estate & Properties',
-    desc: 'Property management, automated lease agreements, sub-meter water/power billing, and automated M-Pesa rent matching.',
-    icon: Home,
-  },
-  {
     id: 'prd_raphamis',
     name: 'RaphaMIS Hospital Core',
-    slug: 'raphamis-hospital',
+    slug: 'raphamis-hmis',
     category: 'Healthcare & Public',
     sector: 'Hospitals & Medical Centers',
     desc: 'Inpatient/outpatient EHR, digital clinical triage, SHA / NHIF insurance reconciliation, and pharmacy POS dispenser.',
@@ -51,7 +60,7 @@ const PLATFORMS = [
   {
     id: 'prd_aura',
     name: 'Aura Utility Management',
-    slug: 'aura-utility',
+    slug: 'aura-utilities',
     category: 'Healthcare & Public',
     sector: 'Water & Power Utilities',
     desc: 'STS smart water meter billing, automated M-Pesa token vending, automated valve cutoffs, and NRW containment.',
@@ -78,7 +87,7 @@ const PLATFORMS = [
   {
     id: 'prd_hakihali',
     name: 'Haki Hali Civic Platform',
-    slug: 'haki-hali',
+    slug: 'haki-hali-civic',
     category: 'Institutions & Faith',
     sector: 'Non-Profits & Civic Bodies',
     desc: 'County budget transparency tracking, anonymous whistleblowing, citizen surveys, and donor M&E metrics.',
@@ -248,32 +257,46 @@ export const Header: React.FC<HeaderProps> = ({
       className="sticky top-0 z-50 bg-[oklch(0.24_0.035_165/0.92)] backdrop-blur-xl border-b border-white/10 transition-colors"
       onMouseLeave={handleMouseLeave}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           
-          {/* Brand Identity with Original Spruce & Champagne Gold Kit */}
+          {/* Brand Identity with Original Spruce & Champagne Gold Kit - Fluid Mobile Auto-Resizing */}
           <div 
             onClick={() => handleNavClick('home')}
-            className="flex items-center gap-3 cursor-pointer group shrink-0"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 flex-1 mr-2"
           >
-            {/* Signature Gold Monogram Emblem */}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[oklch(0.85_0.14_85)] via-[oklch(0.78_0.12_78)] to-[oklch(0.68_0.13_65)] p-0.5 shadow-gold">
-              <div className="w-full h-full bg-[oklch(0.22_0.03_165)] rounded-[9px] flex items-center justify-center transition-colors group-hover:bg-[oklch(0.26_0.035_165)]">
-                <Layers className="w-5 h-5 text-[oklch(0.85_0.14_85)]" />
+            {/* Signature Gold Monogram Emblem with Dynamic Logo Support */}
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-[oklch(0.85_0.14_85)] via-[oklch(0.78_0.12_78)] to-[oklch(0.68_0.13_65)] p-0.5 shadow-gold shrink-0">
+              <div className="w-full h-full bg-[oklch(0.22_0.03_165)] rounded-[7px] sm:rounded-[9px] flex items-center justify-center transition-colors group-hover:bg-[oklch(0.26_0.035_165)] overflow-hidden">
+                {settings?.logoUrl ? (
+                  <img
+                    src={settings.logoUrl}
+                    alt={settings.companyName || 'SaaSLink Technologies'}
+                    className="w-full h-full object-contain p-0.5 sm:p-1 rounded-[6px] sm:rounded-[8px]"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                      const fallback = e.currentTarget.parentElement?.querySelector('.header-logo-fallback');
+                      if (fallback) (fallback as HTMLElement).style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div className={`header-logo-fallback items-center justify-center ${settings?.logoUrl ? 'hidden' : 'flex'}`}>
+                  <Layers className="w-4 h-4 sm:w-5 sm:h-5 text-[oklch(0.85_0.14_85)]" />
+                </div>
               </div>
             </div>
 
-            <div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-bold tracking-tight text-white font-sans">
+            <div className="min-w-0 flex flex-col justify-center">
+              <div className="flex items-baseline gap-1 sm:gap-1.5 leading-tight flex-wrap sm:flex-nowrap">
+                <span className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white font-sans whitespace-nowrap">
                   SaaS<span className="text-gradient-gold">Link</span>
                 </span>
-                <span className="text-xs font-semibold text-[oklch(0.85_0.12_80)] font-sans tracking-wide">
+                <span className="text-[11px] sm:text-xs font-semibold text-[oklch(0.85_0.12_80)] font-sans tracking-wide whitespace-nowrap">
                   Technologies
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
-                Software & Cloud Systems
+              <p className="text-[10px] sm:text-[11px] text-slate-400 font-medium hidden md:block truncate">
+                {settings?.companyTagline || settings?.tagline || 'Software & Cloud Systems'}
               </p>
             </div>
           </div>
@@ -745,9 +768,8 @@ export const Header: React.FC<HeaderProps> = ({
 
           </nav>
 
-          {/* Right Action Buttons */}
-          <div className="hidden sm:flex items-center gap-4">
-            
+          {/* Desktop Right Action Buttons (1024px+) */}
+          <div className="hidden lg:flex items-center gap-4 shrink-0">
             {/* Subtle Client Portal Link */}
             <button
               onClick={onOpenAdmin}
@@ -756,31 +778,32 @@ export const Header: React.FC<HeaderProps> = ({
               Client Portal
             </button>
 
-            {/* Primary High-Converting CTA in Signature Champagne Gold */}
+            {/* Primary CTA in Signature Champagne Gold */}
             <button
               onClick={() => onOpenQuoteModal()}
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] text-[oklch(0.22_0.03_165)] font-bold px-4 py-2 text-sm transition-all shadow-gold hover:brightness-105 cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] text-[oklch(0.22_0.03_165)] font-semibold px-3.5 py-1.5 text-xs transition-all shadow-gold hover:brightness-105 cursor-pointer"
             >
               <span>Schedule Consultation</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          {/* Tablet & Mobile Action Controls (<1024px) */}
+          <div className="flex items-center gap-2 lg:hidden shrink-0">
             <button
               onClick={() => onOpenQuoteModal()}
-              className="px-3 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] text-[oklch(0.22_0.03_165)] shadow-gold"
+              className="px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] text-[oklch(0.22_0.03_165)] shadow-gold flex items-center justify-center active:scale-95 transition-transform"
             >
-              Consult
+              <span className="sm:hidden">Consult</span>
+              <span className="hidden sm:inline">Schedule Consultation</span>
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 active:bg-white/15 transition-colors flex items-center justify-center shrink-0"
               aria-label="Toggle navigation"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6 text-[oklch(0.85_0.12_80)]" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-[oklch(0.85_0.12_80)]" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
@@ -789,11 +812,11 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-white/10 bg-[oklch(0.24_0.035_165)] p-5 space-y-3 max-h-[85vh] overflow-y-auto">
+        <div className="lg:hidden border-t border-white/10 bg-[oklch(0.24_0.035_165)] p-4 sm:p-5 space-y-2.5 max-h-[85vh] overflow-y-auto">
           
           <button
             onClick={() => handleNavClick('home')}
-            className="w-full text-left py-2 text-sm font-semibold text-white"
+            className="w-full text-left min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm font-semibold text-white hover:bg-white/5 active:bg-white/10 transition-colors flex items-center"
           >
             Home
           </button>
@@ -802,25 +825,40 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="border border-white/10 rounded-xl overflow-hidden">
             <button
               onClick={() => setMobileExpandedSection(prev => prev === 'platforms' ? null : 'platforms')}
-              className="w-full px-4 py-3 text-left font-semibold text-sm text-white flex items-center justify-between bg-white/[0.04]"
+              className="w-full min-h-[44px] px-4 py-3 text-left font-semibold text-sm text-white flex items-center justify-between bg-white/[0.04] active:bg-white/[0.08]"
             >
               <span>Platforms & Sector Software</span>
-              <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${
+              <ChevronDown className={`w-4 h-4 text-[oklch(0.85_0.12_80)] transition-transform duration-200 ${
                 mobileExpandedSection === 'platforms' ? 'rotate-180' : ''
               }`} />
             </button>
             {mobileExpandedSection === 'platforms' && (
-              <div className="p-3 space-y-2 bg-black/20">
-                {PLATFORMS.map(p => (
-                  <div
-                    key={p.id}
-                    onClick={() => handleProductSelect(p.slug)}
-                    className="p-2 rounded-lg hover:bg-white/10 text-left cursor-pointer"
-                  >
-                    <p className="text-xs font-semibold text-white">{p.name}</p>
-                    <p className="text-[11px] text-slate-400">{p.desc}</p>
-                  </div>
-                ))}
+              <div className="p-2.5 space-y-1.5 bg-black/25">
+                {PLATFORMS.map(p => {
+                  const Icon = p.icon;
+                  return (
+                    <div
+                      key={p.id}
+                      onClick={() => handleProductSelect(p.slug)}
+                      className="p-3 rounded-xl hover:bg-white/10 active:bg-white/15 text-left cursor-pointer transition-colors flex items-start gap-3 border border-transparent hover:border-white/10"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-[oklch(0.78_0.12_78/0.15)] border border-[oklch(0.78_0.12_78/0.3)] flex items-center justify-center shrink-0 mt-0.5">
+                        <Icon className="w-3.5 h-3.5 text-[oklch(0.85_0.12_80)]" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <p className="text-xs font-semibold text-white">{p.name}</p>
+                          {p.slug === 'pijo-shop' && (
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                              app.pijo.shop
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-slate-300 line-clamp-2 mt-0.5">{p.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -829,53 +867,61 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="border border-white/10 rounded-xl overflow-hidden">
             <button
               onClick={() => setMobileExpandedSection(prev => prev === 'services' ? null : 'services')}
-              className="w-full px-4 py-3 text-left font-semibold text-sm text-white flex items-center justify-between bg-white/[0.04]"
+              className="w-full min-h-[44px] px-4 py-3 text-left font-semibold text-sm text-white flex items-center justify-between bg-white/[0.04] active:bg-white/[0.08]"
             >
               <span>Services</span>
-              <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${
+              <ChevronDown className={`w-4 h-4 text-[oklch(0.85_0.12_80)] transition-transform duration-200 ${
                 mobileExpandedSection === 'services' ? 'rotate-180' : ''
               }`} />
             </button>
             {mobileExpandedSection === 'services' && (
-              <div className="p-3 space-y-2 bg-black/20">
-                {SERVICES_LIST.map(s => (
-                  <div
-                    key={s.id}
-                    onClick={() => handleServiceSelect(s.slug)}
-                    className="p-2 rounded-lg hover:bg-white/10 text-left cursor-pointer"
-                  >
-                    <p className="text-xs font-semibold text-white">{s.title}</p>
-                    <p className="text-[11px] text-slate-400">{s.desc}</p>
-                  </div>
-                ))}
+              <div className="p-2.5 space-y-1.5 bg-black/25">
+                {SERVICES_LIST.map(s => {
+                  const Icon = s.icon;
+                  return (
+                    <div
+                      key={s.id}
+                      onClick={() => handleServiceSelect(s.slug)}
+                      className="p-3 rounded-xl hover:bg-white/10 active:bg-white/15 text-left cursor-pointer transition-colors flex items-start gap-3 border border-transparent hover:border-white/10"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-[oklch(0.78_0.12_78/0.15)] border border-[oklch(0.78_0.12_78/0.3)] flex items-center justify-center shrink-0 mt-0.5">
+                        <Icon className="w-3.5 h-3.5 text-[oklch(0.85_0.12_80)]" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-white">{s.title}</p>
+                        <p className="text-[11px] text-slate-300 line-clamp-2 mt-0.5">{s.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
 
           <button
             onClick={() => handleNavClick('industries')}
-            className="w-full text-left py-2 text-sm font-semibold text-slate-200"
+            className="w-full text-left min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:text-white hover:bg-white/5 active:bg-white/10 transition-colors flex items-center"
           >
             Sectors & Solutions
           </button>
 
           <button
             onClick={() => handleNavClick('portfolio')}
-            className="w-full text-left py-2 text-sm font-semibold text-slate-200"
+            className="w-full text-left min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:text-white hover:bg-white/5 active:bg-white/10 transition-colors flex items-center"
           >
             Case Studies
           </button>
 
           <button
             onClick={() => handleNavClick('about')}
-            className="w-full text-left py-2 text-sm font-semibold text-slate-200"
+            className="w-full text-left min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:text-white hover:bg-white/5 active:bg-white/10 transition-colors flex items-center"
           >
             About & Team
           </button>
 
           <button
             onClick={() => handleNavClick('contact')}
-            className="w-full text-left py-2 text-sm font-semibold text-slate-200"
+            className="w-full text-left min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:text-white hover:bg-white/5 active:bg-white/10 transition-colors flex items-center"
           >
             Contact
           </button>
@@ -886,10 +932,10 @@ export const Header: React.FC<HeaderProps> = ({
                 setMobileMenuOpen(false);
                 onOpenQuoteModal();
               }}
-              className="w-full py-3 rounded-lg bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] text-[oklch(0.22_0.03_165)] font-bold text-sm flex items-center justify-center gap-2 shadow-gold"
+              className="w-full py-2.5 rounded-lg bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] text-[oklch(0.22_0.03_165)] font-semibold text-xs flex items-center justify-center gap-1.5 shadow-gold"
             >
-              <span>Schedule Technical Consultation</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Schedule Consultation</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
 
             <button

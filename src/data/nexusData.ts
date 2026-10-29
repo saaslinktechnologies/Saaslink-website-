@@ -16,7 +16,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: 'Corporates · Non-Profits · Religious Entities',
     title: 'Purpose-Built Software &',
     highlight: 'Sector ERP Systems',
-    description: 'We develop tailored software across Kenya — from MASUMA ERP and RaphaMIS to Aura Utilities, PropCloud360, EMIS, Ecclesiah, and Haki Hali.',
+    description: 'We develop tailored software across Kenya — from PropCloud360 and Pijo Shop to MASUMA ERP, RaphaMIS, Aura Utilities, EMIS, Ecclesiah, and Haki Hali.',
     cta: { label: 'Explore Our Softwares', action: 'solutions' },
     secondary: { label: 'Request a Demo', action: 'contact' },
   },
@@ -471,6 +471,24 @@ export const INDUSTRIES_DATA: Industry[] = [
 
 export const SOLUTIONS_DATA = [
   {
+    slug: 'propcloud360',
+    name: 'PropCloud360 Property System',
+    tagline: 'Commercial & Residential Real Estate',
+    iconName: 'Building2',
+    desc: 'Cloud property operating platform managing thousands of units across East Africa with automated M-Pesa rent collections, tenant portals, and landlord remittance payouts.',
+    modules: ['Visual Unit Inventory & Vacancy Dashboard', 'Automated Monthly Rent Invoicing via SMS/Email', 'Instant M-Pesa Paybill Rent Reconciliation', 'Tenant Photo Maintenance Ticketing & Contractor Dispatch', 'One-Click Landlord Remittance Payout Statements & Commission Reports'],
+    tech: ['React 19', 'Laravel / Node.js', 'MySQL', 'M-Pesa Instant Payment Notification (IPN)', 'AWS Cloud Hosting'],
+  },
+  {
+    slug: 'pijo-shop',
+    name: 'Pijo Shop (app.pijo.shop)',
+    tagline: 'Footwear & Fashion Automated Inventory & Marketplace',
+    iconName: 'ShoppingBag',
+    desc: 'Specialized inventory management and multi-channel marketplace for footwear and fashion merchants across East Africa (app.pijo.shop) with shoe size/variant matrices and barcode POS.',
+    modules: ['Footwear & Apparel Matrix Inventory (Sizes 35-46, Half-Sizes, Widths, Colorways)', 'Multi-Store Physical Shelf & Online Marketplace Synchronization', 'Point of Sale (POS) with Integrated M-Pesa STK Push Confirmation', 'Automated WhatsApp Order Invoices, Courier Waybills & Tracking Links', 'Dead-Stock Alerts, Fast-Moving SKU Analytics & Reorder Optimization'],
+    tech: ['React / Next.js', 'Node.js', 'PostgreSQL / MySQL', 'M-Pesa Daraja STK Push', 'WhatsApp Business Cloud API'],
+  },
+  {
     slug: 'masuma-erp',
     name: 'MASUMA ERP System',
     tagline: 'Multi-Branch Enterprise & Supply Chain',
@@ -496,15 +514,6 @@ export const SOLUTIONS_DATA = [
     desc: 'Smart utility operating platform for water service providers, community boreholes, irrigation schemes, and sub-metered power grids with automated token vending.',
     modules: ['Customer Meter Account Profiling', 'Tiered Consumption Tariffs & Automated Bill Run', 'Automated M-Pesa Water Token Generation & STK Push', 'Bulk SMS Monthly Billing Notices & Receipts', 'Non-Revenue Water Leak Detection & Field Telemetry'],
     tech: ['TypeScript / Python', 'Node.js Gateway', 'MySQL 8', 'M-Pesa Daraja C2B/B2C API', 'SMS Gateway Integration'],
-  },
-  {
-    slug: 'propcloud360',
-    name: 'PropCloud360 Property System',
-    tagline: 'Commercial & Residential Real Estate',
-    iconName: 'Building2',
-    desc: 'Cloud property operating platform managing thousands of units across East Africa with automated M-Pesa rent collections, tenant portals, and landlord remittance payouts.',
-    modules: ['Visual Unit Inventory & Vacancy Dashboard', 'Automated Monthly Rent Invoicing via SMS/Email', 'Instant M-Pesa Paybill Rent Reconciliation', 'Tenant Photo Maintenance Ticketing & Contractor Dispatch', 'One-Click Landlord Remittance Payout Statements & Commission Reports'],
-    tech: ['React 19', 'Laravel / Node.js', 'MySQL', 'M-Pesa Instant Payment Notification (IPN)', 'AWS Cloud Hosting'],
   },
   {
     slug: 'emis-education',

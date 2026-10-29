@@ -1230,6 +1230,100 @@ apiRouter.delete('/admin/testimonials/:id', authenticate, (req: AuthRequest, res
   res.json({ success: true });
 });
 
+// ==========================================
+// UNIVERSAL CMS ENDPOINTS (/admin/cms/:entityType & /admin/cms/:entityType/:id)
+// Supporting GET, POST, PUT, PATCH, DELETE for real-time Admin <-> Frontend Sync
+// Supports videoUrl, galleryImages, coverImage, heroImage, and rich text fields
+// ==========================================
+
+const getEntityCollection = (db: any, entityType: string) => {
+  const norm = String(entityType).toLowerCase().trim();
+  if (norm === 'services' || norm === 'service') return { array: db.services, key: 'services', prefix: 'srv' };
+  if (norm === 'products' || norm === 'product') return { array: db.products, key: 'products', prefix: 'prd' };
+  if (norm === 'portfolio' || norm === 'case_studies' || norm === 'case-studies' || norm === 'projects') return { array: db.portfolio, key: 'portfolio', prefix: 'case' };
+  if (norm === 'articles' || norm === 'article' || norm === 'insights' || norm === 'blog') return { array: db.articles, key: 'articles', prefix: 'art' };
+  if (norm === 'team' || norm === 'team_members' || norm === 'team-members') return { array: db.team, key: 'team', prefix: 'tm' };
+  if (norm === 'testimonials' || norm === 'testimonial') return { array: db.testimonials, key: 'testimonials', prefix: 'tst' };
+  return null;
+};
+
+// GET entity list
+apiRouter.get('/admin/cms/:entityType', authenticate, (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const target = getEntityCollection(db, req.params.entityType);
+  if (!target) return res.status(400).json({ error: `Unknown CMS entity: ${req.params.entityType}` });
+  res.json(target.array);
+});
+
+// POST create entity
+apiRouter.post('/admin/cms/:entityType', authenticate, (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const target = getEntityCollection(db, req.params.entityType);
+  if (!target) return res.status(400).json({ error: `Unknown CMS entity: ${req.params.entityType}` });
+
+  const id = req.body.id || `${target.prefix}_${Date.now().toString(36)}`;
+  const item = {
+    ...req.body,
+    id,
+    isPublished: req.body.isPublished !== undefined ? req.body.isPublished : (req.body.published !== undefined ? req.body.published : true),
+    createdAt: req.body.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  target.array.unshift(item);
+  saveDb(db);
+  logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', `CREATED_${target.key.toUpperCase()}`, target.key, id, `Created CMS item ${item.title || item.name || id}`);
+  res.status(201).json(item);
+});
+
+// PATCH / PUT update entity
+const handleUpdateCmsEntity = (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const target = getEntityCollection(db, req.params.entityType);
+  if (!target) return res.status(400).json({ error: `Unknown CMS entity: ${req.params.entityType}` });
+
+  const idx = target.array.findIndex((item: any) => item.id === req.params.id);
+  if (idx === -1) {
+    const newItem = {
+      ...req.body,
+      id: req.params.id,
+      isPublished: req.body.isPublished !== undefined ? req.body.isPublished : (req.body.published !== undefined ? req.body.published : true),
+      updatedAt: new Date().toISOString(),
+    };
+    target.array.unshift(newItem);
+    saveDb(db);
+    return res.json(newItem);
+  }
+
+  const updated = {
+    ...target.array[idx],
+    ...req.body,
+    id: req.params.id,
+    isPublished: req.body.isPublished !== undefined ? req.body.isPublished : (req.body.published !== undefined ? req.body.published : target.array[idx].isPublished),
+    updatedAt: new Date().toISOString(),
+  };
+
+  target.array[idx] = updated;
+  saveDb(db);
+  logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', `UPDATED_${target.key.toUpperCase()}`, target.key, req.params.id, `Updated CMS item ${updated.title || updated.name || req.params.id}`);
+  res.json(updated);
+};
+
+apiRouter.patch('/admin/cms/:entityType/:id', authenticate, handleUpdateCmsEntity);
+apiRouter.put('/admin/cms/:entityType/:id', authenticate, handleUpdateCmsEntity);
+
+// DELETE entity
+apiRouter.delete('/admin/cms/:entityType/:id', authenticate, (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const target = getEntityCollection(db, req.params.entityType);
+  if (!target) return res.status(400).json({ error: `Unknown CMS entity: ${req.params.entityType}` });
+
+  db[target.key] = target.array.filter((item: any) => item.id !== req.params.id);
+  saveDb(db);
+  logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', `DELETED_${target.key.toUpperCase()}`, target.key, req.params.id, `Deleted CMS item ID ${req.params.id}`);
+  res.json({ success: true, id: req.params.id });
+});
+
 // Media Library
 apiRouter.get('/admin/media', authenticate, (req: AuthRequest, res: Response) => res.json(getDb().media));
 apiRouter.post('/admin/media', authenticate, (req: AuthRequest, res: Response) => {
@@ -1286,9 +1380,34 @@ apiRouter.put('/admin/settings', authenticate, requireRole(['Super Administrator
     ...req.body,
   };
   saveDb(db);
-  logActivity(req.user!.id, req.user!.name, 'UPDATED_SETTINGS', 'settings', 'global', 'Updated enterprise global configuration & document numbering');
+  logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', 'UPDATED_SETTINGS', 'settings', 'global', 'Updated enterprise global configuration & branding');
   res.json(db.settings);
 });
+
+apiRouter.patch('/admin/settings', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  db.settings = {
+    ...db.settings,
+    ...req.body,
+  };
+  saveDb(db);
+  logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', 'UPDATED_SETTINGS', 'settings', 'global', 'Updated enterprise global configuration & branding');
+  res.json(db.settings);
+});
+
+// Dedicated Logo Upload & Update Endpoint
+apiRouter.post('/admin/settings/logo', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
+  const { logoUrl } = req.body;
+  if (!logoUrl) {
+    return res.status(400).json({ error: 'logoUrl is required' });
+  }
+  const db = getDb();
+  db.settings.logoUrl = logoUrl;
+  saveDb(db);
+  logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', 'UPDATED_LOGO', 'settings', 'logo', 'Updated corporate logo image asset');
+  res.json({ success: true, logoUrl: db.settings.logoUrl, settings: db.settings });
+});
+
 
 // ==========================================
 // 12. USERS & RBAC MANAGEMENT

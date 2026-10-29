@@ -14,12 +14,12 @@ export const ValueOutcomes: React.FC<ValueOutcomesProps> = ({ onScheduleScoping 
       systemTag: 'Sector ERP & Custom Software',
       headline: 'Sector Softwares & Multi-Branch Systems',
       subhead: 'Tailored for Kenyan Corporates, Healthcare, Utilities & Faith Entities',
-      description: 'Off-the-shelf software rarely fits African operational workflows. We construct hardened sector platforms — including the MASUMA ERP automotive distribution suite, RaphaMIS hospital core, Aura smart utility billing, PropCloud360 property management, EMIS school operations, and Ecclesiah church management.',
+      description: 'Off-the-shelf software rarely fits African operational workflows. We construct hardened sector platforms — starting with PropCloud360 property management and Pijo Shop footwear retail, through the MASUMA ERP automotive suite, RaphaMIS hospital core, Aura smart utility billing, EMIS education, and Ecclesiah church management.',
       deliverables: [
+        'PropCloud360: Automated rent collection, M-Pesa matching & landlord statements',
+        'Pijo Shop: Footwear variant matrix, barcode POS & app.pijo.shop sync',
         'MASUMA ERP: Multi-warehouse stock sync, KRA eTIMS, branch sales POS',
-        'RaphaMIS: Outpatient/Inpatient triage, clinical EHR, SHA/NHIF billing',
-        'Aura Utilities: Smart water meter STS tokens & automated M-Pesa billing',
-        'Ecclesiah & EMIS: Church tithes, school fee tracking & CBC grading',
+        'RaphaMIS & Aura: Clinic EHR, SHA/NHIF claims & prepaid water STS meters',
       ],
       metric: '100% compliant with eTIMS, SHA & Kenya DPA 2019',
       icon: Workflow,
@@ -78,7 +78,7 @@ export const ValueOutcomes: React.FC<ValueOutcomesProps> = ({ onScheduleScoping 
             return (
               <div 
                 key={idx}
-                className="group relative flex flex-col justify-between p-8 rounded-3xl bg-[oklch(0.32_0.045_165/0.7)] border border-white/10 hover:border-[oklch(0.78_0.12_78/0.4)] transition-all duration-300 hover:-translate-y-1 shadow-elegant backdrop-blur-md"
+                className="group relative flex flex-col justify-between p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-[oklch(0.32_0.045_165/0.7)] border border-white/10 hover:border-[oklch(0.78_0.12_78/0.4)] transition-all duration-300 hover:-translate-y-1 shadow-elegant backdrop-blur-md"
               >
                 <div>
                   {/* System Tag */}
@@ -131,21 +131,21 @@ export const ValueOutcomes: React.FC<ValueOutcomesProps> = ({ onScheduleScoping 
         </div>
 
         {/* Action strip in Spruce & Gold */}
-        <div className="mt-14 p-6 rounded-2xl border border-white/10 bg-black/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div className="mt-12 sm:mt-14 p-5 sm:p-6 rounded-2xl border border-white/10 bg-black/25 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 text-center sm:text-left">
           <div>
             <p className="text-sm font-semibold text-white">
               Evaluating an architectural overhaul or greenfield software system?
             </p>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-300 mt-0.5">
               We provide formal architecture assessments with estimated sprint allocations and fixed-price milestones.
             </p>
           </div>
           <button
             onClick={onScheduleScoping}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] px-5 py-3 text-xs font-bold text-[oklch(0.22_0.03_165)] shadow-gold transition-all hover:-translate-y-0.5 hover:brightness-105 cursor-pointer shrink-0"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-[oklch(0.82_0.12_82)] to-[oklch(0.72_0.13_70)] px-5 py-3 text-xs font-bold text-[oklch(0.22_0.03_165)] shadow-gold transition-all hover:-translate-y-0.5 hover:brightness-105 cursor-pointer shrink-0 min-h-[44px]"
           >
             <span>Schedule Scoping Session</span>
-            <ArrowUpRight className="h-4 w-4" />
+            <ArrowUpRight className="h-4 w-4 shrink-0" />
           </button>
         </div>
 
