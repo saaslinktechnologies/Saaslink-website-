@@ -16,6 +16,7 @@
     "companyWebsite": "https://saaslink.tech",
     "taxId": "P051982341Z",
     "logoUrl": "/assets/saaslink-logo.svg",
+    "faviconUrl": "/assets/saaslink-logo.svg",
     "currency": "USD",
     "currencySymbol": "$",
     "defaultTaxRate": 16,

@@ -1466,6 +1466,19 @@ apiRouter.post('/admin/settings/logo', authenticate, requireRole(['Super Adminis
   res.json({ success: true, logoUrl: db.settings.logoUrl, settings: db.settings });
 });
 
+// Dedicated Favicon Upload & Update Endpoint
+apiRouter.post('/admin/settings/favicon', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
+  const { faviconUrl } = req.body;
+  if (!faviconUrl) {
+    return res.status(400).json({ error: 'faviconUrl is required' });
+  }
+  const db = getDb();
+  db.settings.faviconUrl = faviconUrl;
+  saveDb(db);
+  logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', 'UPDATED_FAVICON', 'settings', 'favicon', 'Updated browser tab favicon & shortcut icon');
+  res.json({ success: true, faviconUrl: db.settings.faviconUrl, settings: db.settings });
+});
+
 
 // ==========================================
 // 12. USERS & RBAC MANAGEMENT

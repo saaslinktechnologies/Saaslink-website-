@@ -104,6 +104,7 @@ export function createInitialDataset(): DatabaseSchema {
       companyWebsite: 'https://saaslink.tech',
       taxId: 'P051982341Z',
       logoUrl: '/assets/saaslink-logo.svg',
+      faviconUrl: '/assets/saaslink-logo.svg',
       currency: 'USD',
       currencySymbol: '$',
       defaultTaxRate: 16.0,
@@ -1332,6 +1333,7 @@ export function getDb(): DatabaseSchema {
       if (!cachedDb.settings.companyWebsite) cachedDb.settings.companyWebsite = cachedDb.settings.website || 'https://saaslink.tech';
       if (!cachedDb.settings.companyTagline) cachedDb.settings.companyTagline = cachedDb.settings.tagline || 'Software & Cloud Systems';
       if (!cachedDb.settings.taxId) cachedDb.settings.taxId = 'P051982341Z';
+      if (!cachedDb.settings.faviconUrl) cachedDb.settings.faviconUrl = cachedDb.settings.logoUrl || '/assets/saaslink-logo.svg';
     }
     return cachedDb!;
   } catch (err) {

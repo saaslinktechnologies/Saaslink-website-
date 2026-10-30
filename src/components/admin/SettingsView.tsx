@@ -3,7 +3,7 @@ import {
   Settings, Save, Building, CreditCard, 
   FileText, ShieldCheck, CheckCircle2, AlertCircle,
   Upload, Image as ImageIcon, RefreshCw, Trash2, 
-  Layers, Check, ExternalLink, HelpCircle
+  Layers, Check, ExternalLink, HelpCircle, Globe, Compass, Monitor
 } from 'lucide-react';
 import { GlobalSettings } from '../../types.ts';
 
@@ -25,6 +25,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     companyWebsite: settings?.companyWebsite || settings?.website || '',
     companyTagline: settings?.companyTagline || settings?.tagline || '',
     logoUrl: settings?.logoUrl || '/assets/saaslink-logo.svg',
+    faviconUrl: settings?.faviconUrl || settings?.logoUrl || '/assets/saaslink-logo.svg',
     taxId: settings?.taxId || 'P051982341Z',
   });
 
@@ -35,6 +36,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         ...prev,
         ...settings,
         logoUrl: settings.logoUrl || prev.logoUrl || '/assets/saaslink-logo.svg',
+        faviconUrl: settings.faviconUrl || prev.faviconUrl || settings.logoUrl || '/assets/saaslink-logo.svg',
       }));
     }
   }, [settings]);
@@ -124,6 +126,106 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     setLogoError(null);
   };
 
+  // Favicon specific states
+  const [savingFavicon, setSavingFavicon] = useState(false);
+  const [faviconSuccess, setFaviconSuccess] = useState(false);
+  const [faviconError, setFaviconError] = useState<string | null>(null);
+  const [uploadedFaviconName, setUploadedFaviconName] = useState('');
+  const [uploadedFaviconSize, setUploadedFaviconSize] = useState('');
+  const [isFaviconDragging, setIsFaviconDragging] = useState(false);
+  const faviconInputRef = useRef<HTMLInputElement>(null);
+
+  const processFaviconFile = (file: File) => {
+    if (!file.type.startsWith('image/') && !file.name.endsWith('.ico')) {
+      setFaviconError('Invalid file type. Please select an icon or image (ICO, PNG, SVG, WebP).');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setFaviconError('File size exceeds 2MB limit. Favicons should typically be small (16x16, 32x32, or 48x48).');
+      return;
+    }
+
+    setFaviconError(null);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      setFormData(prev => ({ ...prev, faviconUrl: result }));
+      setUploadedFaviconName(file.name);
+      setUploadedFaviconSize((file.size / 1024).toFixed(1) + ' KB');
+      
+      // Dynamic live tab preview in head
+      const link = document.getElementById('app-favicon') || document.querySelector("link[rel*='icon']");
+      if (link) (link as HTMLLinkElement).href = result;
+    };
+    reader.onerror = () => {
+      setFaviconError('Failed to read file from disk. Please try again.');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFaviconFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFaviconFile(file);
+    }
+  };
+
+  const handleFaviconDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsFaviconDragging(true);
+  };
+
+  const handleFaviconDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsFaviconDragging(false);
+  };
+
+  const handleFaviconDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsFaviconDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFaviconFile(file);
+    }
+  };
+
+  const handleApplyFaviconNow = async () => {
+    if (!formData.faviconUrl) return;
+    setSavingFavicon(true);
+    setFaviconSuccess(false);
+    try {
+      await onSaveSettings({ faviconUrl: formData.faviconUrl });
+      const link = document.getElementById('app-favicon') || document.querySelector("link[rel*='icon']");
+      if (link) (link as HTMLLinkElement).href = formData.faviconUrl;
+      setFaviconSuccess(true);
+      setTimeout(() => setFaviconSuccess(false), 3500);
+    } catch (err: any) {
+      setFaviconError(err?.message || 'Failed to update favicon');
+    } finally {
+      setSavingFavicon(false);
+    }
+  };
+
+  const handleUseLogoAsFavicon = () => {
+    if (formData.logoUrl) {
+      setFormData(prev => ({ ...prev, faviconUrl: prev.logoUrl }));
+      setUploadedFaviconName('Synced from company logo');
+      setUploadedFaviconSize('');
+      setFaviconError(null);
+      const link = document.getElementById('app-favicon') || document.querySelector("link[rel*='icon']");
+      if (link) (link as HTMLLinkElement).href = formData.logoUrl;
+    }
+  };
+
+  const handleResetFaviconDefault = () => {
+    setFormData(prev => ({ ...prev, faviconUrl: '/assets/saaslink-logo.svg' }));
+    setUploadedFaviconName('');
+    setUploadedFaviconSize('');
+    setFaviconError(null);
+    const link = document.getElementById('app-favicon') || document.querySelector("link[rel*='icon']");
+    if (link) (link as HTMLLinkElement).href = '/assets/saaslink-logo.svg';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -132,6 +234,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       const payload: GlobalSettings = {
         ...formData,
         logoUrl: formData.logoUrl,
+        faviconUrl: formData.faviconUrl || formData.logoUrl,
         address: formData.companyAddress || formData.address,
         email: formData.companyEmail || formData.email,
         phone: formData.companyPhone || formData.phone,
@@ -139,6 +242,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         tagline: formData.companyTagline || formData.tagline,
       };
       await onSaveSettings(payload);
+      const link = document.getElementById('app-favicon') || document.querySelector("link[rel*='icon']");
+      if (link && payload.faviconUrl) (link as HTMLLinkElement).href = payload.faviconUrl;
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
     } finally {
@@ -328,6 +433,208 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   onClick={handleResetToDefault}
                   className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                   title="Reset to default SVG emblem"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Reset Default</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* SECTION: Browser Favicon Management (Superadmin) */}
+        <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider">
+              <Compass className="w-4 h-4" />
+              <span>Browser Favicon & Shortcut Icon (Superadmin)</span>
+            </div>
+            {faviconSuccess && (
+              <span className="text-emerald-400 text-xs flex items-center gap-1 font-semibold animate-pulse">
+                <Check className="w-3.5 h-3.5" /> Favicon updated & live in browser tabs!
+              </span>
+            )}
+          </div>
+
+          <p className="text-slate-400 text-xs leading-relaxed">
+            Customize or replace the icon that appears in browser tabs, address bars, bookmarks, and mobile home screen shortcuts. Changes update the live application <code className="text-cyan-300 font-mono text-[11px]">&lt;link rel=&quot;icon&quot;&gt;</code> immediately.
+          </p>
+
+          {/* Browser Tab Live Mockup Preview */}
+          <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 space-y-3">
+            <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+              <span className="flex items-center gap-1.5 text-slate-300">
+                <Monitor className="w-3.5 h-3.5 text-cyan-400" />
+                Live Browser Tab Mockup
+              </span>
+              <span className="text-slate-500">Real-time Rendering</span>
+            </div>
+
+            {/* Mock Browser Header */}
+            <div className="rounded-xl bg-slate-900 border border-slate-800 p-2 space-y-2">
+              <div className="flex items-center gap-1.5 pb-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
+
+                {/* Simulated Tab */}
+                <div className="ml-3 px-3 py-1.5 rounded-t-lg bg-slate-950 border-t border-x border-slate-700/80 flex items-center gap-2 max-w-xs shadow-sm">
+                  <div className="w-4 h-4 rounded shrink-0 overflow-hidden flex items-center justify-center bg-slate-900">
+                    {formData.faviconUrl ? (
+                      <img 
+                        src={formData.faviconUrl} 
+                        alt="Favicon" 
+                        className="w-full h-full object-contain" 
+                        onError={(e) => {
+                          (e.currentTarget as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <Globe className="w-3 h-3 text-cyan-400" />
+                    )}
+                  </div>
+                  <span className="text-xs text-white truncate font-medium">
+                    {formData.companyName || 'SaaSLink Technologies'}
+                  </span>
+                  <span className="text-slate-500 text-[10px] ml-auto hover:text-slate-300">✕</span>
+                </div>
+              </div>
+
+              {/* Simulated Address Bar */}
+              <div className="px-3 py-1 rounded-lg bg-slate-950 border border-slate-800/60 text-[11px] text-slate-400 font-mono flex items-center gap-2">
+                <span className="text-emerald-400 text-xs">🔒</span>
+                <span className="text-slate-300">{formData.companyWebsite?.replace(/^https?:\/\//, '') || 'saaslink.tech'}</span>
+                <span className="text-slate-600">/admin/settings</span>
+              </div>
+            </div>
+
+            {/* Resolutions Preview */}
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              <div className="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded bg-slate-950 border border-slate-700 flex items-center justify-center p-0.5 shrink-0">
+                  <img src={formData.faviconUrl || '/assets/saaslink-logo.svg'} alt="16px" className="w-full h-full object-contain" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-semibold text-white">16 × 16 px</div>
+                  <div className="text-[10px] text-slate-500 font-mono">Standard Tab</div>
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded bg-slate-950 border border-slate-700 flex items-center justify-center p-0.5 shrink-0">
+                  <img src={formData.faviconUrl || '/assets/saaslink-logo.svg'} alt="32px" className="w-full h-full object-contain" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-semibold text-white">32 × 32 px</div>
+                  <div className="text-[10px] text-slate-500 font-mono">Retina / HiDPI</div>
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded bg-slate-950 border border-slate-700 flex items-center justify-center p-1 shrink-0">
+                  <img src={formData.faviconUrl || '/assets/saaslink-logo.svg'} alt="48px" className="w-full h-full object-contain" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-semibold text-white">48 × 48 px</div>
+                  <div className="text-[10px] text-slate-500 font-mono">Bookmark / PWA</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Favicon Upload Dropzone */}
+          <div
+            onDragOver={handleFaviconDragOver}
+            onDragLeave={handleFaviconDragLeave}
+            onDrop={handleFaviconDrop}
+            onClick={() => faviconInputRef.current?.click()}
+            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
+              isFaviconDragging 
+                ? 'border-cyan-400 bg-cyan-950/30' 
+                : 'border-slate-800 hover:border-slate-700 bg-slate-950/40 hover:bg-slate-950/60'
+            }`}
+          >
+            <input 
+              ref={faviconInputRef}
+              type="file" 
+              accept=".ico,image/png,image/svg+xml,image/webp,image/x-icon" 
+              onChange={handleFaviconFileChange}
+              className="hidden" 
+            />
+
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                <Compass className="w-5 h-5" />
+              </div>
+
+              <div>
+                <span className="text-white font-semibold">Click to upload favicon icon</span> or drag & drop file here
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Supports .ICO, .PNG, .SVG, .WebP (Recommended: 32x32, 64x64 square ratio, max 2MB)
+                </p>
+              </div>
+
+              {uploadedFaviconName && (
+                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-cyan-950 border border-cyan-800 text-cyan-300 text-xs font-mono">
+                  <Check className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Selected: {uploadedFaviconName} {uploadedFaviconSize ? `(${uploadedFaviconSize})` : ''}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {faviconError && (
+            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+              <span>{faviconError}</span>
+            </div>
+          )}
+
+          {/* Favicon URL Input & Action Buttons */}
+          <div className="space-y-2 pt-1">
+            <label className="block text-slate-300 font-semibold">
+              Or specify direct Favicon URL / Asset Path:
+            </label>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="text"
+                placeholder="e.g. /assets/saaslink-logo.svg or /favicon.ico"
+                value={formData.faviconUrl?.startsWith('data:') ? 'Custom uploaded icon (Base64 Data URL)' : formData.faviconUrl || ''}
+                onChange={(e) => {
+                  setFormData({ ...formData, faviconUrl: e.target.value });
+                  setUploadedFaviconName('');
+                  const link = document.getElementById('app-favicon') || document.querySelector("link[rel*='icon']");
+                  if (link && e.target.value) (link as HTMLLinkElement).href = e.target.value;
+                }}
+                className="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono focus:outline-none focus:border-cyan-400 text-xs"
+              />
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleApplyFaviconNow}
+                  disabled={savingFavicon || !formData.faviconUrl}
+                  className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {savingFavicon ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                  <span>{savingFavicon ? 'Applying...' : 'Apply Favicon Now'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleUseLogoAsFavicon}
+                  className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Use current company logo as favicon"
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Sync with Logo</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResetFaviconDefault}
+                  className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Reset to default favicon"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Reset Default</span>

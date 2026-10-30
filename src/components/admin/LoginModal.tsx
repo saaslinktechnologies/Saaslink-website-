@@ -203,7 +203,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
         {/* 1. SIGN IN MODE */}
         {mode === 'login' && (
-          <form onSubmit={handleLogin} className="space-y-4 text-xs">
+          <form onSubmit={handleLogin} autoComplete="off" className="space-y-4 text-xs">
             <div>
               <label className="block text-slate-300 font-semibold mb-1">Corporate Email</label>
               <div className="relative">
@@ -211,6 +211,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 <input
                   type="email"
                   required
+                  autoComplete="username"
                   placeholder="name@saaslink.tech"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -240,6 +241,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 <input
                   type="password"
                   required
+                  autoComplete="current-password"
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

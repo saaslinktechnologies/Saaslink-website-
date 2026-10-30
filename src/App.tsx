@@ -264,12 +264,32 @@ export default function App() {
     }
   };
 
+  // Real-time Favicon sync with settings
+  useEffect(() => {
+    const faviconHref = settings?.faviconUrl || settings?.logoUrl;
+    if (faviconHref) {
+      let link = document.getElementById('app-favicon') as HTMLLinkElement | null;
+      if (!link) {
+        link = document.querySelector<HTMLLinkElement>("link[rel*='icon']");
+      }
+      if (!link) {
+        link = document.createElement('link');
+        link.id = 'app-favicon';
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      link.href = faviconHref;
+    }
+  }, [settings?.faviconUrl, settings?.logoUrl]);
+
   useEffect(() => {
     fetchPublicContent();
 
-    // Verify existing authenticated session if present
+    // Verify existing authenticated session ONLY if user was already in admin mode
     const storedToken = localStorage.getItem('saaslink_auth_token');
-    if (storedToken) {
+    const isExplicitAdminRoute = window.location.hash === '#admin' || window.location.hash === '#dashboard';
+    
+    if (storedToken && isExplicitAdminRoute) {
       fetch('/api/auth/me', {
         headers: { Authorization: `Bearer ${storedToken}` },
       })
@@ -281,14 +301,19 @@ export default function App() {
           if (data.user) {
             setCurrentUser(data.user);
             setAuthToken(storedToken);
+            setCurrentMode('admin');
           } else {
             localStorage.removeItem('saaslink_auth_token');
+            setCurrentMode('public');
+            setLoginModalOpen(true);
           }
         })
         .catch(() => {
           localStorage.removeItem('saaslink_auth_token');
           setAuthToken(null);
           setCurrentUser(null);
+          setCurrentMode('public');
+          setLoginModalOpen(true);
         });
     }
 
@@ -296,8 +321,8 @@ export default function App() {
     const handleUrlRoute = () => {
       const raw = window.location.hash.replace('#', '') || window.location.pathname.replace(/^\//, '');
       if (raw === 'admin' || raw === 'dashboard') {
-        const token = localStorage.getItem('saaslink_auth_token');
-        if (token) {
+        const token = authToken || localStorage.getItem('saaslink_auth_token');
+        if (token && currentUser) {
           setCurrentMode('admin');
         } else {
           setCurrentMode('public');
@@ -335,15 +360,15 @@ export default function App() {
     }
   }, [currentMode, authToken]);
 
-  // Protected Admin Portal Trigger: Opens login prompt if unauthenticated
+  // Protected Admin Portal Trigger: Always prompts for secure credentials
   const handleOpenAdmin = () => {
-    const token = authToken || localStorage.getItem('saaslink_auth_token');
-    if (token && currentUser) {
+    if (!authToken || !currentUser) {
+      setLoginModalOpen(true);
+    } else {
+      // Re-prompt login or enter if currently active in session
       setCurrentMode('admin');
       window.location.hash = 'admin';
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      setLoginModalOpen(true);
     }
   };
 
@@ -359,6 +384,7 @@ export default function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('saaslink_auth_token');
+    sessionStorage.removeItem('saaslink_auth_token');
     setAuthToken(null);
     setCurrentUser(null);
     setCurrentMode('public');

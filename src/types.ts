@@ -35,6 +35,7 @@ export interface GlobalSettings {
   website: string;
   companyWebsite?: string;
   logoUrl: string;
+  faviconUrl?: string;
   currency: string;
   currencySymbol: string;
   taxId?: string;
