@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  History, Search, Filter, Shield, Clock, 
+  Search, Filter, Shield, Clock, 
   Calendar, CheckCircle, ArrowRight 
 } from 'lucide-react';
 import { AuditLog } from '../../types.ts';

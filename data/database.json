@@ -59,7 +59,7 @@
       "id": "usr_super_01",
       "name": "Alexandre Kamau",
       "email": "admin@saaslink.tech",
-      "passwordHash": "$2b$10$uX6qpa5wI/55Fff6H4d3KO8.CIoDQnPwZf7qD0qdZHbZ50ZGkNZpW",
+      "passwordHash": "$2b$10$X70yVmLZWaCAsbyzqv7ZZ.ddCsOyNkH.rCNqiQ5z2a2Q2Wb/EZ5WK",
       "role": "Super Administrator",
       "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
       "phone": "+254 711 000 111",
@@ -516,6 +516,7 @@
       "targetEndDate": "2026-04-20",
       "status": "Active",
       "budget": 30160,
+      "spent": 19600,
       "currency": "USD",
       "progress": 65,
       "assignedMembers": [
@@ -539,6 +540,7 @@
       "targetEndDate": "2026-05-30",
       "status": "Planning",
       "budget": 31320,
+      "spent": 4700,
       "currency": "USD",
       "progress": 15,
       "assignedMembers": [
@@ -1478,6 +1480,76 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act_1793366624678_0g2iy",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-30T13:23:44.678Z"
+    },
+    {
+      "id": "act_1793366620244_wsmzu",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-30T13:23:40.244Z"
+    },
+    {
+      "id": "act_1793366228237_tn0mt",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-30T13:17:08.237Z"
+    },
+    {
+      "id": "act_1793366224182_pprzw",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "PASSWORD_RESET_COMPLETED",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Password was successfully reset for admin@saaslink.tech",
+      "timestamp": "2026-10-30T13:17:04.182Z"
+    },
+    {
+      "id": "act_1793366217067_zdnbz",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "PASSWORD_RESET_REQUESTED",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Password reset code requested for admin@saaslink.tech",
+      "timestamp": "2026-10-30T13:16:57.067Z"
+    },
+    {
+      "id": "act_1793366212491_k884g",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-30T13:16:52.491Z"
+    },
+    {
+      "id": "act_1793366199191_sfxwx",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-30T13:16:39.191Z"
+    },
     {
       "id": "act_1793279161069_wmnqu",
       "userId": "usr_super_01",

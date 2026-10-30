@@ -83,7 +83,7 @@ export function isMysqlConnected(): boolean {
 }
 
 // Initial high-caliber default dataset
-function createInitialDataset(): DatabaseSchema {
+export function createInitialDataset(): DatabaseSchema {
   const defaultPasswordHash = bcrypt.hashSync('admin123', 10);
   
   return {

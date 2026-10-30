@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Lock } from 'lucide-react';
 import { 
   Header 
 } from './components/public/Header.tsx';
@@ -198,6 +199,27 @@ export default function App() {
     try {
       const headers = authToken ? { Authorization: `Bearer ${authToken}` } : undefined;
       
+      const parseJsonSafe = async <T,>(res: Response, fallback: T): Promise<T> => {
+        if (!res.ok) {
+          if (res.status === 401) {
+            // Unauthorized / expired session
+            localStorage.removeItem('saaslink_auth_token');
+            setAuthToken(null);
+            setCurrentUser(null);
+          }
+          return fallback;
+        }
+        const contentType = res.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          return fallback;
+        }
+        try {
+          return await res.json();
+        } catch {
+          return fallback;
+        }
+      };
+
       const [
         metricsRes, leadsRes, clientsRes, quotesRes, 
         invoicesRes, paymentsRes, projectsRes, mediaRes, logsRes
@@ -213,15 +235,30 @@ export default function App() {
         fetch('/api/admin/audit-logs', { headers }),
       ]);
 
-      if (metricsRes.ok) setMetrics(await metricsRes.json());
-      if (leadsRes.ok) setLeads(await leadsRes.json());
-      if (clientsRes.ok) setClients(await clientsRes.json());
-      if (quotesRes.ok) setQuotations(await quotesRes.json());
-      if (invoicesRes.ok) setInvoices(await invoicesRes.json());
-      if (paymentsRes.ok) setPayments(await paymentsRes.json());
-      if (projectsRes.ok) setProjects(await projectsRes.json());
-      if (mediaRes.ok) setMedia(await mediaRes.json());
-      if (logsRes.ok) setAuditLogs(await logsRes.json());
+      const [
+        metricsData, leadsData, clientsData, quotesData,
+        invoicesData, paymentsData, projectsData, mediaData, logsData
+      ] = await Promise.all([
+        parseJsonSafe<DashboardMetrics | null>(metricsRes, null),
+        parseJsonSafe<Lead[]>(leadsRes, []),
+        parseJsonSafe<Client[]>(clientsRes, []),
+        parseJsonSafe<Quotation[]>(quotesRes, []),
+        parseJsonSafe<Invoice[]>(invoicesRes, []),
+        parseJsonSafe<Payment[]>(paymentsRes, []),
+        parseJsonSafe<Project[]>(projectsRes, []),
+        parseJsonSafe<MediaItem[]>(mediaRes, []),
+        parseJsonSafe<AuditLog[]>(logsRes, []),
+      ]);
+
+      if (metricsData) setMetrics(metricsData);
+      setLeads(leadsData);
+      setClients(clientsData);
+      setQuotations(quotesData);
+      setInvoices(invoicesData);
+      setPayments(paymentsData);
+      setProjects(projectsData);
+      setMedia(mediaData);
+      setAuditLogs(logsData);
     } catch (err) {
       console.error('Error fetching admin data:', err);
     }
@@ -229,19 +266,45 @@ export default function App() {
 
   useEffect(() => {
     fetchPublicContent();
-    // Default demo user for seamless evaluation
-    setCurrentUser({
-      id: 'usr-1',
-      name: 'Dr. Arthur Omwamba',
-      email: 'admin@saaslink.tech',
-      role: 'Super Administrator',
-      status: 'Active',
-      createdAt: '2026-01-01',
-    });
+
+    // Verify existing authenticated session if present
+    const storedToken = localStorage.getItem('saaslink_auth_token');
+    if (storedToken) {
+      fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      })
+        .then(res => {
+          if (res.ok) return res.json();
+          throw new Error('Invalid session');
+        })
+        .then(data => {
+          if (data.user) {
+            setCurrentUser(data.user);
+            setAuthToken(storedToken);
+          } else {
+            localStorage.removeItem('saaslink_auth_token');
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem('saaslink_auth_token');
+          setAuthToken(null);
+          setCurrentUser(null);
+        });
+    }
 
     // Hash and URL router sync
     const handleUrlRoute = () => {
       const raw = window.location.hash.replace('#', '') || window.location.pathname.replace(/^\//, '');
+      if (raw === 'admin' || raw === 'dashboard') {
+        const token = localStorage.getItem('saaslink_auth_token');
+        if (token) {
+          setCurrentMode('admin');
+        } else {
+          setCurrentMode('public');
+          setLoginModalOpen(true);
+        }
+        return;
+      }
       const validPages = ['industries', 'solutions', 'careers', 'faqs', 'privacy', 'terms', 'cookies'];
       if (validPages.includes(raw)) {
         setCurrentPublicPage(raw as PublicPage);
@@ -267,22 +330,39 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (currentMode === 'admin') {
+    if (currentMode === 'admin' && authToken) {
       fetchAdminData();
     }
   }, [currentMode, authToken]);
 
-  // Auth Handler
+  // Protected Admin Portal Trigger: Opens login prompt if unauthenticated
+  const handleOpenAdmin = () => {
+    const token = authToken || localStorage.getItem('saaslink_auth_token');
+    if (token && currentUser) {
+      setCurrentMode('admin');
+      window.location.hash = 'admin';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setLoginModalOpen(true);
+    }
+  };
+
+  // Auth Handlers
   const handleLoginSuccess = (token: string, user: User) => {
+    localStorage.setItem('saaslink_auth_token', token);
     setAuthToken(token);
     setCurrentUser(user);
     setCurrentMode('admin');
+    window.location.hash = 'admin';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('saaslink_auth_token');
     setAuthToken(null);
     setCurrentUser(null);
     setCurrentMode('public');
+    window.location.hash = '';
   };
 
   const handleSwitchRole = (newRole: RoleName) => {
@@ -674,18 +754,48 @@ export default function App() {
 
   // ADMIN MODE RENDER
   if (currentMode === 'admin') {
-    const activeUser = currentUser || {
-      id: 'usr-1',
-      name: 'Administrator',
-      email: 'admin@saaslink.tech',
-      role: 'Super Administrator',
-      status: 'Active',
-      createdAt: '2026-01-01',
-    };
+    if (!currentUser) {
+      return (
+        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center text-slate-100">
+          <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-4 text-cyan-400">
+            <Lock className="w-7 h-7" />
+          </div>
+          <h2 className="text-xl font-display font-bold text-white mb-2">
+            Restricted Enterprise Access
+          </h2>
+          <p className="text-slate-400 text-xs sm:text-sm max-w-md mb-6 leading-relaxed">
+            SaaSLink Business OS requires verified staff or client authentication. Please sign in with your corporate credentials to continue.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <button
+              onClick={() => setLoginModalOpen(true)}
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs transition-colors cursor-pointer shadow-lg shadow-cyan-500/20"
+            >
+              Sign In to Management OS
+            </button>
+            <button
+              onClick={() => {
+                setCurrentMode('public');
+                window.location.hash = '';
+              }}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors cursor-pointer"
+            >
+              Return to Website
+            </button>
+          </div>
+
+          <LoginModal
+            isOpen={loginModalOpen}
+            onClose={() => setLoginModalOpen(false)}
+            onLoginSuccess={handleLoginSuccess}
+          />
+        </div>
+      );
+    }
 
     return (
       <AdminLayout
-        currentUser={activeUser}
+        currentUser={currentUser}
         settings={settings}
         activeSection={adminSection}
         onSelectSection={setAdminSection}
@@ -830,13 +940,7 @@ export default function App() {
         products={products}
         onSelectProduct={(p) => handleOpenDetailModal('product', p)}
         onSelectService={(s) => handleOpenDetailModal('service', s)}
-        onOpenAdmin={() => {
-          if (currentUser) {
-            setCurrentMode('admin');
-          } else {
-            setLoginModalOpen(true);
-          }
-        }}
+        onOpenAdmin={handleOpenAdmin}
         onOpenQuoteModal={(preselected?: string) => handleOpenQuotePlanner(preselected)}
         onNavigateSection={handleNavigateSection}
       />
@@ -965,13 +1069,7 @@ export default function App() {
       {/* Footer */}
       <Footer
         settings={settings}
-        onOpenAdmin={() => {
-          if (currentUser) {
-            setCurrentMode('admin');
-          } else {
-            setLoginModalOpen(true);
-          }
-        }}
+        onOpenAdmin={handleOpenAdmin}
         onNavigateSection={handleNavigateSection}
         onOpenQuoteModal={() => handleOpenQuotePlanner()}
       />

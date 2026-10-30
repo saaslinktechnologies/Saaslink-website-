@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { 
   Globe, Plus, Edit, Trash2, CheckCircle2, 
   Eye, EyeOff, Layers, Sparkles, BookOpen, 
-  Briefcase, Star, Users, Video, Image as ImageIcon, 
+  Briefcase, Star, Users, Video as VideoIcon, Image as ImageIcon, 
   Upload, X, Play, Code, List, Heading, Bold, AlertCircle
 } from 'lucide-react';
 import { 
@@ -352,7 +352,7 @@ export const CmsView: React.FC<CmsViewProps> = ({
                 <div className="flex items-center gap-1.5">
                   {item.videoUrl && (
                     <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
-                      <Video className="w-3 h-3" />
+                      <VideoIcon className="w-3 h-3" />
                       <span>Video</span>
                     </span>
                   )}
@@ -390,7 +390,7 @@ export const CmsView: React.FC<CmsViewProps> = ({
                     <img src={item.heroImage} alt={item.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     {item.videoUrl && (
                       <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/80 backdrop-blur-sm text-amber-300 font-mono text-[10px] flex items-center gap-1 border border-amber-500/30">
-                        <Video className="w-3 h-3 text-amber-400" />
+                        <VideoIcon className="w-3 h-3 text-amber-400" />
                         <span>Video Walkthrough</span>
                       </div>
                     )}
@@ -440,7 +440,7 @@ export const CmsView: React.FC<CmsViewProps> = ({
                   <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   {item.videoUrl && (
                     <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/80 backdrop-blur-sm text-amber-300 font-mono text-[10px] flex items-center gap-1 border border-amber-500/30">
-                      <Video className="w-3 h-3 text-amber-400" />
+                      <VideoIcon className="w-3 h-3 text-amber-400" />
                       <span>Video</span>
                     </div>
                   )}
@@ -477,7 +477,7 @@ export const CmsView: React.FC<CmsViewProps> = ({
                   <img src={item.coverImage} alt={item.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   {item.videoUrl && (
                     <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/80 backdrop-blur-sm text-amber-300 font-mono text-[10px] flex items-center gap-1 border border-amber-500/30">
-                      <Video className="w-3 h-3 text-amber-400" />
+                      <VideoIcon className="w-3 h-3 text-amber-400" />
                       <span>Video Lecture</span>
                     </div>
                   )}

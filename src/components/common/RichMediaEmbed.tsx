@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Maximize2, X, ChevronLeft, ChevronRight, Video, Image as ImageIcon, ExternalLink } from 'lucide-react';
+import { Play, Maximize2, X, ChevronLeft, ChevronRight, Video as VideoIcon, Image as ImageIcon, ExternalLink } from 'lucide-react';
 
 export interface VideoInfo {
   type: 'youtube' | 'vimeo' | 'loom' | 'direct' | 'unknown';
@@ -82,7 +82,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span className="font-mono text-[11px] uppercase tracking-wider text-[oklch(0.85_0.12_80)] font-semibold flex items-center gap-1.5">
-            <Video className="w-3.5 h-3.5" />
+            <VideoIcon className="w-3.5 h-3.5" />
             <span>{title}</span>
           </span>
         </div>

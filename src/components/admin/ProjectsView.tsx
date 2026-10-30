@@ -166,7 +166,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
               <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <div>
                   <span className="text-[10px] block text-slate-500">Tasks: {completedTasks}/{totalTasks}</span>
-                  <span className="font-mono text-slate-200">${proj.spent.toLocaleString()} / ${proj.budget.toLocaleString()}</span>
+                  <span className="font-mono text-slate-200">${(proj.spent ?? 0).toLocaleString()} / ${(proj.budget ?? 0).toLocaleString()}</span>
                 </div>
 
                 <button
@@ -199,7 +199,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
                 <h3 className="text-xl font-display font-bold text-white mt-0.5">
                   {selectedProject.name}
                 </h3>
-                <p className="text-xs text-slate-400">{selectedProject.clientCompany}</p>
+                <p className="text-xs text-slate-400">{selectedProject.clientCompany || selectedProject.clientName}</p>
               </div>
               <button
                 onClick={() => setSelectedProject(null)}
@@ -213,15 +213,15 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
             <div className="grid grid-cols-3 gap-2.5 text-xs">
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Total Budget</span>
-                <span className="font-mono font-bold text-white">${selectedProject.budget.toLocaleString()}</span>
+                <span className="font-mono font-bold text-white">${(selectedProject.budget ?? 0).toLocaleString()}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Burned</span>
-                <span className="font-mono font-bold text-cyan-400">${selectedProject.spent.toLocaleString()}</span>
+                <span className="font-mono font-bold text-cyan-400">${(selectedProject.spent ?? 0).toLocaleString()}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Target Launch</span>
-                <span className="text-slate-300">{selectedProject.endDate || 'TBD'}</span>
+                <span className="text-slate-300">{selectedProject.endDate || selectedProject.targetEndDate || 'TBD'}</span>
               </div>
             </div>
 

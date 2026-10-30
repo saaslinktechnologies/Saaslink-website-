@@ -3,7 +3,7 @@ import {
   Layers, ArrowRight, CheckCircle2, ShieldCheck, 
   ExternalLink, Sparkles, Building2, GraduationCap, 
   Cpu, Activity, Zap, Church, Users, HeartHandshake, Check, ShoppingBag, Home,
-  Play, Video
+  Play
 } from 'lucide-react';
 import { Product } from '../../types.ts';
 

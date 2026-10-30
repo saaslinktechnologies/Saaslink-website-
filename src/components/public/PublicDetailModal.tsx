@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   X, Check, ArrowRight, TrendingUp, Cpu, 
-  ShieldCheck, ExternalLink, Sparkles, Video, Image as ImageIcon 
+  ShieldCheck, ExternalLink, Sparkles, Image as ImageIcon 
 } from 'lucide-react';
 import { Service, Product, PortfolioProject, Article } from '../../types.ts';
 import { VideoPlayer, PhotoGallery } from '../common/RichMediaEmbed.tsx';

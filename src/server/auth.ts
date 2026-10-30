@@ -36,38 +36,16 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
     ? authHeader.substring(7) 
     : (req.query.token as string);
 
-  const db = getDb();
-
-  // In demo/dev mode or when token is 'demo' or not provided, fallback to active administrator
-  if (!token || token === 'demo') {
-    const defaultAdmin = db.users.find(u => u.role === 'Super Administrator') || db.users[0];
-    if (defaultAdmin) {
-      req.user = {
-        id: defaultAdmin.id,
-        name: defaultAdmin.name,
-        email: defaultAdmin.email,
-        role: defaultAdmin.role,
-        avatarUrl: defaultAdmin.avatarUrl,
-        phone: defaultAdmin.phone,
-        isActive: defaultAdmin.isActive,
-        createdAt: defaultAdmin.createdAt,
-      };
-      return next();
-    }
-    return res.status(401).json({ error: 'Authentication required. Please sign in.' });
+  if (!token) {
+    return res.status(401).json({ error: 'Authentication required. Please sign in with valid credentials.' });
   }
 
   const payload = verifyToken(token);
   if (!payload) {
-    // If token expired, also gracefully fallback to default admin to avoid blocking preview
-    const defaultAdmin = db.users.find(u => u.role === 'Super Administrator') || db.users[0];
-    if (defaultAdmin) {
-      req.user = defaultAdmin;
-      return next();
-    }
     return res.status(401).json({ error: 'Session expired or invalid token. Please log in again.' });
   }
 
+  const db = getDb();
   const user = db.users.find(u => u.id === payload.id && u.isActive);
   if (!user) {
     return res.status(401).json({ error: 'User account not found or deactivated.' });

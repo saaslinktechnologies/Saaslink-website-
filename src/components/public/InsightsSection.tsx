@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, ArrowRight, Clock, User, Play, Video } from 'lucide-react';
+import { BookOpen, ArrowRight, Clock, User, Play } from 'lucide-react';
 import { Article } from '../../types.ts';
 
 interface InsightsSectionProps {

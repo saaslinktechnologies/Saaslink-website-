@@ -165,31 +165,88 @@ apiRouter.post('/auth/login', (req: Request, res: Response) => {
   }
 });
 
-// Quick role switcher for demo/testing without typing passwords
-apiRouter.post('/auth/demo-switch', (req: Request, res: Response) => {
+// Request Password Reset Code
+apiRouter.post('/auth/forgot-password', (req: Request, res: Response) => {
   try {
-    const { role } = req.body as { role: RoleName };
-    const db = getDb();
-    let targetUser = db.users.find(u => u.role === role);
-    if (!targetUser) {
-      targetUser = db.users[0];
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: 'Corporate email is required.' });
     }
-    const token = generateToken(targetUser);
+
+    const db = getDb();
+    const user = db.users.find(u => u.email.toLowerCase() === String(email).trim().toLowerCase());
+    
+    if (!user || !user.isActive) {
+      // Security standard: don't reveal user existence
+      return res.json({ 
+        success: true, 
+        message: 'If an active account exists with this email, a verification code has been dispatched.' 
+      });
+    }
+
+    // Generate secure 6-digit numeric verification OTP
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const resetExpiry = Date.now() + 15 * 60 * 1000; // 15 mins expiry
+
+    (user as any).resetCode = resetCode;
+    (user as any).resetExpiry = resetExpiry;
+    saveDb(db);
+
+    logActivity(user.id, user.name, 'PASSWORD_RESET_REQUESTED', 'users', user.id, `Password reset code requested for ${user.email}`);
+
     res.json({
       success: true,
-      token,
-      user: {
-        id: targetUser.id,
-        name: targetUser.name,
-        email: targetUser.email,
-        role: targetUser.role,
-        avatarUrl: targetUser.avatarUrl,
-        phone: targetUser.phone,
-        createdAt: targetUser.createdAt,
-      },
+      message: 'A 6-digit verification code has been generated (valid for 15 minutes).',
+      verificationCode: resetCode, // Returned for instant verification in self-hosted / preview setup
     });
   } catch (err: any) {
-    res.status(500).json({ error: 'Demo switch failure', details: err.message });
+    res.status(500).json({ error: 'Failed to process password reset request', details: err.message });
+  }
+});
+
+// Verify Code & Set New Password
+apiRouter.post('/auth/reset-password', (req: Request, res: Response) => {
+  try {
+    const { email, code, newPassword } = req.body;
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({ error: 'Email, verification code, and new password are required.' });
+    }
+
+    if (String(newPassword).length < 6) {
+      return res.status(400).json({ error: 'New password must be at least 6 characters long.' });
+    }
+
+    const db = getDb();
+    const user = db.users.find(u => u.email.toLowerCase() === String(email).trim().toLowerCase());
+
+    if (!user || !user.isActive) {
+      return res.status(400).json({ error: 'Invalid reset request or inactive account.' });
+    }
+
+    const storedCode = (user as any).resetCode;
+    const storedExpiry = (user as any).resetExpiry;
+
+    if (!storedCode || !storedExpiry || Date.now() > storedExpiry) {
+      return res.status(400).json({ error: 'Verification code has expired. Please request a new one.' });
+    }
+
+    if (String(storedCode).trim() !== String(code).trim()) {
+      return res.status(400).json({ error: 'Invalid verification code. Please check and try again.' });
+    }
+
+    user.passwordHash = bcrypt.hashSync(newPassword, 10);
+    delete (user as any).resetCode;
+    delete (user as any).resetExpiry;
+    saveDb(db);
+
+    logActivity(user.id, user.name, 'PASSWORD_RESET_COMPLETED', 'users', user.id, `Password was successfully reset for ${user.email}`);
+
+    res.json({
+      success: true,
+      message: 'Password updated successfully. You can now log in with your new password.',
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to reset password', details: err.message });
   }
 });
 
@@ -895,6 +952,7 @@ apiRouter.post('/admin/projects', authenticate, (req: AuthRequest, res: Response
     targetEndDate: targetEndDate || new Date(Date.now() + 60 * 86400000).toISOString().substring(0, 10),
     status: status || 'Planning',
     budget: Number(budget) || 0,
+    spent: Number(req.body.spent) || 0,
     currency: currency || db.settings.currency,
     progress: Number(progress) || 0,
     assignedMembers: assignedMembers || [req.user!.name],
@@ -1496,10 +1554,12 @@ apiRouter.put('/admin/users/:id', authenticate, requireRole(['Super Administrato
 // 13. AUDIT ACTIVITY LOGS
 // ==========================================
 
-apiRouter.get('/admin/activity-logs', authenticate, (req: AuthRequest, res: Response) => {
+const handleGetAuditLogs = (req: AuthRequest, res: Response) => {
   const db = getDb();
-  res.json(db.activityLogs);
-});
+  res.json(db.activityLogs || []);
+};
+apiRouter.get('/admin/audit-logs', authenticate, handleGetAuditLogs);
+apiRouter.get('/admin/activity-logs', authenticate, handleGetAuditLogs);
 
 // ==========================================
 // 14. MYSQL DATABASE MANAGEMENT & EXPORT
@@ -1663,4 +1723,9 @@ apiRouter.get('/admin/database/export-sql', authenticate, (req: AuthRequest, res
   res.setHeader('Content-Type', 'application/sql');
   res.setHeader('Content-Disposition', 'attachment; filename="saaslink_mysql_dump.sql"');
   res.send(sql);
+});
+
+// Fallback 404 handler for any unmapped API endpoints
+apiRouter.use((req: Request, res: Response) => {
+  res.status(404).json({ error: `API route not found: ${req.method} ${req.originalUrl}` });
 });

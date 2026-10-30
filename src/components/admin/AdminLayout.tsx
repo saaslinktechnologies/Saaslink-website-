@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   LayoutDashboard, UserCheck, Users, FileText, 
   Receipt, CreditCard, FolderKanban, Globe, 
-  Image, Settings, Database, History, LogOut, 
+  Image as ImageIcon, Settings, Database, History as HistoryIcon, LogOut, 
   ChevronRight, Menu, X, Shield, ArrowLeft, 
   Layers, Bell, RefreshCw 
 } from 'lucide-react';
@@ -54,10 +54,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'receipts', label: 'Official Receipts', icon: Receipt },
     { id: 'projects', label: 'Projects & Tasks', icon: FolderKanban },
     { id: 'cms', label: 'CMS Content Hub', icon: Globe },
-    { id: 'media', label: 'Media Library', icon: Image },
+    { id: 'media', label: 'Media Library', icon: ImageIcon },
     { id: 'settings', label: 'Global Settings', icon: Settings },
     { id: 'database', label: 'MySQL Database Hub', icon: Database },
-    { id: 'logs', label: 'Audit Activity Logs', icon: History },
+    { id: 'logs', label: 'Audit Activity Logs', icon: HistoryIcon },
   ];
 
   const roleOptions: RoleName[] = [
@@ -243,21 +243,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           {/* Right Controls: Role Switcher & Public Website */}
           <div className="flex items-center gap-3">
             
-            {/* Quick Demo Role Switcher */}
-            <div className="hidden lg:flex items-center gap-2 text-xs">
-              <span className="text-slate-400 text-[11px] flex items-center gap-1">
-                <RefreshCw className="w-3 h-3 text-cyan-400" />
-                Role:
-              </span>
-              <select
-                value={currentUser.role}
-                onChange={(e) => onSwitchRole(e.target.value as RoleName)}
-                className="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-cyan-300 text-xs focus:outline-none cursor-pointer"
-              >
-                {roleOptions.map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
+            {/* Authenticated Role Badge */}
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80 text-xs">
+              <Shield className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="text-slate-400 text-[11px]">Role:</span>
+              <span className="font-semibold text-cyan-300 text-xs">{currentUser.role}</span>
             </div>
 
             <button
