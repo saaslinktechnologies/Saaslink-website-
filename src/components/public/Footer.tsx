@@ -47,7 +47,7 @@ export const Footer: React.FC<FooterProps> = ({
                   </div>
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-[oklch(0.85_0.12_80)] shrink-0" />
-                    <span>Kenya Data Protection Act 2019 Compliant</span>
+                    <span>Global Data Privacy & ISO 27001 Aligned</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-[oklch(0.85_0.12_80)] shrink-0" />
@@ -118,19 +118,21 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="pt-2 flex flex-col gap-2.5 text-xs text-slate-300">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0" />
-                <span>Delta Corner Tower, Westlands, Nairobi, Kenya</span>
+                <span>{settings?.companyAddress || settings?.address || 'Corporate Headquarters'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0" />
-                <span>Mon – Fri, 8:00am – 6:00pm EAT</span>
+                <span>Mon – Fri, 8:00am – 6:00pm</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0" />
-                <span>+254 700 000 000 / +254 720 000 000</span>
-              </div>
+              {(settings?.companyPhone || settings?.phone) && (
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0" />
+                  <span>{settings?.companyPhone || settings?.phone}</span>
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0" />
-                <span>contact@saaslink.tech / solutions@saaslink.co.ke</span>
+                <span>{settings?.companyEmail || settings?.email || 'contact@saaslink.tech'}</span>
               </div>
             </div>
           </div>
@@ -273,7 +275,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom Bar with Admin Portal Access */}
         <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-400 text-xs">
           <div>
-            © {new Date().getFullYear()} SaaSLink Technologies Ltd. All rights reserved. Registered in Kenya.
+            © {new Date().getFullYear()} SaaSLink Technologies Ltd. All rights reserved.
           </div>
 
           <div className="flex items-center gap-4">

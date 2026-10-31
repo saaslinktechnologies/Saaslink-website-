@@ -138,8 +138,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
       if (!res.ok) throw new Error(data.error || 'Password reset failed.');
 
       setSuccessMessage(data.message);
-      // Pre-fill email in login form for ease of signing in
-      setEmail(resetEmail.trim());
+      setEmail('');
       setPassword('');
       setResetCode('');
       setNewPassword('');
@@ -211,11 +210,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 <input
                   type="email"
                   required
-                  autoComplete="username"
-                  placeholder="name@saaslink.tech"
+                  autoComplete="off"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400"
                 />
               </div>
             </div>
@@ -280,10 +278,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 <input
                   type="email"
                   required
-                  placeholder="name@saaslink.tech"
+                  autoComplete="off"
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400"
                 />
               </div>
             </div>

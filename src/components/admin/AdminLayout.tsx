@@ -18,6 +18,7 @@ export type AdminSection =
   | 'projects' 
   | 'cms' 
   | 'media' 
+  | 'users'
   | 'settings' 
   | 'database' 
   | 'logs';
@@ -55,6 +56,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'projects', label: 'Projects & Tasks', icon: FolderKanban },
     { id: 'cms', label: 'CMS Content Hub', icon: Globe },
     { id: 'media', label: 'Media Library', icon: ImageIcon },
+    { id: 'users', label: 'Team & RBAC Users', icon: Shield },
     { id: 'settings', label: 'Global Settings', icon: Settings },
     { id: 'database', label: 'MySQL Database Hub', icon: Database },
     { id: 'logs', label: 'Audit Activity Logs', icon: HistoryIcon },

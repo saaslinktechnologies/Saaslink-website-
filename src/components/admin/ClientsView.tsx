@@ -4,9 +4,10 @@ import {
   Building, FileText, CreditCard, Receipt, 
   FolderKanban, ExternalLink, Edit2, Trash2, CheckCircle2 
 } from 'lucide-react';
-import { Client, Quotation, Invoice, Payment, Project } from '../../types.ts';
+import { Client, Quotation, Invoice, Payment, Project, GlobalSettings } from '../../types.ts';
 
 interface ClientsViewProps {
+  settings?: GlobalSettings;
   clients?: Client[];
   quotations?: Quotation[];
   invoices?: Invoice[];
@@ -20,6 +21,7 @@ interface ClientsViewProps {
 }
 
 export const ClientsView: React.FC<ClientsViewProps> = ({
+  settings,
   clients = [],
   quotations = [],
   invoices = [],
@@ -31,6 +33,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
   onOpenNewQuoteForClient,
   onOpenNewInvoiceForClient,
 }) => {
+  const currSymbol = settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -214,7 +217,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                 <div>
                   <span className="text-[10px] text-slate-500 uppercase block">Balance Due</span>
                   <span className={`font-semibold ${balance > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
-                    ${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {currSymbol}{balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                   </span>
                 </div>
 
@@ -284,16 +287,16 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
             <div className="grid grid-cols-3 gap-3">
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Total Invoiced</span>
-                <span className="text-sm font-bold text-white">${totalInvoiced.toLocaleString()}</span>
+                <span className="text-sm font-bold text-white">{currSymbol}{totalInvoiced.toLocaleString()}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Payments Paid</span>
-                <span className="text-sm font-bold text-emerald-400">${totalPaid.toLocaleString()}</span>
+                <span className="text-sm font-bold text-emerald-400">{currSymbol}{totalPaid.toLocaleString()}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Outstanding</span>
                 <span className={`text-sm font-bold ${totalBalance > 0 ? 'text-amber-400' : 'text-slate-400'}`}>
-                  ${totalBalance.toLocaleString()}
+                  {currSymbol}{totalBalance.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -359,7 +362,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         <span className="text-[10px] text-slate-400 ml-2">Due: {inv.dueDate}</span>
                       </div>
                       <div className="text-right">
-                        <span className="font-bold text-white">${inv.total.toLocaleString()}</span>
+                        <span className="font-bold text-white">{currSymbol}{inv.total.toLocaleString()}</span>
                         <span className="text-[10px] block text-slate-400">{inv.status}</span>
                       </div>
                     </div>
@@ -386,7 +389,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         <span className="text-[10px] text-slate-400 ml-2">Valid until: {q.expiryDate}</span>
                       </div>
                       <div className="text-right">
-                        <span className="font-bold text-white">${q.total.toLocaleString()}</span>
+                        <span className="font-bold text-white">{currSymbol}{q.total.toLocaleString()}</span>
                         <span className="text-[10px] block text-slate-400">{q.status}</span>
                       </div>
                     </div>
@@ -455,10 +458,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">KRA PIN / Tax ID</label>
+                  <label className="block text-slate-300 font-semibold mb-1">Corporate Tax ID / Registration</label>
                   <input
                     type="text"
-                    placeholder="e.g. P051234567Z"
+                    placeholder="e.g. TAX-98421"
                     value={formData.taxId}
                     onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400 font-mono"

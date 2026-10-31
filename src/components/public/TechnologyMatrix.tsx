@@ -89,10 +89,10 @@ export const TechnologyMatrix: React.FC = () => {
       highlight: false,
     },
     {
-      name: 'M-Pesa Daraja & KRA eTIMS',
+      name: 'Universal Payment & Fiscal Compliance Gateways',
       category: 'languages',
       role: 'Fintech & Fiscal Compliance APIs',
-      description: 'Instant STK push, automated B2B/B2C callbacks, and cryptographic QR code generation for tax verification.',
+      description: 'Instant settlement callbacks, automated double-entry verification, and cryptographic QR code generation for tax verification.',
       status: 'Adopt / Core',
       highlight: true,
     },

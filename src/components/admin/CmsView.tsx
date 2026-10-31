@@ -90,8 +90,8 @@ export const CmsView: React.FC<CmsViewProps> = ({
         videoUrl: '',
         galleryImages: [],
         screenshots: [],
-        features: 'Multi-Tenant Architecture, Role-Based Access, MySQL Clustered Storage',
-        techStack: 'Node.js, Express, React, MySQL 8, Docker',
+        features: 'Multi-Tenant Architecture, Role-Based Access, High-Performance Scalable Storage',
+        techStack: 'Enterprise Cloud Infrastructure, Microservices, Scalable Processing Engine',
         pricingModel: 'Perpetual Enterprise License',
         industries: 'Commercial, Financial, Public Sector',
         demoUrl: '',
@@ -109,7 +109,7 @@ export const CmsView: React.FC<CmsViewProps> = ({
         challenge: '',
         solution: '',
         results: '68% faster processing, 99.99% uptime',
-        technologies: 'Node.js, MySQL 8, M-Pesa Daraja, Vite',
+        technologies: 'Cloud Infrastructure, Enterprise API Gateway, High Availability Pipeline',
         isPublished: true,
         isFeatured: true,
       });
@@ -778,7 +778,7 @@ export const CmsView: React.FC<CmsViewProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Technology Stack (comma-separated)</label>
+                    <label className="block text-slate-300 font-semibold mb-1">Capabilities & Architecture (comma-separated)</label>
                     <input
                       type="text"
                       value={formData.techStack || ''}
@@ -953,7 +953,7 @@ export const CmsView: React.FC<CmsViewProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Technologies Used (comma-separated)</label>
+                    <label className="block text-slate-300 font-semibold mb-1">Key Capabilities & Integrations (comma-separated)</label>
                     <input
                       type="text"
                       value={formData.technologies || ''}

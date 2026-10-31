@@ -39,6 +39,7 @@ import { MediaView } from './components/admin/MediaView.tsx';
 import { SettingsView } from './components/admin/SettingsView.tsx';
 import { DatabaseView } from './components/admin/DatabaseView.tsx';
 import { AuditLogsView } from './components/admin/AuditLogsView.tsx';
+import { UsersView } from './components/admin/UsersView.tsx';
 import { LoginModal } from './components/admin/LoginModal.tsx';
 
 import { 
@@ -98,7 +99,7 @@ export default function App() {
     website: 'https://saaslink.tech',
     companyWebsite: 'https://saaslink.tech',
     logoUrl: '/assets/saaslink-logo.svg',
-    taxId: 'P051982341Z',
+    taxId: '',
     currency: 'USD',
     currencySymbol: '$',
     defaultTaxRate: 16,
@@ -108,7 +109,7 @@ export default function App() {
     invoiceNextSeq: 1003,
     receiptPrefix: 'RCT-2026-',
     receiptNextSeq: 1003,
-    paymentInstructions: 'Bank: Equity Bank Kenya Ltd\nAccount Name: SaaSLink Technologies Ltd\nAccount No: 0180293847561\nBranch: Westlands Supreme Centre\nSwift: EQBLKENA\n\nM-Pesa Business Paybill: 889900\nAccount: [Your Invoice Number]',
+    paymentInstructions: 'Bank: Enterprise Commercial Bank\nAccount Name: SaaSLink Technologies Ltd\nAccount No: 0102049284000\nBranch: Global Corporate Centre\nSwift: ECBLUS33\nElectronic Settlement: Reference Invoice ID',
     termsAndConditions: 'All custom source code and architectural assets become 100% intellectual property of client upon final settlement. SaaSLink provides 90 days guaranteed bug-fix warranty on all production deployments.',
     privacyPolicy: 'SaaSLink Technologies Ltd enforces rigorous data confidentiality, ISO 27001-aligned information security, and GDPR-compliant record processing.',
     socials: {
@@ -155,6 +156,7 @@ export default function App() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
   // Pre-selected client when creating quote or invoice from CRM
   const [actionClient, setActionClient] = useState<Client | null>(null);
@@ -222,7 +224,7 @@ export default function App() {
 
       const [
         metricsRes, leadsRes, clientsRes, quotesRes, 
-        invoicesRes, paymentsRes, projectsRes, mediaRes, logsRes
+        invoicesRes, paymentsRes, projectsRes, mediaRes, logsRes, usersRes
       ] = await Promise.all([
         fetch('/api/admin/metrics', { headers }),
         fetch('/api/admin/leads', { headers }),
@@ -233,11 +235,12 @@ export default function App() {
         fetch('/api/admin/projects', { headers }),
         fetch('/api/admin/media', { headers }),
         fetch('/api/admin/audit-logs', { headers }),
+        fetch('/api/admin/users', { headers }),
       ]);
 
       const [
         metricsData, leadsData, clientsData, quotesData,
-        invoicesData, paymentsData, projectsData, mediaData, logsData
+        invoicesData, paymentsData, projectsData, mediaData, logsData, usersData
       ] = await Promise.all([
         parseJsonSafe<DashboardMetrics | null>(metricsRes, null),
         parseJsonSafe<Lead[]>(leadsRes, []),
@@ -248,6 +251,7 @@ export default function App() {
         parseJsonSafe<Project[]>(projectsRes, []),
         parseJsonSafe<MediaItem[]>(mediaRes, []),
         parseJsonSafe<AuditLog[]>(logsRes, []),
+        parseJsonSafe<User[]>(usersRes, []),
       ]);
 
       if (metricsData) setMetrics(metricsData);
@@ -259,6 +263,7 @@ export default function App() {
       setProjects(projectsData);
       setMedia(mediaData);
       setAuditLogs(logsData);
+      setUsers(usersData);
     } catch (err) {
       console.error('Error fetching admin data:', err);
     }
@@ -717,6 +722,116 @@ export default function App() {
     }
   };
 
+  // User Management Handlers
+  const handleCreateUser = async (userData: any): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        },
+        body: JSON.stringify(userData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Failed to create user' };
+      }
+      setUsers(prev => [...prev, data]);
+      fetchAdminData();
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Network error' };
+    }
+  };
+
+  const handleUpdateUser = async (id: string, userData: any): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        },
+        body: JSON.stringify(userData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Failed to update user' };
+      }
+      setUsers(prev => prev.map(u => u.id === id ? data : u));
+      if (currentUser?.id === id) {
+        setCurrentUser(prev => prev ? { ...prev, ...data } : null);
+      }
+      fetchAdminData();
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Network error' };
+    }
+  };
+
+  const handleToggleUserStatus = async (id: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch(`/api/admin/users/${id}/toggle-status`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Failed to toggle status' };
+      }
+      setUsers(prev => prev.map(u => u.id === id ? { ...u, isActive: data.isActive } : u));
+      fetchAdminData();
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Network error' };
+    }
+  };
+
+  const handleResetUserPassword = async (id: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch(`/api/admin/users/${id}/reset-password`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Failed to reset password' };
+      }
+      fetchAdminData();
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Network error' };
+    }
+  };
+
+  const handleDeleteUser = async (id: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, {
+        method: 'DELETE',
+        headers: { 
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Failed to delete user' };
+      }
+      setUsers(prev => prev.filter(u => u.id !== id));
+      fetchAdminData();
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Network error' };
+    }
+  };
+
   // Settings Handler
   const handleSaveSettings = async (newSettings: Partial<GlobalSettings>) => {
     try {
@@ -852,6 +967,7 @@ export default function App() {
 
         {adminSection === 'clients' && (
           <ClientsView
+            settings={settings}
             clients={clients}
             quotations={quotations}
             invoices={invoices}
@@ -903,6 +1019,7 @@ export default function App() {
 
         {adminSection === 'projects' && (
           <ProjectsView
+            settings={settings}
             projects={projects}
             clients={clients}
             onCreateProject={handleCreateProject}
@@ -933,6 +1050,19 @@ export default function App() {
             onAddMedia={handleAddMedia}
             onDeleteMedia={handleDeleteMedia}
             onSetAsLogo={(url) => handleSaveSettings({ logoUrl: url })}
+          />
+        )}
+
+        {adminSection === 'users' && (
+          <UsersView
+            users={users}
+            currentUser={currentUser}
+            onRefresh={fetchAdminData}
+            onCreateUser={handleCreateUser}
+            onUpdateUser={handleUpdateUser}
+            onToggleStatus={handleToggleUserStatus}
+            onResetPassword={handleResetUserPassword}
+            onDeleteUser={handleDeleteUser}
           />
         )}
 
@@ -1056,9 +1186,6 @@ export default function App() {
           <div id="process">
             <ProcessSection />
           </div>
-
-          {/* Technology & Architecture Matrix */}
-          <TechnologyMatrix />
 
           {/* Testimonials */}
           <TestimonialsSection testimonials={testimonials} />

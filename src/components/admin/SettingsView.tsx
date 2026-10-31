@@ -26,7 +26,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     companyTagline: settings?.companyTagline || settings?.tagline || '',
     logoUrl: settings?.logoUrl || '/assets/saaslink-logo.svg',
     faviconUrl: settings?.faviconUrl || settings?.logoUrl || '/assets/saaslink-logo.svg',
-    taxId: settings?.taxId || 'P051982341Z',
+    taxId: settings?.taxId || '',
   });
 
   // Sync if settings prop updates externally
@@ -664,11 +664,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
 
             <div>
-              <label className="block text-slate-300 font-semibold mb-1">Tax / KRA PIN Number *</label>
+              <label className="block text-slate-300 font-semibold mb-1">Corporate Tax ID / Registration</label>
               <input
                 type="text"
-                required
-                value={formData.taxId}
+                value={formData.taxId || ''}
+                placeholder="Optional (e.g. TAX-98421)"
                 onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
                 className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono focus:outline-none focus:border-cyan-400"
               />
@@ -743,11 +743,15 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <label className="block text-slate-300 font-semibold mb-1">Platform Currency Code</label>
               <select
                 value={formData.currency}
-                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  const sym = val === 'KES' ? 'KES ' : val === 'EUR' ? '€' : val === 'GBP' ? '£' : '$';
+                  setFormData({ ...formData, currency: val, currencySymbol: sym });
+                }}
                 className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400"
               >
                 <option value="USD">USD ($) - United States Dollar</option>
-                <option value="KES">KES (KSh) - Kenya Shillings</option>
+                <option value="KES">KES (KES) - Kenya Shillings</option>
                 <option value="EUR">EUR (€) - Euro</option>
                 <option value="GBP">GBP (£) - British Pound</option>
               </select>

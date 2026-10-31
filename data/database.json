@@ -14,7 +14,7 @@
     "country": "Kenya",
     "website": "https://saaslink.tech",
     "companyWebsite": "https://saaslink.tech",
-    "taxId": "P051982341Z",
+    "taxId": "",
     "logoUrl": "/assets/saaslink-logo.svg",
     "faviconUrl": "/assets/saaslink-logo.svg",
     "currency": "USD",
@@ -26,7 +26,7 @@
     "invoiceNextSeq": 1003,
     "receiptPrefix": "RCT-2026-",
     "receiptNextSeq": 1003,
-    "paymentInstructions": "Bank: Standard Chartered Bank Ltd\nAccount Name: SaaSLink Technologies Ltd\nA/C No: 0102049284000\nSwift Code: SCBLKENX\nBranch: Westlands, Nairobi\nFor mobile transfers: M-Pesa Paybill 400200, Account: Invoice Number",
+    "paymentInstructions": "Bank: Enterprise Commercial Bank\nAccount Name: SaaSLink Technologies Ltd\nA/C No: 0102049284000\nSwift Code: ECBLUS33\nBranch: Global Corporate Centre\nElectronic / Wire Transfer: Reference Invoice ID",
     "termsAndConditions": "1. Quotation validity is 30 days from date of issue.\n2. Standard milestone billing: 40% Mobilization, 30% User Acceptance Testing, 30% Production Handover.\n3. Source code IP transfers upon final payment settlement.\n4. Comprehensive 90-day post-launch warranty and SLA included.",
     "privacyPolicy": "SaaSLink Technologies Ltd enforces rigorous data confidentiality, ISO 27001-aligned information security, and GDPR-compliant record processing for all enterprise clients.",
     "socials": {
@@ -1481,6 +1481,136 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act_1793472466582_0hkvx",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:47:46.582Z"
+    },
+    {
+      "id": "act_1793472462602_hj39x",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:47:42.602Z"
+    },
+    {
+      "id": "act_1793472457718_b8fop",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "DELETED_USER",
+      "resource": "users",
+      "resourceId": "usr_mvwr6cro",
+      "details": "Permanently deleted user account for Sarah Kimani (sarah@saaslink.tech)",
+      "timestamp": "2026-10-31T18:47:37.718Z"
+    },
+    {
+      "id": "act_1793472457677_gn0wi",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:47:37.677Z"
+    },
+    {
+      "id": "act_1793472448809_jf6le",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "RESET_USER_PASSWORD",
+      "resource": "users",
+      "resourceId": "usr_mvwr6cro",
+      "details": "Administrative password reset performed for Sarah Kimani (sarah@saaslink.tech)",
+      "timestamp": "2026-10-31T18:47:28.810Z"
+    },
+    {
+      "id": "act_1793472448675_fniyv",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:47:28.675Z"
+    },
+    {
+      "id": "act_1793472443379_3pd3j",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "DISABLED_USER",
+      "resource": "users",
+      "resourceId": "usr_mvwr6cro",
+      "details": "Disabled account access for Sarah Kimani (Project Manager)",
+      "timestamp": "2026-10-31T18:47:23.379Z"
+    },
+    {
+      "id": "act_1793472443350_qodlg",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:47:23.350Z"
+    },
+    {
+      "id": "act_1793472432847_gy3tf",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:47:12.847Z"
+    },
+    {
+      "id": "act_1793472426396_59tcm",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "CREATED_USER",
+      "resource": "users",
+      "resourceId": "usr_mvwr6cro",
+      "details": "Created staff account for Sarah Kimani (Project Manager)",
+      "timestamp": "2026-10-31T18:47:06.396Z"
+    },
+    {
+      "id": "act_1793472426253_aoprj",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:47:06.253Z"
+    },
+    {
+      "id": "act_1793472420979_ourwv",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:47:00.979Z"
+    },
+    {
+      "id": "act_1793472417249_zwdrh",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-10-31T18:46:57.249Z"
+    },
     {
       "id": "act_1793366624678_0g2iy",
       "userId": "usr_super_01",

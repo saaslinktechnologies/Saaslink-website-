@@ -52,22 +52,22 @@ export const Hero: React.FC<HeroProps> = ({
     masuma: {
       name: 'MASUMA ERP System',
       sector: 'Automotive Distribution & Wholesale',
-      headline: 'Multi-Branch Inventory & KRA eTIMS Integration',
-      description: 'Synchronizes multi-warehouse stock in real time, manages wholesale branch POS, lookups chassis/VIN fitments, and generates cryptographic KRA eTIMS tax invoices.',
+      headline: 'Multi-Branch Inventory & Enterprise Fiscal Integration',
+      description: 'Synchronizes multi-warehouse stock in real time, manages wholesale branch POS, lookups chassis/VIN fitments, and generates automated cryptographic fiscal tax invoices.',
       specs: [
-        { label: 'Regulatory Mandate', val: 'Native KRA eTIMS Cryptographic QR' },
+        { label: 'Fiscal Gateway', val: 'Automated Cryptographic Tax QR' },
         { label: 'Stock Reconciled', val: 'Multi-Warehouse & Showroom POS' },
-        { label: 'Payment Gateway', val: 'Direct M-Pesa B2B / C2B Settlement' },
+        { label: 'Payment Gateway', val: 'Universal Electronic & Card Settlement' },
       ],
       metrics: '35 hours saved weekly in stock reconciliation',
     },
     raphamis: {
       name: 'RaphaMIS Hospital Core',
       sector: 'Hospitals, Clinics & Mission Facilities',
-      headline: 'Electronic Health Records & SHA/NHIF Claims',
-      description: 'Comprehensive hospital management unifying digital outpatient triage, inpatient bed occupancy, doctor consultation notes, digital pharmacy POS, and SHA insurance claims.',
+      headline: 'Electronic Health Records & Medical Claims Gateways',
+      description: 'Comprehensive hospital management unifying digital outpatient triage, inpatient bed occupancy, doctor consultation notes, digital pharmacy POS, and medical insurance claims.',
       specs: [
-        { label: 'Insurance Gateway', val: 'Real-Time SHA / NHIF Electronic Claims' },
+        { label: 'Insurance Gateway', val: 'Real-Time Electronic Medical Claims' },
         { label: 'Clinical Flow', val: 'Paperless Triage, Lab LIMS & Doctor Notes' },
         { label: 'Pharmacy Control', val: 'Batch Expiry & Automated Stock Ledger' },
       ],
@@ -123,28 +123,28 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Professional Subtitle Kicker in Brand Gold */}
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[oklch(0.85_0.12_80)]">
               <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.85_0.12_80)] animate-pulse shrink-0" />
-              <span className="truncate">Enterprise Software Architecture · Nairobi, Kenya</span>
+              <span className="truncate">Enterprise Software Systems & Cloud Architecture</span>
             </div>
 
             {/* Main Headline with Signature Gold Gradient */}
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-white tracking-tight leading-[1.15] sm:leading-[1.1] font-sans break-words">
-              We engineer software systems that power African enterprises, <span className="text-gradient-gold">institutions and non-profits.</span>
+              We engineer software systems that power modern enterprises, <span className="text-gradient-gold">institutions and corporations.</span>
             </h1>
 
             {/* Sub-headline */}
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl font-normal">
-              From multi-branch ERPs with native KRA eTIMS and hospital EHRs with SHA/NHIF reconciliation to smart water utility IoT and manual process automation. SaaSLink Technologies builds resilient, production-grade software platforms tailored to how regional organizations actually operate.
+              From multi-warehouse enterprise ERP platforms and clinical healthcare systems to automated billing pipelines, custom fintech bridges, and operational IoT telemetry. SaaSLink Technologies builds resilient, production-grade software platforms engineered for enterprise scale and operational excellence.
             </p>
 
-            {/* Regulatory & Standards Strip */}
+            {/* Enterprise Integrations & Standards Strip */}
             <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-2 text-xs text-slate-300 pt-1">
-              <span className="text-[oklch(0.85_0.12_80)] font-medium">✓ KRA eTIMS Validated</span>
+              <span className="text-[oklch(0.85_0.12_80)] font-medium">✓ Enterprise Integration Ready</span>
               <span className="text-white/20 hidden sm:inline">·</span>
-              <span className="text-[oklch(0.85_0.12_80)] font-medium">✓ M-Pesa Daraja 2.0 Native</span>
+              <span className="text-[oklch(0.85_0.12_80)] font-medium">✓ REST & GraphQL API Native</span>
               <span className="text-white/20 hidden sm:inline">·</span>
-              <span className="text-[oklch(0.85_0.12_80)] font-medium">✓ SHA / NHIF Integrated</span>
+              <span className="text-[oklch(0.85_0.12_80)] font-medium">✓ Universal Payment & ERP Gateways</span>
               <span className="text-white/20 hidden sm:inline">·</span>
-              <span className="text-slate-300">✓ Kenya Data Protection Act 2019</span>
+              <span className="text-slate-300">✓ SOC 2 & ISO 27001 Security Aligned</span>
             </div>
 
             {/* High-Intent Conversion CTAs in Signature Gold */}

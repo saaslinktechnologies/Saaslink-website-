@@ -94,10 +94,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <CreditCard className="w-4 h-4 text-cyan-400" />
           </div>
           <div className="text-2xl font-display font-bold text-white group-hover:text-cyan-300 transition-colors">
-            ${metrics.totalInvoicedValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$')}{metrics.totalInvoicedValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </div>
           <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Outstanding: <strong>${metrics.outstandingBalance.toLocaleString()}</strong></span>
+            <span>Outstanding: <strong>{settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$')}{metrics.outstandingBalance.toLocaleString()}</strong></span>
             <ArrowUpRight className="w-3 h-3 text-slate-600 group-hover:text-cyan-400" />
           </div>
         </div>
@@ -112,7 +112,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <Receipt className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-2xl font-display font-bold text-emerald-400">
-            ${metrics.totalPaymentsReceived.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$')}{metrics.totalPaymentsReceived.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </div>
           <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
             <span>Verified Official Receipts</span>
@@ -171,7 +171,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <p className="text-[11px] text-slate-400">Recorded revenue distribution</p>
             </div>
             <span className="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-cyan-400">
-              USD ({settings.currency})
+              {settings.currency} ({settings?.currencySymbol || (settings.currency === 'KES' ? 'KES ' : '$')})
             </span>
           </div>
 
@@ -182,7 +182,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               return (
                 <div key={idx} className="flex-1 flex flex-col items-center gap-2 group">
                   <div className="text-[10px] font-mono text-cyan-300 opacity-0 group-hover:opacity-100 transition-opacity">
-                    ${item.amount.toLocaleString()}
+                    {settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$')}{item.amount.toLocaleString()}
                   </div>
                   <div 
                     className="w-full max-w-[48px] rounded-t-lg bg-gradient-to-t from-cyan-900 to-cyan-400 transition-all group-hover:brightness-125"

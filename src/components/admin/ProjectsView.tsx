@@ -4,9 +4,10 @@ import {
   AlertCircle, Users, Calendar, ArrowRight, 
   Trash2, Edit, CheckSquare, Square, ChevronRight 
 } from 'lucide-react';
-import { Project, Client, ProjectTask, TaskStatus, ProjectStatus } from '../../types.ts';
+import { Project, Client, ProjectTask, TaskStatus, ProjectStatus, GlobalSettings } from '../../types.ts';
 
 interface ProjectsViewProps {
+  settings?: GlobalSettings;
   projects?: Project[];
   clients?: Client[];
   onCreateProject: (data: any) => Promise<void>;
@@ -17,6 +18,7 @@ interface ProjectsViewProps {
 }
 
 export const ProjectsView: React.FC<ProjectsViewProps> = ({
+  settings,
   projects = [],
   clients = [],
   onCreateProject,
@@ -25,6 +27,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
   onAddTask,
   onUpdateTask,
 }) => {
+  const currSymbol = settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const safeProjects = projects || [];
@@ -166,7 +169,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
               <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <div>
                   <span className="text-[10px] block text-slate-500">Tasks: {completedTasks}/{totalTasks}</span>
-                  <span className="font-mono text-slate-200">${(proj.spent ?? 0).toLocaleString()} / ${(proj.budget ?? 0).toLocaleString()}</span>
+                  <span className="font-mono text-slate-200">{currSymbol}{(proj.spent ?? 0).toLocaleString()} / {currSymbol}{(proj.budget ?? 0).toLocaleString()}</span>
                 </div>
 
                 <button
@@ -213,11 +216,11 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
             <div className="grid grid-cols-3 gap-2.5 text-xs">
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Total Budget</span>
-                <span className="font-mono font-bold text-white">${(selectedProject.budget ?? 0).toLocaleString()}</span>
+                <span className="font-mono font-bold text-white">{currSymbol}{(selectedProject.budget ?? 0).toLocaleString()}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Burned</span>
-                <span className="font-mono font-bold text-cyan-400">${(selectedProject.spent ?? 0).toLocaleString()}</span>
+                <span className="font-mono font-bold text-cyan-400">{currSymbol}{(selectedProject.spent ?? 0).toLocaleString()}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Target Launch</span>
@@ -234,7 +237,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
               <input
                 type="text"
                 required
-                placeholder="Task title (e.g. Implement MySQL foreign key constraints)..."
+                placeholder="Task title (e.g. Implement schema validations and business rules)..."
                 value={taskTitle}
                 onChange={(e) => setTaskTitle(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-cyan-400"

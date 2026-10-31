@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FileText, Plus, Printer, CheckCircle, ArrowRight, 
   Trash2, Copy, Search, Eye, AlertCircle, Layers 
@@ -40,6 +40,18 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
   const [taxRate, setTaxRate] = useState(settings?.defaultTaxRate || 16);
   const [notes, setNotes] = useState('Thank you for choosing SaaSLink Technologies Ltd. Quotation valid for 30 calendar days.');
   const [terms, setTerms] = useState(settings?.termsAndConditions || 'Payment: 40% advance on project commencement, 40% upon staging UAT demo, 20% on production deployment.');
+  
+  // Sync currency whenever platform settings update
+  useEffect(() => {
+    if (settings?.currency) {
+      setCurrency(settings.currency);
+    }
+  }, [settings?.currency]);
+
+  const getCurrencySymbol = (curr?: string) => {
+    const c = curr || currency || settings?.currency || 'USD';
+    return c === 'KES' ? 'KES ' : c === 'EUR' ? '€' : c === 'GBP' ? '£' : '$';
+  };
   
   const [items, setItems] = useState<Omit<QuotationItem, 'id' | 'total'>[]>([
     { type: 'service', description: 'Enterprise Software Architecture & Custom Engineering', quantity: 1, unitPrice: 4800, discount: 0 },
@@ -188,7 +200,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
 
                     <td className="py-3.5 px-4">
                       <div className="text-base font-bold text-white">
-                        ${quote.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        {getCurrencySymbol(quote.currency)}{quote.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </div>
                       <div className="text-[10px] text-slate-400">Tax incl. ({quote.taxRate}%)</div>
                     </td>
@@ -259,8 +271,8 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
 
             <form onSubmit={handleSubmit} className="space-y-6 text-xs">
               
-              {/* Client & Dates */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              {/* Client, Currency & Dates */}
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3.5">
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">Target Client *</label>
                   <select
@@ -271,6 +283,20 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>{c.company} ({c.name})</option>
                     ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Currency *</label>
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400 text-xs"
+                  >
+                    <option value="KES">KES - Kenya Shillings (KSh)</option>
+                    <option value="USD">USD - US Dollar ($)</option>
+                    <option value="EUR">EUR - Euro (€)</option>
+                    <option value="GBP">GBP - British Pound (£)</option>
                   </select>
                 </div>
 
@@ -389,7 +415,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2.5">
                   <div className="flex justify-between text-slate-400">
                     <span>Subtotal:</span>
-                    <span className="font-mono text-white">${subtotal.toFixed(2)}</span>
+                    <span className="font-mono text-white">{getCurrencySymbol(currency)}{subtotal.toFixed(2)}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-slate-400">
@@ -407,7 +433,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                   {discountAmount > 0 && (
                     <div className="flex justify-between text-amber-400">
                       <span>Discount ({discountPercent}%):</span>
-                      <span className="font-mono">-${discountAmount.toFixed(2)}</span>
+                      <span className="font-mono">-{getCurrencySymbol(currency)}{discountAmount.toFixed(2)}</span>
                     </div>
                   )}
 
@@ -425,12 +451,12 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
 
                   <div className="flex justify-between text-slate-400">
                     <span>VAT Amount:</span>
-                    <span className="font-mono text-white">${taxAmount.toFixed(2)}</span>
+                    <span className="font-mono text-white">{getCurrencySymbol(currency)}{taxAmount.toFixed(2)}</span>
                   </div>
 
                   <div className="pt-3 border-t border-slate-800 flex justify-between text-sm font-bold text-white">
                     <span>Quotation Grand Total:</span>
-                    <span className="font-mono text-cyan-400">${grandTotal.toFixed(2)}</span>
+                    <span className="font-mono text-cyan-400">{getCurrencySymbol(currency)}{grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -501,8 +527,8 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                     </h1>
                   </div>
                   <p className="text-slate-600 text-[11px] leading-snug">
-                    {settings?.companyAddress || settings?.address || 'Delta Corner Tower, Westlands, Nairobi, Kenya'}<br />
-                    PIN: {settings?.taxId || 'P051982341Z'} | Phone: {settings?.companyPhone || settings?.phone || '+254 720 000 000'}<br />
+                    {settings?.companyAddress || settings?.address || 'Corporate Headquarters'}<br />
+                    {settings?.taxId ? `Tax ID: ${settings.taxId} | ` : ''}Phone: {settings?.companyPhone || settings?.phone || '+254 720 000 000'}<br />
                     Email: {settings?.companyEmail || settings?.email || 'contact@saaslink.tech'} | Web: {settings?.companyWebsite || settings?.website || 'https://saaslink.tech'}
                   </p>
                 </div>
@@ -558,8 +584,8 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                           <div className="text-[11px] text-slate-500 uppercase font-mono">{item.type}</div>
                         </td>
                         <td className="py-3 text-center">{item.quantity}</td>
-                        <td className="py-3 text-right font-mono">${item.unitPrice.toFixed(2)}</td>
-                        <td className="py-3 text-right font-mono font-semibold">${item.total.toFixed(2)}</td>
+                        <td className="py-3 text-right font-mono">{getCurrencySymbol(previewQuote.currency)}{item.unitPrice.toFixed(2)}</td>
+                        <td className="py-3 text-right font-mono font-semibold">{getCurrencySymbol(previewQuote.currency)}{item.total.toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -571,24 +597,24 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                 <div className="w-72 space-y-2 border-t border-slate-300 pt-3 text-xs">
                   <div className="flex justify-between text-slate-600">
                     <span>Subtotal:</span>
-                    <span className="font-mono font-semibold">${previewQuote.subtotal.toFixed(2)}</span>
+                    <span className="font-mono font-semibold">{getCurrencySymbol(previewQuote.currency)}{previewQuote.subtotal.toFixed(2)}</span>
                   </div>
 
                   {previewQuote.discountAmount > 0 && (
                     <div className="flex justify-between text-emerald-700">
                       <span>Discount ({previewQuote.discountPercent}%):</span>
-                      <span className="font-mono">-${previewQuote.discountAmount.toFixed(2)}</span>
+                      <span className="font-mono">-{getCurrencySymbol(previewQuote.currency)}{previewQuote.discountAmount.toFixed(2)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-slate-600">
                     <span>VAT / Tax ({previewQuote.taxRate}%):</span>
-                    <span className="font-mono font-semibold">${previewQuote.taxAmount.toFixed(2)}</span>
+                    <span className="font-mono font-semibold">{getCurrencySymbol(previewQuote.currency)}{previewQuote.taxAmount.toFixed(2)}</span>
                   </div>
 
                   <div className="border-t-2 border-slate-900 pt-2 flex justify-between text-sm font-bold text-slate-950">
                     <span>Total Investment:</span>
-                    <span className="font-mono">${previewQuote.total.toFixed(2)}</span>
+                    <span className="font-mono">{getCurrencySymbol(previewQuote.currency)}{previewQuote.total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

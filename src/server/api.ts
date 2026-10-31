@@ -1431,12 +1431,69 @@ apiRouter.get('/admin/settings', authenticate, (req: AuthRequest, res: Response)
   res.json(getDb().settings);
 });
 
+const applySettingsUpdate = (existing: any, incoming: any) => {
+  const updated = { ...existing, ...incoming };
+
+  // Sync phone across both key aliases
+  if (incoming.companyPhone !== undefined) {
+    updated.companyPhone = incoming.companyPhone;
+    updated.phone = incoming.companyPhone;
+  } else if (incoming.phone !== undefined) {
+    updated.phone = incoming.phone;
+    updated.companyPhone = incoming.phone;
+  }
+
+  // Sync email across both key aliases
+  if (incoming.companyEmail !== undefined) {
+    updated.companyEmail = incoming.companyEmail;
+    updated.email = incoming.companyEmail;
+  } else if (incoming.email !== undefined) {
+    updated.email = incoming.email;
+    updated.companyEmail = incoming.email;
+  }
+
+  // Sync address across both key aliases
+  if (incoming.companyAddress !== undefined) {
+    updated.companyAddress = incoming.companyAddress;
+    updated.address = incoming.companyAddress;
+  } else if (incoming.address !== undefined) {
+    updated.address = incoming.address;
+    updated.companyAddress = incoming.address;
+  }
+
+  // Sync website across both key aliases
+  if (incoming.companyWebsite !== undefined) {
+    updated.companyWebsite = incoming.companyWebsite;
+    updated.website = incoming.companyWebsite;
+  } else if (incoming.website !== undefined) {
+    updated.website = incoming.website;
+    updated.companyWebsite = incoming.website;
+  }
+
+  // Sync tagline across both key aliases
+  if (incoming.companyTagline !== undefined) {
+    updated.companyTagline = incoming.companyTagline;
+    updated.tagline = incoming.companyTagline;
+  } else if (incoming.tagline !== undefined) {
+    updated.tagline = incoming.tagline;
+    updated.companyTagline = incoming.tagline;
+  }
+
+  // Dynamic currency symbol matching
+  if (incoming.currency) {
+    const code = String(incoming.currency).toUpperCase();
+    updated.currency = code;
+    if (!incoming.currencySymbol || incoming.currencySymbol === '$' && code === 'KES') {
+      updated.currencySymbol = code === 'KES' ? 'KES ' : code === 'EUR' ? '€' : code === 'GBP' ? '£' : '$';
+    }
+  }
+
+  return updated;
+};
+
 apiRouter.put('/admin/settings', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
   const db = getDb();
-  db.settings = {
-    ...db.settings,
-    ...req.body,
-  };
+  db.settings = applySettingsUpdate(db.settings, req.body);
   saveDb(db);
   logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', 'UPDATED_SETTINGS', 'settings', 'global', 'Updated enterprise global configuration & branding');
   res.json(db.settings);
@@ -1444,10 +1501,7 @@ apiRouter.put('/admin/settings', authenticate, requireRole(['Super Administrator
 
 apiRouter.patch('/admin/settings', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
   const db = getDb();
-  db.settings = {
-    ...db.settings,
-    ...req.body,
-  };
+  db.settings = applySettingsUpdate(db.settings, req.body);
   saveDb(db);
   logActivity(req.user?.id || 'admin', req.user?.name || 'Administrator', 'UPDATED_SETTINGS', 'settings', 'global', 'Updated enterprise global configuration & branding');
   res.json(db.settings);
@@ -1483,6 +1537,8 @@ apiRouter.post('/admin/settings/favicon', authenticate, requireRole(['Super Admi
 // ==========================================
 // 12. USERS & RBAC MANAGEMENT
 // ==========================================
+// 12. USERS & RBAC MANAGEMENT
+// ==========================================
 
 apiRouter.get('/admin/users', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
   const db = getDb();
@@ -1493,73 +1549,269 @@ apiRouter.get('/admin/users', authenticate, requireRole(['Super Administrator', 
     role: u.role,
     avatarUrl: u.avatarUrl,
     phone: u.phone,
-    isActive: u.isActive,
-    createdAt: u.createdAt,
+    isActive: u.isActive !== false,
+    createdAt: u.createdAt || new Date().toISOString(),
   }));
   res.json(safeUsers);
 });
 
-apiRouter.post('/admin/users', authenticate, requireRole(['Super Administrator']), (req: AuthRequest, res: Response) => {
+apiRouter.post('/admin/users', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
   const db = getDb();
-  const { name, email, password, role, phone } = req.body;
+  const { name, email, password, role, phone, avatarUrl, isActive } = req.body;
   
   if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Name, email, and password are required.' });
+    return res.status(400).json({ error: 'Name, email, and initial password are required.' });
   }
 
-  if (db.users.some(u => u.email.toLowerCase() === String(email).toLowerCase())) {
-    return res.status(400).json({ error: 'User with this email already exists.' });
+  const trimmedEmail = String(email).trim().toLowerCase();
+  if (db.users.some(u => u.email.toLowerCase() === trimmedEmail)) {
+    return res.status(400).json({ error: 'A user account with this corporate email already exists.' });
+  }
+
+  if (String(password).length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
+  }
+
+  const assignedRole = role || 'Staff';
+  // Only Super Administrator can create other Super Administrators
+  if (assignedRole === 'Super Administrator' && req.user?.role !== 'Super Administrator') {
+    return res.status(403).json({ error: 'Only a Super Administrator can provision another Super Administrator account.' });
   }
 
   const newUser: User & { passwordHash: string } = {
-    id: `usr_${Date.now().toString(36)}`,
+    id: `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`,
     name: String(name).trim(),
-    email: String(email).trim().toLowerCase(),
+    email: trimmedEmail,
     passwordHash: bcrypt.hashSync(String(password), 10),
-    role: role || 'Staff',
-    phone,
-    isActive: true,
+    role: assignedRole,
+    phone: phone ? String(phone).trim() : undefined,
+    avatarUrl: avatarUrl ? String(avatarUrl).trim() : undefined,
+    isActive: isActive !== false,
     createdAt: new Date().toISOString(),
   };
 
   db.users.push(newUser);
   saveDb(db);
-  logActivity(req.user!.id, req.user!.name, 'CREATED_USER', 'users', newUser.id, `Created staff account for ${newUser.name} (${newUser.role})`);
+  logActivity(
+    req.user!.id,
+    req.user!.name,
+    'CREATED_USER',
+    'users',
+    newUser.id,
+    `Provisioned enterprise account for ${newUser.name} (${newUser.role}) <${newUser.email}>`
+  );
 
   res.status(201).json({
     id: newUser.id,
     name: newUser.name,
     email: newUser.email,
     role: newUser.role,
+    avatarUrl: newUser.avatarUrl,
     phone: newUser.phone,
     isActive: newUser.isActive,
     createdAt: newUser.createdAt,
   });
 });
 
-apiRouter.put('/admin/users/:id', authenticate, requireRole(['Super Administrator']), (req: AuthRequest, res: Response) => {
+const handleUpdateUser = (req: AuthRequest, res: Response) => {
   const db = getDb();
   const index = db.users.findIndex(u => u.id === req.params.id);
-  if (index === -1) return res.status(404).json({ error: 'User not found' });
+  if (index === -1) return res.status(404).json({ error: 'User account not found.' });
 
   const user = db.users[index];
-  if (req.body.name) user.name = req.body.name;
-  if (req.body.role) user.role = req.body.role;
-  if (req.body.phone !== undefined) user.phone = req.body.phone;
-  if (req.body.isActive !== undefined) user.isActive = !!req.body.isActive;
-  if (req.body.password) user.passwordHash = bcrypt.hashSync(req.body.password, 10);
+  const { name, email, role, phone, avatarUrl, isActive, password } = req.body;
+
+  // Protect email uniqueness if changed
+  if (email && email.toLowerCase() !== user.email.toLowerCase()) {
+    const trimmedEmail = String(email).trim().toLowerCase();
+    if (db.users.some(u => u.id !== user.id && u.email.toLowerCase() === trimmedEmail)) {
+      return res.status(400).json({ error: 'Another user is already registered with this email address.' });
+    }
+    user.email = trimmedEmail;
+  }
+
+  // Prevent demoting the last active Super Administrator
+  if (role && role !== user.role) {
+    if (user.role === 'Super Administrator' && role !== 'Super Administrator') {
+      const activeSuperAdmins = db.users.filter(u => u.role === 'Super Administrator' && u.isActive && u.id !== user.id);
+      if (activeSuperAdmins.length === 0) {
+        return res.status(400).json({ error: 'Cannot demote the sole active Super Administrator.' });
+      }
+    }
+    // Only Super Admin can promote someone to Super Admin
+    if (role === 'Super Administrator' && req.user?.role !== 'Super Administrator') {
+      return res.status(403).json({ error: 'Only a Super Administrator can assign the Super Administrator role.' });
+    }
+    user.role = role;
+  }
+
+  // Prevent deactivating own account via general update
+  if (isActive !== undefined) {
+    const willBeActive = !!isActive;
+    if (req.user?.id === user.id && !willBeActive) {
+      return res.status(400).json({ error: 'You cannot deactivate your own active account.' });
+    }
+    if (user.role === 'Super Administrator' && !willBeActive) {
+      const activeSuperAdmins = db.users.filter(u => u.role === 'Super Administrator' && u.isActive && u.id !== user.id);
+      if (activeSuperAdmins.length === 0) {
+        return res.status(400).json({ error: 'Cannot deactivate the sole active Super Administrator.' });
+      }
+    }
+    user.isActive = willBeActive;
+  }
+
+  if (name) user.name = String(name).trim();
+  if (phone !== undefined) user.phone = phone ? String(phone).trim() : undefined;
+  if (avatarUrl !== undefined) user.avatarUrl = avatarUrl ? String(avatarUrl).trim() : undefined;
+  if (password) {
+    if (String(password).length < 6) {
+      return res.status(400).json({ error: 'New password must be at least 6 characters long.' });
+    }
+    user.passwordHash = bcrypt.hashSync(String(password), 10);
+  }
 
   saveDb(db);
-  logActivity(req.user!.id, req.user!.name, 'UPDATED_USER', 'users', user.id, `Updated user ${user.name}`);
+  logActivity(
+    req.user!.id,
+    req.user!.name,
+    'UPDATED_USER',
+    'users',
+    user.id,
+    `Updated profile & credentials for ${user.name} (${user.role})`
+  );
 
   res.json({
     id: user.id,
     name: user.name,
     email: user.email,
     role: user.role,
+    avatarUrl: user.avatarUrl,
     phone: user.phone,
     isActive: user.isActive,
     createdAt: user.createdAt,
+  });
+};
+
+apiRouter.put('/admin/users/:id', authenticate, requireRole(['Super Administrator', 'Administrator']), handleUpdateUser);
+apiRouter.patch('/admin/users/:id', authenticate, requireRole(['Super Administrator', 'Administrator']), handleUpdateUser);
+
+// Toggle Enable / Disable Status
+apiRouter.patch('/admin/users/:id/toggle-status', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const user = db.users.find(u => u.id === req.params.id);
+  if (!user) return res.status(404).json({ error: 'User account not found.' });
+
+  const currentStatus = user.isActive !== false;
+  const newStatus = !currentStatus;
+
+  // Prevent deactivating own account
+  if (req.user?.id === user.id && !newStatus) {
+    return res.status(400).json({ error: 'You cannot disable your own active account.' });
+  }
+
+  // Prevent disabling the last active Super Administrator
+  if (user.role === 'Super Administrator' && !newStatus) {
+    const activeSuperAdmins = db.users.filter(u => u.role === 'Super Administrator' && u.isActive && u.id !== user.id);
+    if (activeSuperAdmins.length === 0) {
+      return res.status(400).json({ error: 'Cannot disable the sole active Super Administrator.' });
+    }
+  }
+
+  user.isActive = newStatus;
+  saveDb(db);
+
+  logActivity(
+    req.user!.id,
+    req.user!.name,
+    newStatus ? 'ENABLED_USER' : 'DISABLED_USER',
+    'users',
+    user.id,
+    `${newStatus ? 'Enabled' : 'Disabled'} account access for ${user.name} (${user.role})`
+  );
+
+  res.json({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    avatarUrl: user.avatarUrl,
+    phone: user.phone,
+    isActive: user.isActive,
+    createdAt: user.createdAt,
+    message: `User account has been ${newStatus ? 'enabled' : 'disabled'}.`
+  });
+});
+
+// Admin Reset Password
+apiRouter.post('/admin/users/:id/reset-password', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const user = db.users.find(u => u.id === req.params.id);
+  if (!user) return res.status(404).json({ error: 'User account not found.' });
+
+  const { password } = req.body;
+  if (!password || String(password).length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
+  }
+
+  user.passwordHash = bcrypt.hashSync(String(password), 10);
+  saveDb(db);
+
+  logActivity(
+    req.user!.id,
+    req.user!.name,
+    'RESET_USER_PASSWORD',
+    'users',
+    user.id,
+    `Administrative password reset performed for ${user.name} (${user.email})`
+  );
+
+  res.json({
+    success: true,
+    message: `Password for ${user.name} has been successfully updated.`
+  });
+});
+
+// Delete User
+apiRouter.delete('/admin/users/:id', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const index = db.users.findIndex(u => u.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'User account not found.' });
+
+  const user = db.users[index];
+
+  // Self deletion guard
+  if (req.user?.id === user.id) {
+    return res.status(400).json({ error: 'Security safeguard: You cannot delete your own active administrator account.' });
+  }
+
+  // Sole Super Administrator guard
+  if (user.role === 'Super Administrator') {
+    const activeSuperAdmins = db.users.filter(u => u.role === 'Super Administrator' && u.isActive && u.id !== user.id);
+    if (activeSuperAdmins.length === 0) {
+      return res.status(400).json({ error: 'Cannot delete the sole active Super Administrator.' });
+    }
+  }
+
+  // Only Super Administrator can delete another Super Administrator
+  if (user.role === 'Super Administrator' && req.user?.role !== 'Super Administrator') {
+    return res.status(403).json({ error: 'Only a Super Administrator can delete another Super Administrator account.' });
+  }
+
+  db.users.splice(index, 1);
+  saveDb(db);
+
+  logActivity(
+    req.user!.id,
+    req.user!.name,
+    'DELETED_USER',
+    'users',
+    user.id,
+    `Permanently deleted user account for ${user.name} (${user.email})`
+  );
+
+  res.json({
+    success: true,
+    message: `User account for ${user.name} was permanently removed.`
   });
 });
 

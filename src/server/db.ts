@@ -102,7 +102,7 @@ export function createInitialDataset(): DatabaseSchema {
       country: 'Kenya',
       website: 'https://saaslink.tech',
       companyWebsite: 'https://saaslink.tech',
-      taxId: 'P051982341Z',
+      taxId: '',
       logoUrl: '/assets/saaslink-logo.svg',
       faviconUrl: '/assets/saaslink-logo.svg',
       currency: 'USD',
@@ -114,7 +114,7 @@ export function createInitialDataset(): DatabaseSchema {
       invoiceNextSeq: 1003,
       receiptPrefix: 'RCT-2026-',
       receiptNextSeq: 1003,
-      paymentInstructions: 'Bank: Standard Chartered Bank Ltd\nAccount Name: SaaSLink Technologies Ltd\nA/C No: 0102049284000\nSwift Code: SCBLKENX\nBranch: Westlands, Nairobi\nFor mobile transfers: M-Pesa Paybill 400200, Account: Invoice Number',
+      paymentInstructions: 'Bank: Enterprise Commercial Bank\nAccount Name: SaaSLink Technologies Ltd\nA/C No: 0102049284000\nSwift Code: ECBLUS33\nBranch: Global Corporate Centre\nElectronic / Wire Transfer: Reference Invoice ID',
       termsAndConditions: '1. Quotation validity is 30 days from date of issue.\n2. Standard milestone billing: 40% Mobilization, 30% User Acceptance Testing, 30% Production Handover.\n3. Source code IP transfers upon final payment settlement.\n4. Comprehensive 90-day post-launch warranty and SLA included.',
       privacyPolicy: 'SaaSLink Technologies Ltd enforces rigorous data confidentiality, ISO 27001-aligned information security, and GDPR-compliant record processing for all enterprise clients.',
       socials: {
@@ -1332,7 +1332,8 @@ export function getDb(): DatabaseSchema {
       if (!cachedDb.settings.companyPhone) cachedDb.settings.companyPhone = cachedDb.settings.phone || '+254 720 000 000 / +254 733 000 000';
       if (!cachedDb.settings.companyWebsite) cachedDb.settings.companyWebsite = cachedDb.settings.website || 'https://saaslink.tech';
       if (!cachedDb.settings.companyTagline) cachedDb.settings.companyTagline = cachedDb.settings.tagline || 'Software & Cloud Systems';
-      if (!cachedDb.settings.taxId) cachedDb.settings.taxId = 'P051982341Z';
+      if (cachedDb.settings.taxId === 'P051982341Z') cachedDb.settings.taxId = '';
+      if (!cachedDb.settings.taxId) cachedDb.settings.taxId = '';
       if (!cachedDb.settings.faviconUrl) cachedDb.settings.faviconUrl = cachedDb.settings.logoUrl || '/assets/saaslink-logo.svg';
     }
     return cachedDb!;

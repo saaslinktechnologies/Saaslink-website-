@@ -78,7 +78,7 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
               </p>
 
               <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
-                <strong>The Engineering Solution:</strong> Architected an event-driven microservices platform on Kubernetes with clustered PostgreSQL databases. Integrated a real-time M-Pesa Daraja and interbank payment engine with automated double-entry bookkeeping and biometric KYC verification.
+                <strong>The Engineering Solution:</strong> Architected an event-driven enterprise platform with high-availability clustered data storage. Integrated a real-time payment gateway and interbank clearing engine with automated double-entry bookkeeping and biometric KYC verification.
               </p>
 
               {/* Spotlight Metrics */}
@@ -100,11 +100,11 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
 
             <div className="flex flex-col items-start lg:items-end justify-center gap-3">
               <div className="p-5 rounded-2xl bg-white/5 border border-white/10 text-xs text-slate-300 w-full space-y-2">
-                <p className="text-[oklch(0.85_0.12_80)] font-semibold">Verified Stack In Production:</p>
-                <p className="text-slate-300">• Kubernetes Cluster (Multi-AZ)</p>
-                <p className="text-slate-300">• Clustered PostgreSQL + Redis State</p>
-                <p className="text-slate-300">• M-Pesa Daraja STK + B2B Webhooks</p>
-                <p className="text-slate-300">• AES-256 Kenya DPA 2019 Encryption</p>
+                <p className="text-[oklch(0.85_0.12_80)] font-semibold">Production Architecture Standards:</p>
+                <p className="text-slate-300">• Multi-Region High-Availability Cluster</p>
+                <p className="text-slate-300">• Enterprise Clustered Data & State Management</p>
+                <p className="text-slate-300">• Universal Payment & Clearing Gateways</p>
+                <p className="text-slate-300">• AES-256 Enterprise Cryptographic Encryption</p>
               </div>
             </div>
           </div>
@@ -144,17 +144,7 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
                   {item.shortSummary || item.description}
                 </p>
 
-                {/* Tech List */}
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {(item.technologies || []).slice(0, 3).map((tech: string, tIdx: number) => (
-                    <span
-                      key={tIdx}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/30 border border-white/10 text-slate-300"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+
               </div>
 
               <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-semibold text-[oklch(0.85_0.12_80)]">

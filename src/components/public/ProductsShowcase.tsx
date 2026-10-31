@@ -40,7 +40,7 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
       'Track technician maintenance dispatch and tenant approvals digitally',
     ],
     industries: ['Commercial Plazas', 'Residential Estates', 'Property Management Agencies', 'Real Estate'],
-    techStack: ['React', 'Node.js', 'MySQL 8', 'M-Pesa Daraja C2B', 'AWS Cloud'],
+    techStack: ['Cloud Native', 'Microservices', 'High-Availability Database', 'Universal Billing'],
     pricingModel: 'Tiered per managed unit or enterprise white-label license',
     demoUrl: '/contact?product=propcloud360',
     ctaLabel: 'Book PropCloud360 Demo',
@@ -74,7 +74,7 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
       'Speed up customer checkout to under 12 seconds with instant automated M-Pesa verification',
     ],
     industries: ['Fashion Retailers', 'Footwear Boutiques', 'Shoe Importers & Wholesalers', 'Apparel Brands', 'SME Merchants'],
-    techStack: ['React / Next.js', 'Node.js', 'PostgreSQL / MySQL', 'M-Pesa Daraja STK Push', 'WhatsApp Business Cloud API', 'Redis Cache'],
+    techStack: ['Cloud Native', 'Real-Time Sync', 'Inventory Engine', 'Payment Gateway'],
     pricingModel: 'SME Merchant Monthly Subscription & Commission-Free Growth Tier',
     demoUrl: 'https://app.pijo.shop',
     ctaLabel: 'Launch Pijo Shop (app.pijo.shop)',
@@ -86,8 +86,8 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
     name: 'MASUMA ERP System',
     slug: 'masuma-erp',
     tagline: 'Multi-Branch Enterprise Resource Planning & Distribution Engine',
-    shortDescription: 'The enterprise ERP standard for automotive spare parts, wholesale distributors, and multi-warehouse supply networks with native KRA eTIMS.',
-    fullDescription: 'MASUMA ERP is purpose-built for high-volume wholesale, retail distribution, and automotive parts networks. It unifies inventory across multiple warehouses and branch showrooms, features chassis/VIN fitment lookups, generates real-time KRA eTIMS compliant cryptographic QR invoices, and manages multi-tier purchase order approvals.',
+    shortDescription: 'The enterprise ERP standard for automotive spare parts, wholesale distributors, and multi-warehouse supply networks with automated fiscal compliance.',
+    fullDescription: 'MASUMA ERP is purpose-built for high-volume wholesale, retail distribution, and automotive parts networks. It unifies inventory across multiple warehouses and branch showrooms, features chassis/VIN fitment lookups, generates real-time compliant cryptographic QR fiscal invoices, and manages multi-tier purchase order approvals.',
     logoUrl: '/assets/masuma-icon.svg',
     heroImage: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&auto=format&fit=crop&q=80',
     screenshots: [
@@ -95,18 +95,18 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
     ],
     features: [
       'Multi-Warehouse Real-Time Inventory Synchronization',
-      'KRA eTIMS Verified Cryptographic QR Tax Invoicing',
+      'Verified Cryptographic QR Tax Invoicing & Fiscal Gateway Integration',
       'Chassis / VIN Number Part Fitment & Catalogue Search',
       'Wholesale Tiered Volume Pricing & Retail Branch POS',
-      'Automated Kenyan Payroll (PAYE, SHA, NSSF, Housing Levy)',
+      'Automated Enterprise Payroll & Multi-Jurisdiction Statutory Tax Engine',
     ],
     benefits: [
       'Eliminate stock mismatches across physical branches and warehouses',
-      '100% compliant with Kenya Revenue Authority eTIMS mandates',
+      '100% compliant with fiscal regulatory and statutory authority mandates',
       'Cut monthly inventory reconciliation time from 5 days to 20 minutes',
     ],
     industries: ['Automotive Parts', 'Wholesale Distributors', 'Multi-Branch Retailers', 'Corporates'],
-    techStack: ['TypeScript', 'React', 'Node.js', 'MySQL 8', 'KRA eTIMS API'],
+    techStack: ['Enterprise Cloud', 'Microservices', 'High-Availability Database', 'Fiscal APIs'],
     pricingModel: 'Enterprise Dedicated Cloud or On-Premise License',
     demoUrl: '/contact?product=masuma-erp',
     ctaLabel: 'Request MASUMA ERP Demo',
@@ -118,7 +118,7 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
     name: 'RaphaMIS Hospital Management System',
     slug: 'raphamis-hmis',
     tagline: 'Complete Clinical Workflow, EMR & Hospital Information Platform',
-    shortDescription: 'Connected HMIS uniting patient triage, doctor consultation queues, Electronic Medical Records (EMR), laboratory testing, pharmacy dispensing, and SHA/NHIF billing.',
+    shortDescription: 'Connected HMIS uniting patient triage, doctor consultation queues, Electronic Medical Records (EMR), laboratory testing, pharmacy dispensing, and universal health insurance billing.',
     fullDescription: 'RaphaMIS transforms hospitals and medical clinics from paper-file delays to seamless digital clinical delivery. From the moment a patient checks into triage to doctor consultation, electronic prescriptions, laboratory diagnostic queues, and automated cashiering, RaphaMIS secures patient records and prevents billing revenue leakages.',
     logoUrl: '/assets/raphamis-icon.svg',
     heroImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&auto=format&fit=crop&q=80',
@@ -130,7 +130,7 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
       'Electronic Medical Records (EMR) & Clinical Consultation Notes',
       'Diagnostic Laboratory (LIMS) Queue & Digital Result Dispatch',
       'Pharmacy Batch Inventory, Expiry Warnings & Dispensing Control',
-      'Social Health Authority (SHA/NHIF) & Private Insurance Pre-Auth',
+      'Universal Health Insurance & Private Insurance Pre-Authorization',
     ],
     benefits: [
       'Reduce patient waiting time from 3 hours to under 25 minutes',
@@ -170,7 +170,7 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
       'Instant prepaid token delivery directly to customer mobile phones',
     ],
     industries: ['County Water Service Providers (WSPs)', 'Community Boreholes', 'Sub-Metered Estates', 'Utilities'],
-    techStack: ['TypeScript', 'Node.js', 'MySQL', 'M-Pesa Daraja API', 'Africa\'s Talking SMS'],
+    techStack: ['Cloud Native', 'IoT Telemetry', 'Automated Metering', 'Payment Gateway'],
     pricingModel: 'Utility Meter Subscription or Enterprise Municipal License',
     demoUrl: '/contact?product=aura',
     ctaLabel: 'Request Aura Utility Demo',
@@ -202,7 +202,7 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
       '100% compliant with Ministry of Education CBC reporting standards',
     ],
     industries: ['K-12 Day & Boarding Schools', 'International Academies', 'Tertiary Colleges', 'Education'],
-    techStack: ['Next.js', 'Node.js', 'MySQL', 'Africa\'s Talking SMS', 'Tailwind CSS'],
+    techStack: ['Enterprise Cloud', 'Academic Engine', 'Automated Ledger', 'Messaging Gateway'],
     pricingModel: 'Per-student annual licensing with dedicated server hosting',
     demoUrl: '/contact?product=emis-education',
     ctaLabel: 'Explore EMIS System',
@@ -234,7 +234,7 @@ const DEFAULT_SECTOR_PRODUCTS: Product[] = [
       'Instant financial accountability reports for parish councils and trustees',
     ],
     industries: ['Churches & Megaministries', 'Dioceses & Parishes', 'Faith-Based Charities', 'Religious Entities'],
-    techStack: ['React', 'TypeScript', 'Node.js', 'MySQL 8', 'M-Pesa Daraja Paybill'],
+    techStack: ['Enterprise Cloud', 'Stewardship Ledger', 'Member Directory', 'Universal Payments'],
     pricingModel: 'Tiered Congregational Size License with Cloud Hosting',
     demoUrl: '/contact?product=ecclesiah-church',
     ctaLabel: 'Request Ecclesiah Demo',
@@ -459,15 +459,7 @@ export const ProductsShowcase: React.FC<ProductsShowcaseProps> = ({
                       ))}
                     </div>
 
-                    {/* Tech Stack Pills */}
-                    <div className="pt-2 flex flex-wrap items-center gap-2 text-xs">
-                      <span className="text-slate-400 font-mono text-[11px]">System Stack:</span>
-                      {(product.techStack || []).map((tech, tIdx) => (
-                        <span key={tIdx} className="px-2 py-0.5 rounded bg-black/30 border border-white/10 text-slate-300 font-mono text-[11px]">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
+
 
                     {/* CTAs */}
                     <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -544,8 +536,8 @@ export const ProductsShowcase: React.FC<ProductsShowcaseProps> = ({
                             {isPijo ? 'Live Cloud Application (app.pijo.shop)' : '100% Client IP & Source Ownership'}
                           </span>
                         </div>
-                        <span className="text-[oklch(0.85_0.12_80)] font-mono text-[11px]">
-                          {product.techStack?.[0] || 'Cloud Native'}
+                        <span className="text-[oklch(0.85_0.12_80)] font-semibold text-[11px]">
+                          Enterprise Grade
                         </span>
                       </div>
                     </div>

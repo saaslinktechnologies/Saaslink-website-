@@ -16,8 +16,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
   team = [],
   onOpenQuoteModal,
 }) => {
-  const address = settings?.companyAddress || settings?.address || 'Delta Corner Tower, Westlands, Nairobi, Kenya';
-  const taxId = settings?.taxId || 'P051982341Z';
+  const address = settings?.companyAddress || settings?.address || 'Corporate Headquarters';
   const safeTeam = team || [];
 
   return (
@@ -41,7 +40,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             </p>
 
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-normal">
-              Headquartered in Westlands, Nairobi, Kenya, our senior engineering guild serves regional corporate wholesale distributors, hospitals, utility boards, schools, and civic non-profits across East Africa.
+              As a premier enterprise engineering firm, our senior solutions guild architects and deploys high-availability software platforms for wholesale distributors, healthcare networks, utility providers, institutions, and high-growth commercial enterprises.
             </p>
 
             <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-2">
@@ -52,9 +51,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
               </div>
 
               <div className="p-4 rounded-2xl bg-[oklch(0.30_0.04_165/0.8)] border border-white/10 shadow-sm backdrop-blur-md">
-                <div className="text-xl sm:text-2xl font-bold text-white mb-1 font-sans">MySQL 8+</div>
-                <div className="text-xs text-slate-200 font-semibold">Standard Relational Core</div>
-                <div className="text-[11px] text-slate-400 mt-0.5">Direct query and audit freedom</div>
+                <div className="text-xl sm:text-2xl font-bold text-white mb-1 font-sans">99.9%</div>
+                <div className="text-xs text-slate-200 font-semibold">Enterprise SLA Reliability</div>
+                <div className="text-[11px] text-slate-400 mt-0.5">High availability mission-critical operations</div>
               </div>
             </div>
           </div>
@@ -91,8 +90,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className="text-xs font-semibold text-slate-200 block">Statutory & Tax Compliance</span>
-                    <span className="text-xs text-slate-300">PIN: {taxId} | Official Invoicing & eTIMS Compliant</span>
+                    <span className="text-xs font-semibold text-slate-200 block">Governance & Compliance</span>
+                    <span className="text-xs text-slate-300">ISO 27001 Aligned • Official Enterprise Invoicing</span>
                   </div>
                 </div>
 

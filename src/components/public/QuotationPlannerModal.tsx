@@ -23,7 +23,7 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
   const [systemType, setSystemType] = useState<string>(preselectedService || 'PropCloud360 Property Management');
   const [databaseTier, setDatabaseTier] = useState<string>('MySQL 8 Clustered (High Availability)');
   const [platforms, setPlatforms] = useState<string[]>(['Responsive Web Application', 'REST API Engine']);
-  const [integrations, setIntegrations] = useState<string[]>(['M-Pesa Daraja IPN Automated Billing', 'KRA eTIMS Tax Compliance']);
+  const [integrations, setIntegrations] = useState<string[]>(['Universal Payment Gateway & Automated Billing', 'Enterprise ERP & Fiscal Accounting Integration']);
   const [slaTier, setSlaTier] = useState<string>('Standard Enterprise (99.9% Uptime)');
 
   const [clientName, setClientName] = useState('');
@@ -189,8 +189,8 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
                 {[
                   'PropCloud360 Property Management',
                   'Pijo Shop Footwear POS (app.pijo.shop)',
-                  'MASUMA ERP Multi-Branch & eTIMS',
-                  'RaphaMIS Hospital Core & SHA Claims',
+                  'MASUMA ERP Multi-Branch & Fiscal POS',
+                  'RaphaMIS Hospital Core & Insurance Claims',
                   'Aura Utility Prepaid Water Metering',
                   'EMIS CBC School & Fee Management',
                   'Ecclesiah Church & Diocese System',
@@ -285,12 +285,12 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {[
-                  'M-Pesa Daraja IPN Automated Billing',
-                  'KRA eTIMS Tax Compliance',
-                  'SHA / NHIF Insurance Claims',
-                  'STS Smart Prepaid Meter Tokens',
-                  'Biometric & RFID Attendance',
-                  'WhatsApp Business API Alerts',
+                  'Universal Payment Gateway & Automated Billing',
+                  'Enterprise ERP & Fiscal Accounting Integration',
+                  'Healthcare Insurance & Claims Processing',
+                  'REST & GraphQL Core System APIs',
+                  'Multi-Branch Inventory & Warehouse Sync',
+                  'Automated Communication & Notification Alerts',
                 ].map((integ) => {
                   const active = integrations.includes(integ);
                   return (

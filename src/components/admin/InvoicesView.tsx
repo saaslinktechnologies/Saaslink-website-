@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   CreditCard, Plus, Eye, Printer, CheckCircle2, 
   Search, AlertCircle, DollarSign, Receipt, Calendar, ArrowRight 
@@ -38,6 +38,18 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
   const [taxRate, setTaxRate] = useState(settings?.defaultTaxRate || 16);
   const [notes, setNotes] = useState('Payment due within 14 days from date of invoice.');
   const [terms, setTerms] = useState('Work deliverables remain the intellectual property of SaaSLink Technologies Ltd until invoice is settled in full.');
+
+  // Sync currency whenever platform settings update
+  useEffect(() => {
+    if (settings?.currency) {
+      setCurrency(settings.currency);
+    }
+  }, [settings?.currency]);
+
+  const getCurrencySymbol = (curr?: string) => {
+    const c = curr || currency || settings?.currency || 'USD';
+    return c === 'KES' ? 'KES ' : c === 'EUR' ? '€' : c === 'GBP' ? '£' : '$';
+  };
 
   const [items, setItems] = useState<Omit<InvoiceItem, 'id' | 'total'>[]>([
     { type: 'service', description: 'Enterprise Custom Software Development Sprint', quantity: 1, unitPrice: 3500, discount: 0 },
@@ -214,12 +226,12 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                     </td>
 
                     <td className="py-3.5 px-4 font-mono font-bold text-white">
-                      ${inv.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      {getCurrencySymbol(inv.currency)}{inv.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </td>
 
                     <td className="py-3.5 px-4 font-mono font-bold">
                       <span className={inv.balanceDue > 0 ? 'text-amber-400' : 'text-emerald-400'}>
-                        ${inv.balanceDue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        {getCurrencySymbol(inv.currency)}{inv.balanceDue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </span>
                     </td>
 
@@ -417,8 +429,8 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                     </h1>
                   </div>
                   <p className="text-slate-600 text-[11px] leading-snug">
-                    {settings?.companyAddress || settings?.address || 'Delta Corner Tower, Westlands, Nairobi, Kenya'}<br />
-                    PIN: {settings?.taxId || 'P051982341Z'} | Phone: {settings?.companyPhone || settings?.phone || '+254 720 000 000'}<br />
+                    {settings?.companyAddress || settings?.address || 'Corporate Headquarters'}<br />
+                    {settings?.taxId ? `Tax ID: ${settings.taxId} | ` : ''}Phone: {settings?.companyPhone || settings?.phone || '+254 720 000 000'}<br />
                     Email: {settings?.companyEmail || settings?.email || 'contact@saaslink.tech'} | Web: {settings?.companyWebsite || settings?.website || 'https://saaslink.tech'}
                   </p>
                 </div>
@@ -476,8 +488,8 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                           <div className="text-[11px] text-slate-500 uppercase font-mono">{item.type}</div>
                         </td>
                         <td className="py-3 text-center">{item.quantity}</td>
-                        <td className="py-3 text-right font-mono">${item.unitPrice.toFixed(2)}</td>
-                        <td className="py-3 text-right font-mono font-semibold">${item.total.toFixed(2)}</td>
+                        <td className="py-3 text-right font-mono">{getCurrencySymbol(previewInvoice.currency)}{item.unitPrice.toFixed(2)}</td>
+                        <td className="py-3 text-right font-mono font-semibold">{getCurrencySymbol(previewInvoice.currency)}{item.total.toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -489,27 +501,27 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                 <div className="w-72 space-y-2 border-t border-slate-300 pt-3 text-xs">
                   <div className="flex justify-between text-slate-600">
                     <span>Subtotal:</span>
-                    <span className="font-mono font-semibold">${previewInvoice.subtotal.toFixed(2)}</span>
+                    <span className="font-mono font-semibold">{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.subtotal.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between text-slate-600">
                     <span>VAT / Tax ({previewInvoice.taxRate}%):</span>
-                    <span className="font-mono font-semibold">${previewInvoice.taxAmount.toFixed(2)}</span>
+                    <span className="font-mono font-semibold">{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.taxAmount.toFixed(2)}</span>
                   </div>
 
                   <div className="border-t border-slate-300 pt-2 flex justify-between text-sm font-bold text-slate-950">
                     <span>Total Invoiced:</span>
-                    <span className="font-mono">${previewInvoice.total.toFixed(2)}</span>
+                    <span className="font-mono">{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.total.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between text-emerald-700 font-semibold">
                     <span>Paid to Date:</span>
-                    <span className="font-mono">-${previewInvoice.amountPaid.toFixed(2)}</span>
+                    <span className="font-mono">-{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.amountPaid.toFixed(2)}</span>
                   </div>
 
                   <div className="border-t-2 border-slate-900 pt-2 flex justify-between text-sm font-extrabold text-amber-700">
                     <span>Net Balance Due:</span>
-                    <span className="font-mono">${previewInvoice.balanceDue.toFixed(2)}</span>
+                    <span className="font-mono">{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.balanceDue.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -561,7 +573,7 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
             </div>
 
             <form onSubmit={handleCreateSubmit} className="space-y-6 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3.5">
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">Client Account *</label>
                   <select
@@ -572,6 +584,20 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>{c.company} ({c.name})</option>
                     ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Invoice Currency *</label>
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400 text-xs"
+                  >
+                    <option value="KES">KES - Kenya Shillings (KSh)</option>
+                    <option value="USD">USD - US Dollar ($)</option>
+                    <option value="EUR">EUR - Euro (€)</option>
+                    <option value="GBP">GBP - British Pound (£)</option>
                   </select>
                 </div>
 
@@ -678,7 +704,7 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
                   <div className="flex justify-between text-slate-400">
                     <span>Subtotal:</span>
-                    <span className="font-mono text-white">${subtotal.toFixed(2)}</span>
+                    <span className="font-mono text-white">{getCurrencySymbol(currency)}{subtotal.toFixed(2)}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-slate-400">
@@ -693,12 +719,12 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
 
                   <div className="flex justify-between text-slate-400">
                     <span>Tax Amount:</span>
-                    <span className="font-mono text-white">${taxAmount.toFixed(2)}</span>
+                    <span className="font-mono text-white">{getCurrencySymbol(currency)}{taxAmount.toFixed(2)}</span>
                   </div>
 
                   <div className="pt-2 border-t border-slate-800 flex justify-between text-sm font-bold text-white">
                     <span>Total Amount:</span>
-                    <span className="font-mono text-cyan-400">${grandTotal.toFixed(2)}</span>
+                    <span className="font-mono text-cyan-400">{getCurrencySymbol(currency)}{grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

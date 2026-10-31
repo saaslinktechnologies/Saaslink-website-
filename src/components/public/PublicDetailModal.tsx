@@ -183,18 +183,10 @@ export const PublicDetailModal: React.FC<PublicDetailModalProps> = ({
                   <PhotoGallery images={galleryPhotos} title="User Interfaces, Dashboards & Product Photos" />
                 )}
 
-                {/* Tech Stack */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-mono uppercase text-[oklch(0.85_0.12_80)] font-bold tracking-wider">
-                    Architecture & Technology
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {(product.techStack || []).map((tech, idx) => (
-                      <span key={idx} className="px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-slate-300 font-mono text-xs">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+                {/* System Capabilities & Standards */}
+                <div className="p-3.5 rounded-xl bg-black/20 border border-white/10 flex items-center justify-between text-xs text-slate-300">
+                  <span className="font-medium text-slate-200">Architecture Standard:</span>
+                  <span className="text-[oklch(0.85_0.12_80)] font-semibold">High-Availability Cloud Native Platform</span>
                 </div>
 
                 <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

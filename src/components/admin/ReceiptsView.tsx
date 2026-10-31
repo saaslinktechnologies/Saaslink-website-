@@ -29,6 +29,7 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
   });
 
   const totalCollected = safePayments.reduce((sum, p) => sum + p.amount, 0);
+  const currSymbol = settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$');
 
   const handlePrint = () => {
     window.print();
@@ -61,7 +62,7 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
           </div>
 
           <div className="px-3.5 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-mono text-xs font-bold">
-            Total: ${totalCollected.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            Total: {currSymbol}{totalCollected.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </div>
         </div>
       </div>
@@ -113,7 +114,7 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
                     </td>
 
                     <td className="py-3.5 px-4 font-mono font-bold text-emerald-400 text-sm">
-                      ${p.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      {currSymbol}{p.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </td>
 
                     <td className="py-3.5 px-4 text-right">
@@ -177,8 +178,8 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
                     </h1>
                   </div>
                   <p className="text-slate-600 text-[10px] leading-snug">
-                    {settings?.companyAddress || settings?.address || 'Delta Corner Tower, Westlands, Nairobi, Kenya'}<br />
-                    PIN: {settings?.taxId || 'P051982341Z'} | Tel: {settings?.companyPhone || settings?.phone || '+254 720 000 000'}<br />
+                    {settings?.companyAddress || settings?.address || 'Corporate Headquarters'}<br />
+                    {settings?.taxId ? `Tax ID: ${settings.taxId} | ` : ''}Tel: {settings?.companyPhone || settings?.phone || '+254 720 000 000'}<br />
                     Email: {settings?.companyEmail || settings?.email || 'contact@saaslink.tech'}
                   </p>
                 </div>
@@ -206,7 +207,7 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
                   <div className="text-right">
                     <span className="text-[10px] uppercase font-bold text-slate-500 block">Settlement Amount:</span>
                     <span className="text-2xl font-extrabold font-mono text-emerald-700">
-                      ${selectedPayment.amount.toFixed(2)}
+                      {currSymbol}{selectedPayment.amount.toFixed(2)}
                     </span>
                   </div>
                 </div>

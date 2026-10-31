@@ -45,7 +45,7 @@ const PLATFORMS = [
     slug: 'masuma-erp',
     category: 'Commercial & Trade',
     sector: 'Wholesale & Automotive',
-    desc: 'Multi-branch ERP with multi-warehouse inventory, chassis/VIN search, and native KRA eTIMS QR tax invoicing.',
+    desc: 'Multi-branch ERP with multi-warehouse inventory, chassis/VIN search, and automated fiscal QR tax invoicing.',
     icon: Building2,
   },
   {
@@ -54,7 +54,7 @@ const PLATFORMS = [
     slug: 'raphamis-hmis',
     category: 'Healthcare & Public',
     sector: 'Hospitals & Medical Centers',
-    desc: 'Inpatient/outpatient EHR, digital clinical triage, SHA / NHIF insurance reconciliation, and pharmacy POS dispenser.',
+    desc: 'Inpatient/outpatient EHR, digital clinical triage, healthcare insurance reconciliation, and pharmacy POS dispenser.',
     icon: HeartPulse,
   },
   {
@@ -138,13 +138,13 @@ const SECTORS_LIST = [
   {
     id: 'sec_corporate',
     name: 'Corporates & Commercial Trade',
-    desc: 'Wholesale distributors, automotive supply chains, and multi-location retail with KRA eTIMS and warehouse sync.',
+    desc: 'Wholesale distributors, automotive supply chains, and multi-location retail with automated fiscal accounting and warehouse sync.',
     icon: Building2,
   },
   {
     id: 'sec_healthcare',
     name: 'Hospitals & Healthcare Facilities',
-    desc: 'Level 4 & 5 hospitals, clinics, and health networks with SHA / NHIF insurance reconciliation and inpatient EHR.',
+    desc: 'Hospitals, specialty clinics, and medical networks with universal insurance reconciliation and inpatient EHR.',
     icon: HeartPulse,
   },
   {
@@ -464,11 +464,11 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className="flex items-center gap-4 text-slate-300">
                       <span className="flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5 text-[oklch(0.85_0.12_80)]" />
-                        KRA eTIMS Validated
+                        Enterprise Integration Ready
                       </span>
                       <span className="flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5 text-[oklch(0.85_0.12_80)]" />
-                        M-Pesa Daraja 2.0 Native
+                        Universal Payment & ERP Gateways
                       </span>
                       <span className="flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5 text-[oklch(0.85_0.12_80)]" />
@@ -561,11 +561,11 @@ export const Header: React.FC<HeaderProps> = ({
                           </div>
                           <div className="flex items-start gap-2">
                             <CheckCircle2 className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0 mt-0.5" />
-                            <span>Data Protection Act 2019 & ISO 27001 Standards</span>
+                            <span>Global Data Privacy & ISO 27001 Standards</span>
                           </div>
                           <div className="flex items-start gap-2">
                             <CheckCircle2 className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0 mt-0.5" />
-                            <span>90-Day Post-Launch Warranty & Kenyan SLAs</span>
+                            <span>90-Day Post-Launch Warranty & Enterprise SLAs</span>
                           </div>
                           <div className="flex items-start gap-2">
                             <CheckCircle2 className="w-4 h-4 text-[oklch(0.85_0.12_80)] shrink-0 mt-0.5" />
@@ -718,7 +718,7 @@ export const Header: React.FC<HeaderProps> = ({
                     >
                       <div>
                         <p className="text-xs font-semibold text-white">Engineering Insights</p>
-                        <p className="text-[11px] text-slate-400">Architecture articles, KRA eTIMS guides & tech radar.</p>
+                        <p className="text-[11px] text-slate-400">Architecture articles, enterprise systems guides & tech radar.</p>
                       </div>
                       <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
                     </button>
@@ -731,7 +731,7 @@ export const Header: React.FC<HeaderProps> = ({
                           <p className="text-xs font-semibold text-white">Careers</p>
                           <span className="text-[9px] font-mono uppercase text-[oklch(0.85_0.12_80)]">We're Hiring</span>
                         </div>
-                        <p className="text-[11px] text-slate-400">Join our senior software squads in Nairobi.</p>
+                        <p className="text-[11px] text-slate-400">Join our senior software engineering squads.</p>
                       </div>
                       <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
                     </button>
@@ -748,8 +748,8 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                   
                   <div className="mt-3 pt-3 border-t border-white/10 px-2.5 flex items-center justify-between text-[11px] text-slate-400">
-                    <span>Westlands, Nairobi, Kenya</span>
-                    <span className="text-slate-300 font-mono">+254 700 000 000</span>
+                    <span className="truncate max-w-[200px]">{settings?.companyAddress || settings?.address || 'Corporate Headquarters'}</span>
+                    <span className="text-slate-300 font-mono shrink-0">{settings?.companyPhone || settings?.phone || ''}</span>
                   </div>
                 </div>
               )}

@@ -99,8 +99,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 </div>
                 <div className="min-w-0">
                   <span className="text-xs text-slate-400 block font-medium">Direct Telephone & WhatsApp</span>
-                  <a href={`tel:${settings?.companyPhone || settings?.phone || '+254 720 000 000'}`} className="text-xs sm:text-sm font-semibold text-white hover:text-[oklch(0.85_0.12_80)] transition-colors truncate block">
-                    {settings?.companyPhone || settings?.phone || '+254 720 000 000 / +254 733 000 000'}
+                  <a href={`tel:${(settings?.companyPhone || settings?.phone || '').split('/')[0].trim()}`} className="text-xs sm:text-sm font-semibold text-white hover:text-[oklch(0.85_0.12_80)] transition-colors truncate block">
+                    {settings?.companyPhone || settings?.phone || 'Contact Support'}
                   </a>
                 </div>
               </div>
@@ -124,7 +124,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 <div className="min-w-0">
                   <span className="text-xs text-slate-400 block font-medium">Engineering Headquarters</span>
                   <p className="text-xs text-slate-300">
-                    {settings?.companyAddress || settings?.address || 'Delta Corner Tower, Westlands, Nairobi, Kenya'}
+                    {settings?.companyAddress || settings?.address || 'Corporate Headquarters'}
                   </p>
                 </div>
               </div>
@@ -246,8 +246,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                       <option value="">Select Platform...</option>
                       <option value="PropCloud360 Property Management">PropCloud360 Property Management</option>
                       <option value="Pijo Shop Footwear POS (app.pijo.shop)">Pijo Shop Footwear POS (app.pijo.shop)</option>
-                      <option value="MASUMA ERP Multi-Branch & eTIMS">MASUMA ERP Multi-Branch & eTIMS</option>
-                      <option value="RaphaMIS Hospital Core & SHA">RaphaMIS Hospital Core & SHA</option>
+                      <option value="MASUMA ERP Multi-Branch & Fiscal Accounting">MASUMA ERP Multi-Branch & Fiscal Accounting</option>
+                      <option value="RaphaMIS Hospital Core & Insurance">RaphaMIS Hospital Core & Insurance</option>
                       <option value="Aura Utility Smart Water Metering">Aura Utility Smart Water Metering</option>
                       <option value="EMIS CBC School & Fee System">EMIS CBC School & Fee System</option>
                       <option value="Ecclesiah Church & Diocese System">Ecclesiah Church & Diocese System</option>
@@ -265,10 +265,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                       onChange={(e) => setFormData({ ...formData, budgetRange: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/15 text-white text-xs sm:text-sm focus:outline-none focus:border-[oklch(0.85_0.12_80)] min-h-[44px] cursor-pointer"
                     >
-                      <option value="Below KSh 500,000 (< $4,000)">Below KSh 500,000 (&lt; $4k)</option>
-                      <option value="KSh 500,000 - 1,500,000 ($4k - $12k)">KSh 500,000 - 1,500,000 ($4k - $12k)</option>
-                      <option value="KSh 1,500,000 - 4,000,000 ($12k - $30k)">KSh 1,500,000 - 4,000,000 ($12k - $30k)</option>
-                      <option value="Above KSh 4,000,000 (> $30,000)">Above KSh 4,000,000 (&gt; $30k+)</option>
+                      <option value="Tier 1 (< $4,000 / KES 500k)">Tier 1 (&lt; $4k / KES 500k)</option>
+                      <option value="Tier 2 ($4,000 - $12,000 / KES 500k - 1.5M)">Tier 2 ($4k - $12k / KES 500k - 1.5M)</option>
+                      <option value="Tier 3 ($12,000 - $30,000 / KES 1.5M - 4M)">Tier 3 ($12k - $30k / KES 1.5M - 4M)</option>
+                      <option value="Enterprise (> $30,000 / KES 4M+)">Enterprise (&gt; $30k+ / KES 4M+)</option>
                     </select>
                   </div>
                 </div>
@@ -296,7 +296,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   <textarea
                     required
                     rows={4}
-                    placeholder="Describe your current bottlenecks, target users, desired integrations (e.g., M-Pesa, KRA eTIMS, MySQL), and key deliverables..."
+                    placeholder="Describe your current bottlenecks, target users, desired system integrations, and key deliverables..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/15 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-[oklch(0.85_0.12_80)] resize-none"
