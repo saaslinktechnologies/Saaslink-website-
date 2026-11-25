@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FolderKanban, Plus, CheckCircle2, Clock, 
   AlertCircle, Users, Calendar, ArrowRight, 
   Trash2, Edit, CheckSquare, Square, ChevronRight 
 } from 'lucide-react';
 import { Project, Client, ProjectTask, TaskStatus, ProjectStatus, GlobalSettings } from '../../types.ts';
+import { formatMoney } from '../../utils/currency.ts';
 
 interface ProjectsViewProps {
   settings?: GlobalSettings;
@@ -27,7 +28,6 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
   onAddTask,
   onUpdateTask,
 }) => {
-  const currSymbol = settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const safeProjects = projects || [];
@@ -41,6 +41,23 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
   const [budget, setBudget] = useState(12000);
   const [startDate, setStartDate] = useState(new Date().toISOString().substring(0, 10));
   const [endDate, setEndDate] = useState(new Date(Date.now() + 60 * 86400000).toISOString().substring(0, 10));
+
+  useEffect(() => {
+    if (selectedProject) {
+      const updated = safeProjects.find(p => p.id === selectedProject.id);
+      if (updated) {
+        setSelectedProject(updated);
+      } else {
+        setSelectedProject(null);
+      }
+    }
+  }, [projects]);
+
+  useEffect(() => {
+    if (!clientId && safeClients.length > 0) {
+      setClientId(safeClients[0].id);
+    }
+  }, [safeClients.length]);
 
   // New Task Form in Drawer
   const [taskTitle, setTaskTitle] = useState('');
@@ -56,6 +73,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
       description,
       status: 'Active',
       budget: Number(budget),
+      currency: settings?.currency || 'USD',
       startDate,
       endDate,
     });
@@ -169,7 +187,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
               <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <div>
                   <span className="text-[10px] block text-slate-500">Tasks: {completedTasks}/{totalTasks}</span>
-                  <span className="font-mono text-slate-200">{currSymbol}{(proj.spent ?? 0).toLocaleString()} / {currSymbol}{(proj.budget ?? 0).toLocaleString()}</span>
+                  <span className="font-mono text-slate-200">{formatMoney(proj.spent ?? 0, proj.currency || settings?.currency, settings)} / {formatMoney(proj.budget ?? 0, proj.currency || settings?.currency, settings)}</span>
                 </div>
 
                 <button
@@ -216,11 +234,11 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
             <div className="grid grid-cols-3 gap-2.5 text-xs">
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Total Budget</span>
-                <span className="font-mono font-bold text-white">{currSymbol}{(selectedProject.budget ?? 0).toLocaleString()}</span>
+                <span className="font-mono font-bold text-white">{formatMoney(selectedProject.budget ?? 0, selectedProject.currency || settings?.currency, settings)}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Burned</span>
-                <span className="font-mono font-bold text-cyan-400">{currSymbol}{(selectedProject.spent ?? 0).toLocaleString()}</span>
+                <span className="font-mono font-bold text-cyan-400">{formatMoney(selectedProject.spent ?? 0, selectedProject.currency || settings?.currency, settings)}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Target Launch</span>
@@ -393,7 +411,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Budget ($)</label>
+                  <label className="block text-slate-300 font-semibold mb-1">Budget ({settings?.currency || 'USD'})</label>
                   <input
                     type="number"
                     value={budget}

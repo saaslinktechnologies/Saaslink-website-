@@ -133,7 +133,7 @@ apiRouter.post('/auth/login', (req: Request, res: Response) => {
     }
 
     const db = getDb();
-    const user = db.users.find(u => u.email.toLowerCase() === String(email).toLowerCase());
+    const user = db.users.find(u => u.email.trim().toLowerCase() === String(email).trim().toLowerCase());
     
     if (!user || !user.isActive) {
       return res.status(401).json({ error: 'Invalid credentials or inactive account' });
@@ -342,7 +342,7 @@ apiRouter.get('/admin/leads', authenticate, (req: AuthRequest, res: Response) =>
   res.json(db.leads);
 });
 
-apiRouter.put('/admin/leads/:id', authenticate, (req: AuthRequest, res: Response) => {
+const handleUpdateLead = (req: AuthRequest, res: Response) => {
   const db = getDb();
   const index = db.leads.findIndex(l => l.id === req.params.id);
   if (index === -1) return res.status(404).json({ error: 'Lead not found' });
@@ -359,7 +359,10 @@ apiRouter.put('/admin/leads/:id', authenticate, (req: AuthRequest, res: Response
   logActivity(req.user!.id, req.user!.name, 'UPDATED_LEAD', 'leads', updated.id, `Lead status: ${updated.status}`);
 
   res.json(updated);
-});
+};
+
+apiRouter.put('/admin/leads/:id', authenticate, handleUpdateLead);
+apiRouter.patch('/admin/leads/:id', authenticate, handleUpdateLead);
 
 apiRouter.delete('/admin/leads/:id', authenticate, requireRole(['Super Administrator', 'Administrator', 'Manager']), (req: AuthRequest, res: Response) => {
   const db = getDb();
@@ -433,53 +436,69 @@ apiRouter.get('/admin/clients/:id', authenticate, (req: AuthRequest, res: Respon
 });
 
 apiRouter.post('/admin/clients', authenticate, (req: AuthRequest, res: Response) => {
-  const { name, company, email, phone, address, city, country, taxId, contactPerson, notes, status } = req.body;
-  if (!name || !company || !email) {
-    return res.status(400).json({ error: 'Client name, company, and email are required.' });
+  try {
+    const { name, company, email, phone, address, city, country, taxId, contactPerson, notes, status } = req.body || {};
+    const trimmedName = String(name || '').trim();
+    const trimmedCompany = String(company || '').trim();
+    const trimmedEmail = String(email || '').trim().toLowerCase();
+
+    if (!trimmedName || !trimmedCompany || !trimmedEmail) {
+      return res.status(400).json({ error: 'Client name, company, and email are required.' });
+    }
+
+    const db = getDb();
+    const newClient: Client = {
+      id: `cli_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`,
+      name: trimmedName,
+      company: trimmedCompany,
+      email: trimmedEmail,
+      phone: phone ? String(phone).trim() : '',
+      address: address ? String(address).trim() : '',
+      city: city ? String(city).trim() : 'Nairobi',
+      country: country ? String(country).trim() : 'Kenya',
+      taxId: taxId ? String(taxId).trim() : '',
+      contactPerson: contactPerson ? String(contactPerson).trim() : trimmedName,
+      notes: notes ? String(notes).trim() : '',
+      status: status === 'Inactive' ? 'Inactive' : 'Active',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    db.clients.unshift(newClient);
+    saveDb(db);
+    logActivity(req.user!.id, req.user!.name, 'CREATED_CLIENT', 'clients', newClient.id, `Created client ${newClient.company}`);
+
+    res.status(201).json(newClient);
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to create client account', details: err?.message });
   }
-
-  const db = getDb();
-  const newClient: Client = {
-    id: `cli_${Date.now().toString(36)}`,
-    name: String(name).trim(),
-    company: String(company).trim(),
-    email: String(email).trim().toLowerCase(),
-    phone: phone ? String(phone).trim() : '',
-    address,
-    city,
-    country: country || 'Kenya',
-    taxId,
-    contactPerson,
-    notes,
-    status: status || 'Active',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  db.clients.unshift(newClient);
-  saveDb(db);
-  logActivity(req.user!.id, req.user!.name, 'CREATED_CLIENT', 'clients', newClient.id, `Created client ${newClient.company}`);
-
-  res.status(201).json(newClient);
 });
 
-apiRouter.put('/admin/clients/:id', authenticate, (req: AuthRequest, res: Response) => {
-  const db = getDb();
-  const index = db.clients.findIndex(c => c.id === req.params.id);
-  if (index === -1) return res.status(404).json({ error: 'Client not found' });
+const handleUpdateClient = (req: AuthRequest, res: Response) => {
+  try {
+    const db = getDb();
+    const index = db.clients.findIndex(c => c.id === req.params.id);
+    if (index === -1) return res.status(404).json({ error: 'Client not found' });
 
-  const updated: Client = {
-    ...db.clients[index],
-    ...req.body,
-    updatedAt: new Date().toISOString(),
-  };
+    const updated: Client = {
+      ...db.clients[index],
+      ...req.body,
+      id: db.clients[index].id,
+      updatedAt: new Date().toISOString(),
+    };
 
-  db.clients[index] = updated;
-  saveDb(db);
-  logActivity(req.user!.id, req.user!.name, 'UPDATED_CLIENT', 'clients', updated.id, `Updated client ${updated.company}`);
+    db.clients[index] = updated;
+    saveDb(db);
+    logActivity(req.user!.id, req.user!.name, 'UPDATED_CLIENT', 'clients', updated.id, `Updated client ${updated.company}`);
 
-  res.json(updated);
-});
+    res.json(updated);
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to update client account', details: err?.message });
+  }
+};
+
+apiRouter.put('/admin/clients/:id', authenticate, handleUpdateClient);
+apiRouter.patch('/admin/clients/:id', authenticate, handleUpdateClient);
 
 apiRouter.delete('/admin/clients/:id', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
   const db = getDb();
@@ -578,7 +597,7 @@ apiRouter.post('/admin/quotations', authenticate, (req: AuthRequest, res: Respon
 
     db.quotations.unshift(newQuote);
     saveDb(db);
-    logActivity(req.user!.id, req.user!.name, 'CREATED_QUOTATION', 'quotations', newQuote.id, `Created quotation ${quotationNumber} for ${client.company} ($${total.toFixed(2)})`);
+    logActivity(req.user!.id, req.user!.name, 'CREATED_QUOTATION', 'quotations', newQuote.id, `Created quotation ${quotationNumber} for ${client.company} (${newQuote.currency} ${total.toFixed(2)})`);
 
     res.status(201).json(newQuote);
   } catch (err: any) {
@@ -586,7 +605,7 @@ apiRouter.post('/admin/quotations', authenticate, (req: AuthRequest, res: Respon
   }
 });
 
-apiRouter.put('/admin/quotations/:id', authenticate, (req: AuthRequest, res: Response) => {
+const handleUpdateQuotation = (req: AuthRequest, res: Response) => {
   const db = getDb();
   const index = db.quotations.findIndex(q => q.id === req.params.id);
   if (index === -1) return res.status(404).json({ error: 'Quotation not found' });
@@ -640,7 +659,10 @@ apiRouter.put('/admin/quotations/:id', authenticate, (req: AuthRequest, res: Res
   logActivity(req.user!.id, req.user!.name, 'UPDATED_QUOTATION', 'quotations', updated.id, `Updated quotation ${updated.quotationNumber} (${updated.status})`);
 
   res.json(updated);
-});
+};
+
+apiRouter.put('/admin/quotations/:id', authenticate, handleUpdateQuotation);
+apiRouter.patch('/admin/quotations/:id', authenticate, handleUpdateQuotation);
 
 // Convert accepted quotation into an official invoice
 apiRouter.post('/admin/quotations/:id/convert-to-invoice', authenticate, (req: AuthRequest, res: Response) => {
@@ -736,12 +758,13 @@ apiRouter.post('/admin/invoices', authenticate, (req: AuthRequest, res: Response
     const parsedItems: InvoiceItem[] = (items || []).map((item: any, idx: number) => {
       const quantity = Number(item.quantity) || 1;
       const unitPrice = Number(item.unitPrice) || 0;
+      const discount = Number(item.discount) || 0;
       return {
         id: `ii_${Date.now()}_${idx}`,
         description: item.description || 'Service deliverable',
         quantity,
         unitPrice,
-        total: quantity * unitPrice,
+        total: Math.max(0, quantity * unitPrice - discount),
       };
     });
 
@@ -782,7 +805,7 @@ apiRouter.post('/admin/invoices', authenticate, (req: AuthRequest, res: Response
 
     db.invoices.unshift(newInvoice);
     saveDb(db);
-    logActivity(req.user!.id, req.user!.name, 'CREATED_INVOICE', 'invoices', newInvoice.id, `Created invoice ${invoiceNumber} for ${client.company} ($${total.toFixed(2)})`);
+    logActivity(req.user!.id, req.user!.name, 'CREATED_INVOICE', 'invoices', newInvoice.id, `Created invoice ${invoiceNumber} for ${client.company} (${newInvoice.currency} ${total.toFixed(2)})`);
 
     res.status(201).json(newInvoice);
   } catch (err: any) {
@@ -790,7 +813,7 @@ apiRouter.post('/admin/invoices', authenticate, (req: AuthRequest, res: Response
   }
 });
 
-apiRouter.put('/admin/invoices/:id', authenticate, (req: AuthRequest, res: Response) => {
+const handleUpdateInvoice = (req: AuthRequest, res: Response) => {
   const db = getDb();
   const index = db.invoices.findIndex(i => i.id === req.params.id);
   if (index === -1) return res.status(404).json({ error: 'Invoice not found' });
@@ -807,7 +830,10 @@ apiRouter.put('/admin/invoices/:id', authenticate, (req: AuthRequest, res: Respo
   logActivity(req.user!.id, req.user!.name, 'UPDATED_INVOICE', 'invoices', updated.id, `Updated invoice ${updated.invoiceNumber}`);
 
   res.json(updated);
-});
+};
+
+apiRouter.put('/admin/invoices/:id', authenticate, handleUpdateInvoice);
+apiRouter.patch('/admin/invoices/:id', authenticate, handleUpdateInvoice);
 
 // ==========================================
 // 8. PAYMENTS & RECEIPT GENERATION
@@ -834,7 +860,7 @@ apiRouter.get('/admin/receipts/:id', authenticate, (req: AuthRequest, res: Respo
 apiRouter.post('/admin/payments', authenticate, (req: AuthRequest, res: Response) => {
   try {
     const db = getDb();
-    const { invoiceId, paymentDate, amount, paymentMethod, paymentReference, notes } = req.body;
+    const { invoiceId, paymentDate, amount, paymentMethod, method, paymentReference, reference, notes } = req.body;
 
     const invoice = db.invoices.find(i => i.id === invoiceId);
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
@@ -843,6 +869,9 @@ apiRouter.post('/admin/payments', authenticate, (req: AuthRequest, res: Response
     if (!payAmount || payAmount <= 0) {
       return res.status(400).json({ error: 'Payment amount must be greater than zero.' });
     }
+
+    const resolvedMethod = paymentMethod || method || 'Bank Transfer';
+    const resolvedReference = paymentReference || reference || `REF-${Date.now().toString().slice(-6)}`;
 
     // Auto generate receipt number
     const rctSeq = db.settings.receiptNextSeq || 1001;
@@ -856,21 +885,23 @@ apiRouter.post('/admin/payments', authenticate, (req: AuthRequest, res: Response
       invoiceNumber: invoice.invoiceNumber,
       clientId: invoice.clientId,
       clientName: invoice.clientName,
+      clientCompany: invoice.clientCompany,
       paymentDate: paymentDate || new Date().toISOString().substring(0, 10),
       amount: payAmount,
-      currency: invoice.currency,
-      paymentMethod: paymentMethod || 'Bank Transfer',
-      paymentReference: paymentReference || `REF-${Date.now().toString().slice(-6)}`,
+      currency: invoice.currency || db.settings.currency,
+      paymentMethod: resolvedMethod,
+      paymentReference: resolvedReference,
       notes,
       recordedBy: req.user!.name,
       createdAt: new Date().toISOString(),
     };
 
     // Update invoice balances
-    invoice.amountPaid = (invoice.amountPaid || 0) + payAmount;
-    invoice.balanceDue = Math.max(0, invoice.total - invoice.amountPaid);
+    invoice.amountPaid = Number(((invoice.amountPaid || 0) + payAmount).toFixed(2));
+    invoice.balanceDue = Number(Math.max(0, invoice.total - invoice.amountPaid).toFixed(2));
     
     if (invoice.balanceDue <= 0.01) {
+      invoice.balanceDue = 0;
       invoice.status = 'Paid';
     } else {
       invoice.status = 'Partially Paid';
@@ -878,6 +909,7 @@ apiRouter.post('/admin/payments', authenticate, (req: AuthRequest, res: Response
     invoice.updatedAt = new Date().toISOString();
 
     // Generate matching official Receipt document
+    const currLabel = invoice.currency || db.settings.currency || 'USD';
     const newReceipt: Receipt = {
       id: `rct_${Date.now().toString(36)}`,
       receiptNumber,
@@ -889,10 +921,10 @@ apiRouter.post('/admin/payments', authenticate, (req: AuthRequest, res: Response
       clientCompany: invoice.clientCompany,
       paymentDate: newPayment.paymentDate,
       amount: payAmount,
-      currency: invoice.currency,
+      currency: currLabel,
       paymentMethod: newPayment.paymentMethod,
       paymentReference: newPayment.paymentReference,
-      notes: notes || `Official payment confirmation for ${invoice.invoiceNumber}. Outstanding invoice balance: $${invoice.balanceDue.toFixed(2)}`,
+      notes: notes || `Official payment confirmation for ${invoice.invoiceNumber}. Outstanding invoice balance: ${currLabel} ${invoice.balanceDue.toFixed(2)}`,
       createdAt: new Date().toISOString(),
     };
 
@@ -906,7 +938,7 @@ apiRouter.post('/admin/payments', authenticate, (req: AuthRequest, res: Response
       'RECORDED_PAYMENT', 
       'payments', 
       newPayment.id, 
-      `Recorded payment of $${payAmount.toFixed(2)} on ${invoice.invoiceNumber} (Receipt: ${receiptNumber})`
+      `Recorded payment of ${currLabel} ${payAmount.toFixed(2)} on ${invoice.invoiceNumber} (Receipt: ${receiptNumber})`
     );
 
     res.status(201).json({
@@ -931,7 +963,7 @@ apiRouter.get('/admin/projects', authenticate, (req: AuthRequest, res: Response)
 
 apiRouter.post('/admin/projects', authenticate, (req: AuthRequest, res: Response) => {
   const db = getDb();
-  const { clientId, name, code, description, scope, startDate, targetEndDate, status, budget, currency, progress, assignedMembers } = req.body;
+  const { clientId, name, code, description, scope, startDate, targetEndDate, endDate, status, budget, currency, progress, assignedMembers } = req.body;
 
   const client = db.clients.find(c => c.id === clientId);
   if (!client || !name) {
@@ -939,23 +971,27 @@ apiRouter.post('/admin/projects', authenticate, (req: AuthRequest, res: Response
   }
 
   const projectCode = code || `PRJ-${client.company.substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-2)}`;
+  const resolvedEndDate = targetEndDate || endDate || new Date(Date.now() + 60 * 86400000).toISOString().substring(0, 10);
 
   const newProject: Project = {
     id: `prj_${Date.now().toString(36)}`,
     clientId: client.id,
-    clientName: client.company,
+    clientName: client.name,
+    clientCompany: client.company,
     name: String(name).trim(),
     code: projectCode,
     description: String(description || '').trim(),
     scope,
     startDate: startDate || new Date().toISOString().substring(0, 10),
-    targetEndDate: targetEndDate || new Date(Date.now() + 60 * 86400000).toISOString().substring(0, 10),
+    targetEndDate: resolvedEndDate,
+    endDate: resolvedEndDate,
     status: status || 'Planning',
     budget: Number(budget) || 0,
     spent: Number(req.body.spent) || 0,
     currency: currency || db.settings.currency,
     progress: Number(progress) || 0,
     assignedMembers: assignedMembers || [req.user!.name],
+    tasks: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -967,7 +1003,7 @@ apiRouter.post('/admin/projects', authenticate, (req: AuthRequest, res: Response
   res.status(201).json(newProject);
 });
 
-apiRouter.put('/admin/projects/:id', authenticate, (req: AuthRequest, res: Response) => {
+const handleUpdateProject = (req: AuthRequest, res: Response) => {
   const db = getDb();
   const index = db.projects.findIndex(p => p.id === req.params.id);
   if (index === -1) return res.status(404).json({ error: 'Project not found' });
@@ -983,7 +1019,77 @@ apiRouter.put('/admin/projects/:id', authenticate, (req: AuthRequest, res: Respo
   logActivity(req.user!.id, req.user!.name, 'UPDATED_PROJECT', 'projects', updated.id, `Updated project ${updated.name} (${updated.status})`);
 
   res.json(updated);
+};
+
+apiRouter.put('/admin/projects/:id', authenticate, handleUpdateProject);
+apiRouter.patch('/admin/projects/:id', authenticate, handleUpdateProject);
+
+apiRouter.delete('/admin/projects/:id', authenticate, requireRole(['Super Administrator', 'Administrator']), (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const project = db.projects.find(p => p.id === req.params.id);
+  if (!project) return res.status(404).json({ error: 'Project not found' });
+
+  db.projects = db.projects.filter(p => p.id !== req.params.id);
+  saveDb(db);
+  logActivity(req.user!.id, req.user!.name, 'DELETED_PROJECT', 'projects', req.params.id, `Deleted project ${project.name} (${project.code})`);
+  res.json({ success: true });
 });
+
+// Nested Project Tasks (used by ProjectsView)
+apiRouter.post('/admin/projects/:projectId/tasks', authenticate, (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const project = db.projects.find(p => p.id === req.params.projectId);
+  if (!project) return res.status(404).json({ error: 'Project not found' });
+
+  const { title, description, assignedTo, priority, status } = req.body;
+  if (!title) return res.status(400).json({ error: 'Task title is required' });
+
+  const newTask: Task = {
+    id: `tsk_${Date.now().toString(36)}`,
+    projectId: project.id,
+    projectName: project.name,
+    title: String(title).trim(),
+    description: description ? String(description).trim() : '',
+    assignedTo: assignedTo || 'Engineering Team',
+    priority: priority || 'Medium',
+    status: status || 'To Do',
+    createdAt: new Date().toISOString(),
+  };
+
+  if (!project.tasks) project.tasks = [];
+  project.tasks.unshift(newTask);
+  project.updatedAt = new Date().toISOString();
+  saveDb(db);
+
+  logActivity(req.user!.id, req.user!.name, 'CREATED_PROJECT_TASK', 'projects', project.id, `Added task ${newTask.title} to project ${project.name}`);
+  res.status(201).json(project);
+});
+
+const handleUpdateProjectTask = (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const project = db.projects.find(p => p.id === req.params.projectId);
+  if (!project) return res.status(404).json({ error: 'Project not found' });
+
+  if (!project.tasks) project.tasks = [];
+  const taskIndex = project.tasks.findIndex(t => t.id === req.params.taskId);
+  if (taskIndex === -1) return res.status(404).json({ error: 'Task not found in project' });
+
+  project.tasks[taskIndex] = {
+    ...project.tasks[taskIndex],
+    ...req.body,
+  };
+
+  const totalTasks = project.tasks.length;
+  const completedTasks = project.tasks.filter(t => t.status === 'Completed').length;
+  project.progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : project.progress;
+  project.updatedAt = new Date().toISOString();
+  saveDb(db);
+
+  res.json(project);
+};
+
+apiRouter.put('/admin/projects/:projectId/tasks/:taskId', authenticate, handleUpdateProjectTask);
+apiRouter.patch('/admin/projects/:projectId/tasks/:taskId', authenticate, handleUpdateProjectTask);
 
 // Tasks
 apiRouter.get('/admin/tasks', authenticate, (req: AuthRequest, res: Response) => {
@@ -1483,8 +1589,9 @@ const applySettingsUpdate = (existing: any, incoming: any) => {
   if (incoming.currency) {
     const code = String(incoming.currency).toUpperCase();
     updated.currency = code;
-    if (!incoming.currencySymbol || incoming.currencySymbol === '$' && code === 'KES') {
-      updated.currencySymbol = code === 'KES' ? 'KES ' : code === 'EUR' ? '€' : code === 'GBP' ? '£' : '$';
+    const defaultSym = code === 'KES' ? 'KES ' : code === 'EUR' ? '€' : code === 'GBP' ? '£' : '$';
+    if (!incoming.currencySymbol || (code !== existing.currency && incoming.currencySymbol === existing.currencySymbol)) {
+      updated.currencySymbol = defaultSym;
     }
   }
 

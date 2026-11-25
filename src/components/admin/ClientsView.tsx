@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, Search, Plus, Mail, Phone, MapPin, 
   Building, FileText, CreditCard, Receipt, 
   FolderKanban, ExternalLink, Edit2, Trash2, CheckCircle2 
 } from 'lucide-react';
 import { Client, Quotation, Invoice, Payment, Project, GlobalSettings } from '../../types.ts';
+import { formatMoney } from '../../utils/currency.ts';
 
 interface ClientsViewProps {
   settings?: GlobalSettings;
@@ -18,6 +19,8 @@ interface ClientsViewProps {
   onDeleteClient: (id: string) => Promise<void>;
   onOpenNewQuoteForClient: (client: Client) => void;
   onOpenNewInvoiceForClient: (client: Client) => void;
+  autoOpenCreate?: boolean;
+  onClearAutoOpenCreate?: () => void;
 }
 
 export const ClientsView: React.FC<ClientsViewProps> = ({
@@ -32,17 +35,32 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
   onDeleteClient,
   onOpenNewQuoteForClient,
   onOpenNewInvoiceForClient,
+  autoOpenCreate = false,
+  onClearAutoOpenCreate,
 }) => {
-  const currSymbol = settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [clientError, setClientError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const safeClients = clients || [];
   const safeQuotations = quotations || [];
   const safeInvoices = invoices || [];
   const safePayments = payments || [];
   const safeProjects = projects || [];
+
+  useEffect(() => {
+    if (selectedClient) {
+      const updated = safeClients.find(c => c.id === selectedClient.id);
+      if (updated) {
+        setSelectedClient(updated);
+      } else {
+        setSelectedClient(null);
+      }
+    }
+  }, [clients]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -64,8 +82,18 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
     (c.email || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  useEffect(() => {
+    if (autoOpenCreate) {
+      handleOpenCreate();
+      onClearAutoOpenCreate?.();
+    }
+  }, [autoOpenCreate]);
+
   const handleOpenCreate = () => {
     setEditingClient(null);
+    setClientError(null);
+    setActionError(null);
+    setSubmitting(false);
     setFormData({
       name: '',
       company: '',
@@ -84,33 +112,93 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
   const handleOpenEdit = (client: Client) => {
     setEditingClient(client);
+    setClientError(null);
+    setActionError(null);
+    setSubmitting(false);
     setFormData({
-      name: client.name,
-      company: client.company,
-      email: client.email,
-      phone: client.phone,
+      name: client.name || '',
+      company: client.company || '',
+      email: client.email || '',
+      phone: client.phone || '',
       address: client.address || '',
       city: client.city || 'Nairobi',
       country: client.country || 'Kenya',
       taxId: client.taxId || '',
       contactPerson: client.contactPerson || '',
       notes: client.notes || '',
-      status: client.status,
+      status: client.status || 'Active',
     });
     setModalOpen(true);
   };
 
+  const handleDelete = async (id: string) => {
+    setActionError(null);
+    try {
+      await onDeleteClient(id);
+    } catch (err: any) {
+      setActionError(err?.message || 'Failed to delete client.');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingClient) {
-      await onUpdateClient(editingClient.id, formData);
-      if (selectedClient && selectedClient.id === editingClient.id) {
-        setSelectedClient({ ...selectedClient, ...formData });
-      }
-    } else {
-      await onCreateClient(formData);
+    const cleaned = {
+      ...formData,
+      company: formData.company.trim(),
+      name: formData.name.trim(),
+      email: formData.email.trim().toLowerCase(),
+      phone: formData.phone.trim(),
+      address: formData.address.trim(),
+      city: formData.city.trim(),
+      country: formData.country.trim(),
+      taxId: formData.taxId.trim(),
+      contactPerson: formData.contactPerson.trim(),
+      notes: formData.notes.trim(),
+    };
+
+    if (!cleaned.company || !cleaned.name || !cleaned.email) {
+      setClientError('Company name, primary contact name, and billing email are required.');
+      return;
     }
-    setModalOpen(false);
+
+    setClientError(null);
+    setSubmitting(true);
+    try {
+      if (editingClient) {
+        await onUpdateClient(editingClient.id, cleaned);
+        if (selectedClient && selectedClient.id === editingClient.id) {
+          setSelectedClient({ ...selectedClient, ...cleaned });
+        }
+      } else {
+        await onCreateClient(cleaned);
+      }
+      setModalOpen(false);
+    } catch (err: any) {
+      setClientError(err?.message || 'Failed to save client. Please check details and try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Helper to format totals accurately across one or more document currencies
+  const formatTotalsByCurrency = (rows: Array<{ currency?: string; value: number }>, fallbackCurr?: string) => {
+    const grouped: Record<string, number> = {};
+    for (const r of rows) {
+      const code = (r.currency || fallbackCurr || settings?.currency || 'USD').toUpperCase();
+      grouped[code] = (grouped[code] || 0) + (r.value || 0);
+    }
+    const entries = Object.entries(grouped);
+    if (entries.length === 0) {
+      return formatMoney(0, fallbackCurr || settings?.currency, settings);
+    }
+    if (entries.length === 1) {
+      return formatMoney(entries[0][1], entries[0][0], settings);
+    }
+    const nonZero = entries.filter(([, amt]) => Math.abs(amt) > 0.005);
+    if (nonZero.length === 0) {
+      return formatMoney(0, fallbackCurr || settings?.currency, settings);
+    }
+    return nonZero.map(([code, amt]) => formatMoney(amt, code, settings)).join(' + ');
   };
 
   // 360-degree data for currently selected client
@@ -119,9 +207,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
   const clientPayments = selectedClient ? safePayments.filter(p => p.clientId === selectedClient.id) : [];
   const clientProjects = selectedClient ? safeProjects.filter(p => p.clientId === selectedClient.id) : [];
 
-  const totalInvoiced = clientInvoices.reduce((sum, i) => sum + i.total, 0);
-  const totalPaid = clientPayments.reduce((sum, p) => sum + p.amount, 0);
-  const totalBalance = clientInvoices.reduce((sum, i) => sum + i.balanceDue, 0);
+  const totalBalance = clientInvoices.reduce((sum, i) => sum + (i.balanceDue || 0), 0);
+  const formattedInvoiced = formatTotalsByCurrency(clientInvoices.map(i => ({ currency: i.currency, value: i.total })));
+  const formattedPaid = formatTotalsByCurrency(clientPayments.map(p => ({ currency: p.currency, value: p.amount })));
+  const formattedBalance = formatTotalsByCurrency(clientInvoices.map(i => ({ currency: i.currency, value: i.balanceDue })));
 
   return (
     <div className="space-y-6 text-left">
@@ -159,11 +248,18 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
         </div>
       </div>
 
+      {actionError && (
+        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center justify-between gap-2">
+          <span><strong>Error:</strong> {actionError}</span>
+          <button onClick={() => setActionError(null)} className="text-rose-400 hover:text-white">✕</button>
+        </div>
+      )}
+
       {/* Clients Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((client) => {
           const clientInvs = safeInvoices.filter(i => i.clientId === client.id);
-          const balance = clientInvs.reduce((sum, i) => sum + i.balanceDue, 0);
+          const balance = clientInvs.reduce((sum, i) => sum + (i.balanceDue || 0), 0);
 
           return (
             <div
@@ -178,7 +274,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold text-sm">
-                    {client.company.charAt(0)}
+                    {(client.company || client.name || 'C').charAt(0).toUpperCase()}
                   </div>
                   <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                     client.status === 'Active' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'
@@ -217,7 +313,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                 <div>
                   <span className="text-[10px] text-slate-500 uppercase block">Balance Due</span>
                   <span className={`font-semibold ${balance > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
-                    {currSymbol}{balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {formatTotalsByCurrency(clientInvs.map(i => ({ currency: i.currency, value: i.balanceDue })))}
                   </span>
                 </div>
 
@@ -236,7 +332,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDeleteClient(client.id);
+                      handleDelete(client.id);
                     }}
                     className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-950/40"
                     title="Delete Client"
@@ -287,16 +383,16 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
             <div className="grid grid-cols-3 gap-3">
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Total Invoiced</span>
-                <span className="text-sm font-bold text-white">{currSymbol}{totalInvoiced.toLocaleString()}</span>
+                <span className="text-sm font-bold text-white">{formattedInvoiced}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Payments Paid</span>
-                <span className="text-sm font-bold text-emerald-400">{currSymbol}{totalPaid.toLocaleString()}</span>
+                <span className="text-sm font-bold text-emerald-400">{formattedPaid}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-[10px] text-slate-500 uppercase block">Outstanding</span>
                 <span className={`text-sm font-bold ${totalBalance > 0 ? 'text-amber-400' : 'text-slate-400'}`}>
-                  {currSymbol}{totalBalance.toLocaleString()}
+                  {formattedBalance}
                 </span>
               </div>
             </div>
@@ -362,8 +458,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         <span className="text-[10px] text-slate-400 ml-2">Due: {inv.dueDate}</span>
                       </div>
                       <div className="text-right">
-                        <span className="font-bold text-white">{currSymbol}{inv.total.toLocaleString()}</span>
-                        <span className="text-[10px] block text-slate-400">{inv.status}</span>
+                        <span className="font-bold text-white">{formatMoney(inv.total, inv.currency, settings)}</span>
+                        <span className="text-[10px] block text-slate-400">
+                          {inv.status}{inv.balanceDue > 0 ? ` · Due ${formatMoney(inv.balanceDue, inv.currency, settings)}` : ''}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -389,7 +487,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         <span className="text-[10px] text-slate-400 ml-2">Valid until: {q.expiryDate}</span>
                       </div>
                       <div className="text-right">
-                        <span className="font-bold text-white">{currSymbol}{q.total.toLocaleString()}</span>
+                        <span className="font-bold text-white">{formatMoney(q.total, q.currency, settings)}</span>
                         <span className="text-[10px] block text-slate-400">{q.status}</span>
                       </div>
                     </div>
@@ -404,11 +502,28 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
       {/* Add/Edit Client Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl text-left">
-            <h3 className="text-lg font-display font-bold text-white mb-4">
-              {editingClient ? 'Edit Client Profile' : 'Register New Client Account'}
-            </h3>
+        <div className="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 shadow-2xl text-left">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-display font-bold text-white">
+                {editingClient ? 'Edit Client Profile' : 'Register New Client Account'}
+              </h3>
+              <button
+                type="button"
+                disabled={submitting}
+                onClick={() => setModalOpen(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            {clientError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
+                <span className="font-semibold">Error:</span> {clientError}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div className="grid grid-cols-2 gap-3">
@@ -504,16 +619,18 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
                 <button
                   type="button"
+                  disabled={submitting}
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white"
+                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold"
+                  disabled={submitting}
+                  className="px-5 py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 disabled:opacity-50 text-slate-950 font-bold flex items-center gap-2"
                 >
-                  {editingClient ? 'Save Changes' : 'Create Client'}
+                  {submitting ? 'Saving...' : editingClient ? 'Save Changes' : 'Create Client'}
                 </button>
               </div>
             </form>

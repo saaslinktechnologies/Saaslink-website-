@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Lock, Mail, Key, Shield, ArrowRight, 
   CheckCircle, AlertCircle, RefreshCw, ShieldCheck,
@@ -17,8 +17,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   onClose,
   onLoginSuccess,
 }) => {
-  if (!isOpen) return null;
-
   const [mode, setMode] = useState<'login' | 'forgot' | 'reset'>('login');
   
   // Login form state - clean, zero prefill
@@ -35,6 +33,16 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setErrorMessage(null);
+      setSuccessMessage(null);
+      setLoading(false);
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,8 +65,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Authentication failed. Please verify credentials.');
 
+      setPassword('');
       onLoginSuccess(data.token, data.user);
-      onClose();
     } catch (err: any) {
       setErrorMessage(err.message);
     } finally {

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { DashboardMetrics, GlobalSettings } from '../../types.ts';
 import { AdminSection } from './AdminLayout.tsx';
+import { getCurrencySymbol, formatMoney } from '../../utils/currency.ts';
 
 interface DashboardViewProps {
   metrics: DashboardMetrics | null;
@@ -56,6 +57,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Quick Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
           <button
+            onClick={onOpenNewClient}
+            className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5 text-cyan-400" />
+            <span>New Client</span>
+          </button>
+
+          <button
             onClick={onOpenNewLead}
             className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
@@ -94,10 +103,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <CreditCard className="w-4 h-4 text-cyan-400" />
           </div>
           <div className="text-2xl font-display font-bold text-white group-hover:text-cyan-300 transition-colors">
-            {settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$')}{metrics.totalInvoicedValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {formatMoney(metrics.totalInvoicedValue, settings?.currency, settings)}
           </div>
           <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Outstanding: <strong>{settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$')}{metrics.outstandingBalance.toLocaleString()}</strong></span>
+            <span>Outstanding: <strong>{formatMoney(metrics.outstandingBalance, settings?.currency, settings)}</strong></span>
             <ArrowUpRight className="w-3 h-3 text-slate-600 group-hover:text-cyan-400" />
           </div>
         </div>
@@ -112,7 +121,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <Receipt className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-2xl font-display font-bold text-emerald-400">
-            {settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$')}{metrics.totalPaymentsReceived.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {formatMoney(metrics.totalPaymentsReceived, settings?.currency, settings)}
           </div>
           <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
             <span>Verified Official Receipts</span>
@@ -171,7 +180,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <p className="text-[11px] text-slate-400">Recorded revenue distribution</p>
             </div>
             <span className="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-cyan-400">
-              {settings.currency} ({settings?.currencySymbol || (settings.currency === 'KES' ? 'KES ' : '$')})
+              {settings?.currency || 'USD'} ({getCurrencySymbol(settings?.currency, settings).trim()})
             </span>
           </div>
 
@@ -182,7 +191,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               return (
                 <div key={idx} className="flex-1 flex flex-col items-center gap-2 group">
                   <div className="text-[10px] font-mono text-cyan-300 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$')}{item.amount.toLocaleString()}
+                    {formatMoney(item.amount, settings?.currency, settings)}
                   </div>
                   <div 
                     className="w-full max-w-[48px] rounded-t-lg bg-gradient-to-t from-cyan-900 to-cyan-400 transition-all group-hover:brightness-125"
@@ -197,8 +206,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className="flex items-center justify-between text-xs text-slate-400 pt-2">
-            <span>Total Collected to Date: <strong className="text-emerald-400">${metrics.totalPaymentsReceived.toLocaleString()}</strong></span>
-            <span>Total Quoted in Pipeline: <strong className="text-cyan-400">${metrics.totalQuotedValue.toLocaleString()}</strong></span>
+            <span>Total Collected to Date: <strong className="text-emerald-400">{formatMoney(metrics.totalPaymentsReceived, settings?.currency, settings)}</strong></span>
+            <span>Total Quoted in Pipeline: <strong className="text-cyan-400">{formatMoney(metrics.totalQuotedValue, settings?.currency, settings)}</strong></span>
           </div>
         </div>
 

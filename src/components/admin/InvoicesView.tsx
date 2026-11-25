@@ -4,6 +4,7 @@ import {
   Search, AlertCircle, DollarSign, Receipt, Calendar, ArrowRight 
 } from 'lucide-react';
 import { Invoice, Client, GlobalSettings, InvoiceItem, Payment } from '../../types.ts';
+import { getCurrencySymbol, formatMoney } from '../../utils/currency.ts';
 
 interface InvoicesViewProps {
   invoices?: Invoice[];
@@ -35,21 +36,40 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
   const [issueDate, setIssueDate] = useState(new Date().toISOString().substring(0, 10));
   const [dueDate, setDueDate] = useState(new Date(Date.now() + 14 * 86400000).toISOString().substring(0, 10));
   const [currency, setCurrency] = useState(settings?.currency || 'USD');
-  const [taxRate, setTaxRate] = useState(settings?.defaultTaxRate || 16);
+  const [taxRate, setTaxRate] = useState(settings?.defaultTaxRate ?? 16);
   const [notes, setNotes] = useState('Payment due within 14 days from date of invoice.');
-  const [terms, setTerms] = useState('Work deliverables remain the intellectual property of SaaSLink Technologies Ltd until invoice is settled in full.');
+  const [terms, setTerms] = useState(settings?.termsAndConditions || 'Work deliverables remain the intellectual property of SaaSLink Technologies Ltd until invoice is settled in full.');
+  const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
-  // Sync currency whenever platform settings update
+  // Sync currency, tax rate, and client selection defaults
   useEffect(() => {
     if (settings?.currency) {
       setCurrency(settings.currency);
     }
   }, [settings?.currency]);
 
-  const getCurrencySymbol = (curr?: string) => {
-    const c = curr || currency || settings?.currency || 'USD';
-    return c === 'KES' ? 'KES ' : c === 'EUR' ? '€' : c === 'GBP' ? '£' : '$';
-  };
+  useEffect(() => {
+    if (settings?.defaultTaxRate !== undefined) {
+      setTaxRate(settings.defaultTaxRate);
+    }
+  }, [settings?.defaultTaxRate]);
+
+  useEffect(() => {
+    if (initialClient) {
+      setClientId(initialClient.id);
+      setCreateModalOpen(true);
+    } else if (!clientId && safeClients.length > 0) {
+      setClientId(safeClients[0].id);
+    }
+  }, [initialClient, safeClients.length]);
+
+  useEffect(() => {
+    if (previewInvoice) {
+      const updated = safeInvoices.find(i => i.id === previewInvoice.id);
+      if (updated) setPreviewInvoice(updated);
+    }
+  }, [invoices]);
 
   const [items, setItems] = useState<Omit<InvoiceItem, 'id' | 'total'>[]>([
     { type: 'service', description: 'Enterprise Custom Software Development Sprint', quantity: 1, unitPrice: 3500, discount: 0 },
@@ -61,6 +81,7 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
   const [payRef, setPayRef] = useState('');
   const [payNotes, setPayNotes] = useState('');
   const [isRecordingPay, setIsRecordingPay] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
 
   const filtered = safeInvoices.filter(inv => {
     const matchesSearch = 
@@ -72,7 +93,7 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
   });
 
   // Calculate totals
-  const subtotal = items.reduce((sum, it) => sum + (it.quantity * it.unitPrice - (it.discount || 0)), 0);
+  const subtotal = items.reduce((sum, it) => sum + Math.max(0, it.quantity * it.unitPrice - (it.discount || 0)), 0);
   const taxAmount = (subtotal * taxRate) / 100;
   const grandTotal = subtotal + taxAmount;
 
@@ -92,45 +113,74 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
     setItems(updated);
   };
 
+  const handleOpenCreateModal = () => {
+    setCreateError(null);
+    if (!clientId && safeClients.length > 0) {
+      setClientId(safeClients[0].id);
+    }
+    if (settings?.currency) {
+      setCurrency(settings.currency);
+    }
+    setCreateModalOpen(true);
+  };
+
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onCreateInvoice({
-      clientId,
-      issueDate,
-      dueDate,
-      currency,
-      items,
-      taxRate,
-      notes,
-      terms,
-      status: 'Sent',
-    });
-    setCreateModalOpen(false);
+    if (!clientId) {
+      setCreateError('Please select a valid client account first.');
+      return;
+    }
+    setCreateError(null);
+    setIsCreating(true);
+    try {
+      await onCreateInvoice({
+        clientId,
+        issueDate,
+        dueDate,
+        currency,
+        items,
+        taxRate,
+        notes,
+        terms,
+        status: 'Sent',
+      });
+      setCreateModalOpen(false);
+    } catch (err: any) {
+      setCreateError(err?.message || 'Failed to create invoice.');
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const handleOpenPayment = (inv: Invoice) => {
     setPaymentModalInvoice(inv);
-    setPayAmount(inv.balanceDue);
+    setPayAmount(Number((inv.balanceDue ?? 0).toFixed(2)));
     setPayRef(`TXN-${Date.now().toString().slice(-6)}`);
     setPayNotes(`Payment for Invoice ${inv.invoiceNumber}`);
+    setPayError(null);
   };
 
   const handleRecordPaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!paymentModalInvoice) return;
+    setPayError(null);
     setIsRecordingPay(true);
 
-    await onRecordPayment({
-      invoiceId: paymentModalInvoice.id,
-      amount: Number(payAmount),
-      method: payMethod,
-      reference: payRef,
-      paymentDate: new Date().toISOString().substring(0, 10),
-      notes: payNotes,
-    });
-
-    setIsRecordingPay(false);
-    setPaymentModalInvoice(null);
+    try {
+      await onRecordPayment({
+        invoiceId: paymentModalInvoice.id,
+        amount: Number(payAmount),
+        paymentMethod: payMethod,
+        paymentReference: payRef,
+        paymentDate: new Date().toISOString().substring(0, 10),
+        notes: payNotes,
+      });
+      setPaymentModalInvoice(null);
+    } catch (err: any) {
+      setPayError(err?.message || 'Failed to record payment.');
+    } finally {
+      setIsRecordingPay(false);
+    }
   };
 
   const handlePrint = () => {
@@ -177,7 +227,7 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
           </select>
 
           <button
-            onClick={() => setCreateModalOpen(true)}
+            onClick={handleOpenCreateModal}
             className="px-3.5 py-1.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -226,12 +276,12 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                     </td>
 
                     <td className="py-3.5 px-4 font-mono font-bold text-white">
-                      {getCurrencySymbol(inv.currency)}{inv.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      {formatMoney(inv.total, inv.currency, settings)}
                     </td>
 
                     <td className="py-3.5 px-4 font-mono font-bold">
                       <span className={inv.balanceDue > 0 ? 'text-amber-400' : 'text-emerald-400'}>
-                        {getCurrencySymbol(inv.currency)}{inv.balanceDue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        {formatMoney(inv.balanceDue, inv.currency, settings)}
                       </span>
                     </td>
 
@@ -300,6 +350,13 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
             </div>
 
             <form onSubmit={handleRecordPaymentSubmit} className="space-y-4 text-xs">
+              {payError && (
+                <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>{payError}</span>
+                </div>
+              )}
+
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
                 <div className="flex justify-between text-slate-400">
                   <span>Client Account:</span>
@@ -308,15 +365,18 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                 <div className="flex justify-between text-slate-400">
                   <span>Outstanding Balance:</span>
                   <span className="text-amber-400 font-bold font-mono">
-                    ${paymentModalInvoice.balanceDue.toLocaleString()}
+                    {formatMoney(paymentModalInvoice.balanceDue, paymentModalInvoice.currency, settings)}
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Amount Paid (USD) *</label>
+                <label className="block text-slate-300 font-semibold mb-1">
+                  Amount Paid ({paymentModalInvoice.currency || settings?.currency || 'USD'}) *
+                </label>
                 <input
                   type="number"
+                  min="0.01"
                   step="0.01"
                   max={paymentModalInvoice.balanceDue}
                   required
@@ -464,7 +524,7 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                   <div className="text-slate-700">Currency: <strong>{previewInvoice.currency}</strong></div>
                   <div className="text-slate-700">Status: <strong>{previewInvoice.status}</strong></div>
                   <div className="text-amber-700 font-bold">
-                    Balance Due: ${previewInvoice.balanceDue.toFixed(2)}
+                    Balance Due: {formatMoney(previewInvoice.balanceDue, previewInvoice.currency, settings)}
                   </div>
                 </div>
               </div>
@@ -485,11 +545,11 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                       <tr key={idx}>
                         <td className="py-3 pr-4">
                           <div className="font-semibold text-slate-900">{item.description}</div>
-                          <div className="text-[11px] text-slate-500 uppercase font-mono">{item.type}</div>
+                          {item.type && <div className="text-[11px] text-slate-500 uppercase font-mono">{item.type}</div>}
                         </td>
                         <td className="py-3 text-center">{item.quantity}</td>
-                        <td className="py-3 text-right font-mono">{getCurrencySymbol(previewInvoice.currency)}{item.unitPrice.toFixed(2)}</td>
-                        <td className="py-3 text-right font-mono font-semibold">{getCurrencySymbol(previewInvoice.currency)}{item.total.toFixed(2)}</td>
+                        <td className="py-3 text-right font-mono">{formatMoney(item.unitPrice, previewInvoice.currency, settings)}</td>
+                        <td className="py-3 text-right font-mono font-semibold">{formatMoney(item.total, previewInvoice.currency, settings)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -501,27 +561,34 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                 <div className="w-72 space-y-2 border-t border-slate-300 pt-3 text-xs">
                   <div className="flex justify-between text-slate-600">
                     <span>Subtotal:</span>
-                    <span className="font-mono font-semibold">{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.subtotal.toFixed(2)}</span>
+                    <span className="font-mono font-semibold">{formatMoney(previewInvoice.subtotal, previewInvoice.currency, settings)}</span>
                   </div>
+
+                  {(previewInvoice.discountAmount || 0) > 0 && (
+                    <div className="flex justify-between text-emerald-700">
+                      <span>Discount ({previewInvoice.discountPercent}%):</span>
+                      <span className="font-mono">-{formatMoney(previewInvoice.discountAmount, previewInvoice.currency, settings)}</span>
+                    </div>
+                  )}
 
                   <div className="flex justify-between text-slate-600">
                     <span>VAT / Tax ({previewInvoice.taxRate}%):</span>
-                    <span className="font-mono font-semibold">{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.taxAmount.toFixed(2)}</span>
+                    <span className="font-mono font-semibold">{formatMoney(previewInvoice.taxAmount, previewInvoice.currency, settings)}</span>
                   </div>
 
                   <div className="border-t border-slate-300 pt-2 flex justify-between text-sm font-bold text-slate-950">
                     <span>Total Invoiced:</span>
-                    <span className="font-mono">{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.total.toFixed(2)}</span>
+                    <span className="font-mono">{formatMoney(previewInvoice.total, previewInvoice.currency, settings)}</span>
                   </div>
 
                   <div className="flex justify-between text-emerald-700 font-semibold">
                     <span>Paid to Date:</span>
-                    <span className="font-mono">-{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.amountPaid.toFixed(2)}</span>
+                    <span className="font-mono">-{formatMoney(previewInvoice.amountPaid, previewInvoice.currency, settings)}</span>
                   </div>
 
                   <div className="border-t-2 border-slate-900 pt-2 flex justify-between text-sm font-extrabold text-amber-700">
                     <span>Net Balance Due:</span>
-                    <span className="font-mono">{getCurrencySymbol(previewInvoice.currency)}{previewInvoice.balanceDue.toFixed(2)}</span>
+                    <span className="font-mono">{formatMoney(previewInvoice.balanceDue, previewInvoice.currency, settings)}</span>
                   </div>
                 </div>
               </div>
@@ -573,14 +640,23 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
             </div>
 
             <form onSubmit={handleCreateSubmit} className="space-y-6 text-xs">
+              {createError && (
+                <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>{createError}</span>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3.5">
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">Client Account *</label>
                   <select
+                    required
                     value={clientId}
                     onChange={(e) => setClientId(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400 text-xs"
                   >
+                    {safeClients.length === 0 && <option value="">No clients registered yet</option>}
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>{c.company} ({c.name})</option>
                     ))}
@@ -704,7 +780,7 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
                   <div className="flex justify-between text-slate-400">
                     <span>Subtotal:</span>
-                    <span className="font-mono text-white">{getCurrencySymbol(currency)}{subtotal.toFixed(2)}</span>
+                    <span className="font-mono text-white">{formatMoney(subtotal, currency, settings)}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-slate-400">
@@ -719,12 +795,12 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
 
                   <div className="flex justify-between text-slate-400">
                     <span>Tax Amount:</span>
-                    <span className="font-mono text-white">{getCurrencySymbol(currency)}{taxAmount.toFixed(2)}</span>
+                    <span className="font-mono text-white">{formatMoney(taxAmount, currency, settings)}</span>
                   </div>
 
                   <div className="pt-2 border-t border-slate-800 flex justify-between text-sm font-bold text-white">
                     <span>Total Amount:</span>
-                    <span className="font-mono text-cyan-400">{getCurrencySymbol(currency)}{grandTotal.toFixed(2)}</span>
+                    <span className="font-mono text-cyan-400">{formatMoney(grandTotal, currency, settings)}</span>
                   </div>
                 </div>
               </div>
@@ -732,17 +808,19 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
                 <button
                   type="button"
+                  disabled={isCreating}
                   onClick={() => setCreateModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white"
+                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white disabled:opacity-50"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20"
+                  disabled={isCreating || safeClients.length === 0}
+                  className="px-6 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 disabled:opacity-50 cursor-pointer"
                 >
-                  Issue & Dispatch Invoice
+                  {isCreating ? 'Issuing Invoice...' : 'Issue & Dispatch Invoice'}
                 </button>
               </div>
 

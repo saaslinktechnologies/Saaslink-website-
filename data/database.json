@@ -1482,6 +1482,186 @@
   ],
   "activityLogs": [
     {
+      "id": "act_1795552519938_yeept",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-11-24T20:35:19.938Z"
+    },
+    {
+      "id": "act_1795552516631_1l3jd",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "DELETED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwv5lvat_dtk4",
+      "details": "Deleted client Acme Verified Ltd",
+      "timestamp": "2026-11-24T20:35:16.631Z"
+    },
+    {
+      "id": "act_1795552514742_xcgl9",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "CREATED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwv5lvat_dtk4",
+      "details": "Created client Acme Verified Ltd",
+      "timestamp": "2026-11-24T20:35:14.742Z"
+    },
+    {
+      "id": "act_1795552513643_3nnss",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-11-24T20:35:13.643Z"
+    },
+    {
+      "id": "act_1795552315526_adeth",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "DELETED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwv5hksc",
+      "details": "Deleted client Playwright Test Ltd",
+      "timestamp": "2026-11-24T20:31:55.526Z"
+    },
+    {
+      "id": "act_1795552314493_mef2m",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "CREATED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwv5hksc",
+      "details": "Created client Playwright Test Ltd",
+      "timestamp": "2026-11-24T20:31:54.493Z"
+    },
+    {
+      "id": "act_1795552312132_is24d",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-11-24T20:31:52.132Z"
+    },
+    {
+      "id": "act_1795552280735_5gbp9",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-11-24T20:31:20.735Z"
+    },
+    {
+      "id": "act_1795552206512_ez3v8",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "DELETED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwv5f9go",
+      "details": "Deleted client Test Corp",
+      "timestamp": "2026-11-24T20:30:06.512Z"
+    },
+    {
+      "id": "act_1795552206505_883lc",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "CREATED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwv5f9go",
+      "details": "Created client Test Corp",
+      "timestamp": "2026-11-24T20:30:06.505Z"
+    },
+    {
+      "id": "act_1795552206487_bd1fu",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-11-24T20:30:06.487Z"
+    },
+    {
+      "id": "act_1794477899788_fyww6",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "DELETED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwddt53a",
+      "details": "Deleted client Apex Fintech Solutions Ltd",
+      "timestamp": "2026-11-12T10:04:59.788Z"
+    },
+    {
+      "id": "act_1794477899783_2q5gp",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "CREATED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwddt53a",
+      "details": "Created client Apex Fintech Solutions Ltd",
+      "timestamp": "2026-11-12T10:04:59.783Z"
+    },
+    {
+      "id": "act_1794477899776_g7za8",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-11-12T10:04:59.776Z"
+    },
+    {
+      "id": "act_1794477341910_e0k4f",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "DELETED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwddh2mm",
+      "details": "Deleted client Acme Corp Test",
+      "timestamp": "2026-11-12T09:55:41.910Z"
+    },
+    {
+      "id": "act_1794477341889_8jypm",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-11-12T09:55:41.889Z"
+    },
+    {
+      "id": "act_1794477336719_tjvfd",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "CREATED_CLIENT",
+      "resource": "clients",
+      "resourceId": "cli_mwddh2mm",
+      "details": "Created client Acme Corp Test",
+      "timestamp": "2026-11-12T09:55:36.719Z"
+    },
+    {
+      "id": "act_1794477336699_oumsf",
+      "userId": "usr_super_01",
+      "userName": "Alexandre Kamau",
+      "action": "USER_LOGIN",
+      "resource": "users",
+      "resourceId": "usr_super_01",
+      "details": "Successful login to administration platform",
+      "timestamp": "2026-11-12T09:55:36.699Z"
+    },
+    {
       "id": "act_1793472466582_0hkvx",
       "userId": "usr_super_01",
       "userName": "Alexandre Kamau",

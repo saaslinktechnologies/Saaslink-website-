@@ -367,11 +367,14 @@ export interface Payment {
   invoiceNumber: string;
   clientId: string;
   clientName: string;
+  clientCompany?: string;
   paymentDate: string;
   amount: number;
   currency: string;
-  paymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethod | string;
   paymentReference: string;
+  method?: string;
+  reference?: string;
   notes?: string;
   recordedBy: string;
   createdAt: string;
@@ -389,7 +392,7 @@ export interface Receipt {
   paymentDate: string;
   amount: number;
   currency: string;
-  paymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethod | string;
   paymentReference: string;
   notes?: string;
   createdAt: string;

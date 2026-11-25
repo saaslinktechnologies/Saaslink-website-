@@ -43,6 +43,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Logo specific states
   const [savingLogo, setSavingLogo] = useState(false);
@@ -230,6 +231,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     e.preventDefault();
     setSaving(true);
     setSavedSuccess(false);
+    setSaveError(null);
     try {
       const payload: GlobalSettings = {
         ...formData,
@@ -246,6 +248,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       if (link && payload.faviconUrl) (link as HTMLLinkElement).href = payload.faviconUrl;
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
+    } catch (err: any) {
+      setSaveError(err?.message || 'Failed to save enterprise settings. Please verify your permissions and try again.');
     } finally {
       setSaving(false);
     }
@@ -272,6 +276,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </div>
         )}
       </div>
+
+      {saveError && (
+        <div className="p-3.5 rounded-xl bg-rose-950/70 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+          <span>{saveError}</span>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6 text-xs">
         

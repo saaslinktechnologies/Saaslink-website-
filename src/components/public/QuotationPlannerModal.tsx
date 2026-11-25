@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, Check, Calculator, ArrowRight, ShieldCheck, 
   Database, Layers, Send, Sparkles, AlertCircle 
@@ -18,8 +18,6 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
   settings,
   preselectedService = '',
 }) => {
-  if (!isOpen) return null;
-
   const [systemType, setSystemType] = useState<string>(preselectedService || 'PropCloud360 Property Management');
   const [databaseTier, setDatabaseTier] = useState<string>('MySQL 8 Clustered (High Availability)');
   const [platforms, setPlatforms] = useState<string[]>(['Responsive Web Application', 'REST API Engine']);
@@ -35,6 +33,14 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOpen && preselectedService) {
+      setSystemType(preselectedService);
+    }
+  }, [isOpen, preselectedService]);
+
+  if (!isOpen) return null;
 
   // Compute ballpark estimate based on selections
   const computeEstimate = () => {
@@ -62,6 +68,11 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
 
   const estimate = computeEstimate();
 
+  const isKes = (settings?.currency || '').toUpperCase() === 'KES';
+  const primaryRangeText = isKes
+    ? `KES ${estimate.minKes} – ${estimate.maxKes}`
+    : `$${estimate.minUsd.toLocaleString()} – $${estimate.maxUsd.toLocaleString()}`;
+
   const togglePlatform = (p: string) => {
     setPlatforms(prev => prev.includes(p) ? prev.filter(item => item !== p) : [...prev, p]);
   };
@@ -81,7 +92,7 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
 - Target Interfaces: ${platforms.join(', ')}
 - Core Integrations: ${integrations.join(', ')}
 - SLA Support Tier: ${slaTier}
-- Calculated Budget Range: $${estimate.minUsd.toLocaleString()} - $${estimate.maxUsd.toLocaleString()} (approx. KSh ${estimate.minKes} - ${estimate.maxKes})
+- Calculated Budget Range: ${primaryRangeText} ${isKes ? `($${estimate.minUsd.toLocaleString()} – $${estimate.maxUsd.toLocaleString()})` : `(approx. KES ${estimate.minKes} – ${estimate.maxKes})`}
 - Additional Project Notes: ${notes || 'None'}`;
 
     try {
@@ -94,7 +105,7 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
           phone: clientPhone,
           company: clientCompany,
           serviceOfInterest: systemType,
-          budgetRange: `$${estimate.minUsd} - $${estimate.maxUsd}`,
+          budgetRange: primaryRangeText,
           timeline: '1 - 3 Months',
           message,
           type: 'quote',
@@ -320,10 +331,21 @@ export const QuotationPlannerModal: React.FC<QuotationPlannerModalProps> = ({
                     Preliminary Investment Envelope
                   </span>
                   <div className="text-2xl sm:text-3xl font-bold text-white mt-1 font-sans">
-                    ${estimate.minUsd.toLocaleString()} – ${estimate.maxUsd.toLocaleString()}{' '}
-                    <span className="text-xs text-slate-300 font-normal">
-                      (approx. KSh {estimate.minKes} – {estimate.maxKes})
-                    </span>
+                    {isKes ? (
+                      <>
+                        KES {estimate.minKes} – {estimate.maxKes}{' '}
+                        <span className="text-xs text-slate-300 font-normal">
+                          (approx. ${estimate.minUsd.toLocaleString()} – ${estimate.maxUsd.toLocaleString()})
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        ${estimate.minUsd.toLocaleString()} – ${estimate.maxUsd.toLocaleString()}{' '}
+                        <span className="text-xs text-slate-300 font-normal">
+                          (approx. KES {estimate.minKes} – {estimate.maxKes})
+                        </span>
+                      </>
+                    )}
                   </div>
                   <p className="text-[11px] text-slate-300 mt-1">
                     Includes technical specifications, database schema, unit testing, source code IP transfer, and 90-day post-launch warranty.

@@ -4,6 +4,7 @@ import {
   Trash2, Copy, Search, Eye, AlertCircle, Layers 
 } from 'lucide-react';
 import { Quotation, Client, GlobalSettings, QuotationItem } from '../../types.ts';
+import { formatMoney } from '../../utils/currency.ts';
 
 interface QuotationsViewProps {
   quotations?: Quotation[];
@@ -37,21 +38,33 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
   const [expiryDate, setExpiryDate] = useState(new Date(Date.now() + 30 * 86400000).toISOString().substring(0, 10));
   const [currency, setCurrency] = useState(settings?.currency || 'USD');
   const [discountPercent, setDiscountPercent] = useState(0);
-  const [taxRate, setTaxRate] = useState(settings?.defaultTaxRate || 16);
+  const [taxRate, setTaxRate] = useState(settings?.defaultTaxRate ?? 16);
   const [notes, setNotes] = useState('Thank you for choosing SaaSLink Technologies Ltd. Quotation valid for 30 calendar days.');
   const [terms, setTerms] = useState(settings?.termsAndConditions || 'Payment: 40% advance on project commencement, 40% upon staging UAT demo, 20% on production deployment.');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   
-  // Sync currency whenever platform settings update
+  // Sync currency, tax rate, and client defaults
   useEffect(() => {
     if (settings?.currency) {
       setCurrency(settings.currency);
     }
   }, [settings?.currency]);
 
-  const getCurrencySymbol = (curr?: string) => {
-    const c = curr || currency || settings?.currency || 'USD';
-    return c === 'KES' ? 'KES ' : c === 'EUR' ? '€' : c === 'GBP' ? '£' : '$';
-  };
+  useEffect(() => {
+    if (settings?.defaultTaxRate !== undefined) {
+      setTaxRate(settings.defaultTaxRate);
+    }
+  }, [settings?.defaultTaxRate]);
+
+  useEffect(() => {
+    if (initialClient) {
+      setClientId(initialClient.id);
+      setBuilderOpen(true);
+    } else if (!clientId && safeClients.length > 0) {
+      setClientId(safeClients[0].id);
+    }
+  }, [initialClient, safeClients.length]);
   
   const [items, setItems] = useState<Omit<QuotationItem, 'id' | 'total'>[]>([
     { type: 'service', description: 'Enterprise Software Architecture & Custom Engineering', quantity: 1, unitPrice: 4800, discount: 0 },
@@ -68,7 +81,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
   });
 
   // Calculate live totals
-  const subtotal = items.reduce((sum, it) => sum + (it.quantity * it.unitPrice - (it.discount || 0)), 0);
+  const subtotal = items.reduce((sum, it) => sum + Math.max(0, it.quantity * it.unitPrice - (it.discount || 0)), 0);
   const discountAmount = (subtotal * discountPercent) / 100;
   const subtotalAfterDisc = subtotal - discountAmount;
   const taxAmount = (subtotalAfterDisc * taxRate) / 100;
@@ -90,21 +103,44 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
     setItems(updated);
   };
 
+  const handleOpenBuilder = () => {
+    setSubmitError(null);
+    if (!clientId && safeClients.length > 0) {
+      setClientId(safeClients[0].id);
+    }
+    if (settings?.currency) {
+      setCurrency(settings.currency);
+    }
+    setBuilderOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onCreateQuotation({
-      clientId,
-      issueDate,
-      expiryDate,
-      currency,
-      items,
-      discountPercent,
-      taxRate,
-      notes,
-      terms,
-      status: 'Sent',
-    });
-    setBuilderOpen(false);
+    if (!clientId) {
+      setSubmitError('Please select a target client account first.');
+      return;
+    }
+    setSubmitError(null);
+    setIsSubmitting(true);
+    try {
+      await onCreateQuotation({
+        clientId,
+        issueDate,
+        expiryDate,
+        currency,
+        items,
+        discountPercent,
+        taxRate,
+        notes,
+        terms,
+        status: 'Sent',
+      });
+      setBuilderOpen(false);
+    } catch (err: any) {
+      setSubmitError(err?.message || 'Failed to save quotation.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handlePrint = () => {
@@ -151,7 +187,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
           </select>
 
           <button
-            onClick={() => setBuilderOpen(true)}
+            onClick={handleOpenBuilder}
             className="px-3.5 py-1.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -200,7 +236,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
 
                     <td className="py-3.5 px-4">
                       <div className="text-base font-bold text-white">
-                        {getCurrencySymbol(quote.currency)}{quote.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        {formatMoney(quote.total, quote.currency, settings)}
                       </div>
                       <div className="text-[10px] text-slate-400">Tax incl. ({quote.taxRate}%)</div>
                     </td>
@@ -270,16 +306,24 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6 text-xs">
+              {submitError && (
+                <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>{submitError}</span>
+                </div>
+              )}
               
               {/* Client, Currency & Dates */}
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3.5">
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">Target Client *</label>
                   <select
+                    required
                     value={clientId}
                     onChange={(e) => setClientId(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-400 text-xs"
                   >
+                    {safeClients.length === 0 && <option value="">No clients registered yet</option>}
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>{c.company} ({c.name})</option>
                     ))}
@@ -415,7 +459,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2.5">
                   <div className="flex justify-between text-slate-400">
                     <span>Subtotal:</span>
-                    <span className="font-mono text-white">{getCurrencySymbol(currency)}{subtotal.toFixed(2)}</span>
+                    <span className="font-mono text-white">{formatMoney(subtotal, currency, settings)}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-slate-400">
@@ -433,7 +477,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                   {discountAmount > 0 && (
                     <div className="flex justify-between text-amber-400">
                       <span>Discount ({discountPercent}%):</span>
-                      <span className="font-mono">-{getCurrencySymbol(currency)}{discountAmount.toFixed(2)}</span>
+                      <span className="font-mono">-{formatMoney(discountAmount, currency, settings)}</span>
                     </div>
                   )}
 
@@ -451,12 +495,12 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
 
                   <div className="flex justify-between text-slate-400">
                     <span>VAT Amount:</span>
-                    <span className="font-mono text-white">{getCurrencySymbol(currency)}{taxAmount.toFixed(2)}</span>
+                    <span className="font-mono text-white">{formatMoney(taxAmount, currency, settings)}</span>
                   </div>
 
                   <div className="pt-3 border-t border-slate-800 flex justify-between text-sm font-bold text-white">
                     <span>Quotation Grand Total:</span>
-                    <span className="font-mono text-cyan-400">{getCurrencySymbol(currency)}{grandTotal.toFixed(2)}</span>
+                    <span className="font-mono text-cyan-400">{formatMoney(grandTotal, currency, settings)}</span>
                   </div>
                 </div>
               </div>
@@ -465,17 +509,19 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
                 <button
                   type="button"
+                  disabled={isSubmitting}
                   onClick={() => setBuilderOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white"
+                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white disabled:opacity-50"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20"
+                  disabled={isSubmitting || safeClients.length === 0}
+                  className="px-6 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 disabled:opacity-50 cursor-pointer"
                 >
-                  Save & Issue Official Quotation
+                  {isSubmitting ? 'Saving Quotation...' : 'Save & Issue Official Quotation'}
                 </button>
               </div>
 
@@ -584,8 +630,8 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                           <div className="text-[11px] text-slate-500 uppercase font-mono">{item.type}</div>
                         </td>
                         <td className="py-3 text-center">{item.quantity}</td>
-                        <td className="py-3 text-right font-mono">{getCurrencySymbol(previewQuote.currency)}{item.unitPrice.toFixed(2)}</td>
-                        <td className="py-3 text-right font-mono font-semibold">{getCurrencySymbol(previewQuote.currency)}{item.total.toFixed(2)}</td>
+                        <td className="py-3 text-right font-mono">{formatMoney(item.unitPrice, previewQuote.currency, settings)}</td>
+                        <td className="py-3 text-right font-mono font-semibold">{formatMoney(item.total, previewQuote.currency, settings)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -597,24 +643,24 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
                 <div className="w-72 space-y-2 border-t border-slate-300 pt-3 text-xs">
                   <div className="flex justify-between text-slate-600">
                     <span>Subtotal:</span>
-                    <span className="font-mono font-semibold">{getCurrencySymbol(previewQuote.currency)}{previewQuote.subtotal.toFixed(2)}</span>
+                    <span className="font-mono font-semibold">{formatMoney(previewQuote.subtotal, previewQuote.currency, settings)}</span>
                   </div>
 
                   {previewQuote.discountAmount > 0 && (
                     <div className="flex justify-between text-emerald-700">
                       <span>Discount ({previewQuote.discountPercent}%):</span>
-                      <span className="font-mono">-{getCurrencySymbol(previewQuote.currency)}{previewQuote.discountAmount.toFixed(2)}</span>
+                      <span className="font-mono">-{formatMoney(previewQuote.discountAmount, previewQuote.currency, settings)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-slate-600">
                     <span>VAT / Tax ({previewQuote.taxRate}%):</span>
-                    <span className="font-mono font-semibold">{getCurrencySymbol(previewQuote.currency)}{previewQuote.taxAmount.toFixed(2)}</span>
+                    <span className="font-mono font-semibold">{formatMoney(previewQuote.taxAmount, previewQuote.currency, settings)}</span>
                   </div>
 
                   <div className="border-t-2 border-slate-900 pt-2 flex justify-between text-sm font-bold text-slate-950">
                     <span>Total Investment:</span>
-                    <span className="font-mono">{getCurrencySymbol(previewQuote.currency)}{previewQuote.total.toFixed(2)}</span>
+                    <span className="font-mono">{formatMoney(previewQuote.total, previewQuote.currency, settings)}</span>
                   </div>
                 </div>
               </div>
@@ -628,7 +674,7 @@ export const QuotationsView: React.FC<QuotationsViewProps> = ({
 
                 <div>
                   <span className="font-bold uppercase text-slate-800 block mb-1">Settlement Instructions:</span>
-                  <p className="whitespace-pre-line">{settings.paymentInstructions}</p>
+                  <p className="whitespace-pre-line">{settings?.paymentInstructions}</p>
                 </div>
 
                 <div className="pt-8 flex justify-between items-end text-[10px] text-slate-500">

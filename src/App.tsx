@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Lock } from 'lucide-react';
 import { 
   Header 
@@ -57,8 +57,28 @@ export default function App() {
 
   // Auth State
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(() => localStorage.getItem('saaslink_auth_token'));
+  const [isVerifyingAuth, setIsVerifyingAuth] = useState<boolean>(() => Boolean(localStorage.getItem('saaslink_auth_token')));
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [autoOpenNewClient, setAutoOpenNewClient] = useState(false);
+
+  // Synchronous token and user refs to avoid closure stalls
+  const currentUserRef = useRef<User | null>(null);
+  const authTokenRef = useRef<string | null>(localStorage.getItem('saaslink_auth_token'));
+  const fetchSeqRef = useRef<number>(0);
+
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
+
+  useEffect(() => {
+    authTokenRef.current = authToken;
+  }, [authToken]);
+
+  const getAuthHeaders = (): Record<string, string> => {
+    const token = authTokenRef.current || authToken || localStorage.getItem('saaslink_auth_token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
 
   // Public Interaction Modals
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
@@ -197,17 +217,27 @@ export default function App() {
   };
 
   // Load Admin Data
-  const fetchAdminData = async () => {
+  const fetchAdminData = async (overrideToken?: string) => {
+    const activeToken = overrideToken || authTokenRef.current || authToken || localStorage.getItem('saaslink_auth_token');
+    if (!activeToken) return;
+
+    const requestId = ++fetchSeqRef.current;
+
     try {
-      const headers = authToken ? { Authorization: `Bearer ${authToken}` } : undefined;
+      const headers: Record<string, string> = { Authorization: `Bearer ${activeToken}` };
       
       const parseJsonSafe = async <T,>(res: Response, fallback: T): Promise<T> => {
         if (!res.ok) {
           if (res.status === 401) {
-            // Unauthorized / expired session
-            localStorage.removeItem('saaslink_auth_token');
-            setAuthToken(null);
-            setCurrentUser(null);
+            const latestToken = authTokenRef.current || localStorage.getItem('saaslink_auth_token');
+            if (activeToken === latestToken) {
+              localStorage.removeItem('saaslink_auth_token');
+              setAuthToken(null);
+              authTokenRef.current = null;
+              setCurrentUser(null);
+              currentUserRef.current = null;
+              setLoginModalOpen(true);
+            }
           }
           return fallback;
         }
@@ -254,6 +284,9 @@ export default function App() {
         parseJsonSafe<User[]>(usersRes, []),
       ]);
 
+      // Ignore out-of-order responses from earlier fetches
+      if (requestId !== fetchSeqRef.current) return;
+
       if (metricsData) setMetrics(metricsData);
       setLeads(leadsData);
       setClients(clientsData);
@@ -290,11 +323,12 @@ export default function App() {
   useEffect(() => {
     fetchPublicContent();
 
-    // Verify existing authenticated session ONLY if user was already in admin mode
+    // Verify existing authenticated session if token exists
     const storedToken = localStorage.getItem('saaslink_auth_token');
-    const isExplicitAdminRoute = window.location.hash === '#admin' || window.location.hash === '#dashboard';
-    
-    if (storedToken && isExplicitAdminRoute) {
+    if (storedToken) {
+      setIsVerifyingAuth(true);
+      authTokenRef.current = storedToken;
+      setAuthToken(storedToken);
       fetch('/api/auth/me', {
         headers: { Authorization: `Bearer ${storedToken}` },
       })
@@ -303,31 +337,61 @@ export default function App() {
           throw new Error('Invalid session');
         })
         .then(data => {
+          // Only apply if token hasn't changed while /api/auth/me was in flight
+          if ((authTokenRef.current || localStorage.getItem('saaslink_auth_token')) !== storedToken) {
+            return;
+          }
           if (data.user) {
             setCurrentUser(data.user);
-            setAuthToken(storedToken);
-            setCurrentMode('admin');
+            currentUserRef.current = data.user;
+            const isExplicitAdminRoute = window.location.hash === '#admin' || window.location.hash === '#dashboard';
+            if (isExplicitAdminRoute) {
+              setCurrentMode('admin');
+              setLoginModalOpen(false);
+            }
           } else {
             localStorage.removeItem('saaslink_auth_token');
+            setAuthToken(null);
+            authTokenRef.current = null;
+            setCurrentUser(null);
+            currentUserRef.current = null;
+            if (window.location.hash === '#admin' || window.location.hash === '#dashboard') {
+              setCurrentMode('public');
+              setLoginModalOpen(true);
+            }
+          }
+        })
+        .catch(() => {
+          if ((authTokenRef.current || localStorage.getItem('saaslink_auth_token')) !== storedToken) {
+            return;
+          }
+          localStorage.removeItem('saaslink_auth_token');
+          setAuthToken(null);
+          authTokenRef.current = null;
+          setCurrentUser(null);
+          currentUserRef.current = null;
+          if (window.location.hash === '#admin' || window.location.hash === '#dashboard') {
             setCurrentMode('public');
             setLoginModalOpen(true);
           }
         })
-        .catch(() => {
-          localStorage.removeItem('saaslink_auth_token');
-          setAuthToken(null);
-          setCurrentUser(null);
-          setCurrentMode('public');
-          setLoginModalOpen(true);
+        .finally(() => {
+          setIsVerifyingAuth(false);
         });
+    } else {
+      setIsVerifyingAuth(false);
     }
 
     // Hash and URL router sync
     const handleUrlRoute = () => {
       const raw = window.location.hash.replace('#', '') || window.location.pathname.replace(/^\//, '');
       if (raw === 'admin' || raw === 'dashboard') {
-        const token = authToken || localStorage.getItem('saaslink_auth_token');
-        if (token && currentUser) {
+        const token = authTokenRef.current || localStorage.getItem('saaslink_auth_token');
+        if (token && currentUserRef.current) {
+          setCurrentMode('admin');
+          setLoginModalOpen(false);
+        } else if (token) {
+          // Token present and still verifying via /api/auth/me
           setCurrentMode('admin');
         } else {
           setCurrentMode('public');
@@ -360,28 +424,64 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (currentMode === 'admin' && authToken) {
-      fetchAdminData();
+    if (currentMode === 'admin' && authToken && currentUser) {
+      fetchAdminData(authToken);
     }
-  }, [currentMode, authToken]);
+  }, [currentMode, authToken, currentUser?.id]);
 
-  // Protected Admin Portal Trigger: Always prompts for secure credentials
-  const handleOpenAdmin = () => {
-    if (!authToken || !currentUser) {
-      setLoginModalOpen(true);
-    } else {
-      // Re-prompt login or enter if currently active in session
+  // Protected Admin Portal Trigger: Verifies session or opens single-step login modal
+  const handleOpenAdmin = async () => {
+    const token = authTokenRef.current || authToken || localStorage.getItem('saaslink_auth_token');
+    if (token && currentUserRef.current) {
+      setLoginModalOpen(false);
       setCurrentMode('admin');
       window.location.hash = 'admin';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     }
+
+    if (token) {
+      try {
+        setIsVerifyingAuth(true);
+        const res = await fetch('/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) {
+            setCurrentUser(data.user);
+            currentUserRef.current = data.user;
+            setLoginModalOpen(false);
+            setCurrentMode('admin');
+            window.location.hash = 'admin';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+        }
+      } catch {
+        // Fall through to clear invalid token & prompt login
+      } finally {
+        setIsVerifyingAuth(false);
+      }
+      localStorage.removeItem('saaslink_auth_token');
+      authTokenRef.current = null;
+      setAuthToken(null);
+      currentUserRef.current = null;
+      setCurrentUser(null);
+    }
+
+    setLoginModalOpen(true);
   };
 
   // Auth Handlers
   const handleLoginSuccess = (token: string, user: User) => {
     localStorage.setItem('saaslink_auth_token', token);
+    authTokenRef.current = token;
+    currentUserRef.current = user;
+    setIsVerifyingAuth(false);
     setAuthToken(token);
     setCurrentUser(user);
+    setLoginModalOpen(false);
     setCurrentMode('admin');
     window.location.hash = 'admin';
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -390,6 +490,8 @@ export default function App() {
   const handleLogout = () => {
     localStorage.removeItem('saaslink_auth_token');
     sessionStorage.removeItem('saaslink_auth_token');
+    authTokenRef.current = null;
+    currentUserRef.current = null;
     setAuthToken(null);
     setCurrentUser(null);
     setCurrentMode('public');
@@ -407,7 +509,7 @@ export default function App() {
     try {
       const res = await fetch(`/api/admin/leads/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(updates),
       });
       if (res.ok) {
@@ -422,7 +524,7 @@ export default function App() {
 
   const handleDeleteLead = async (id: string) => {
     try {
-      await fetch(`/api/admin/leads/${id}`, { method: 'DELETE' });
+      await fetch(`/api/admin/leads/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
       setLeads(prev => prev.filter(l => l.id !== id));
       fetchAdminData();
     } catch (err) {
@@ -434,9 +536,11 @@ export default function App() {
     try {
       const res = await fetch(`/api/admin/leads/${lead.id}/convert-to-client`, {
         method: 'POST',
+        headers: getAuthHeaders(),
       });
       if (res.ok) {
-        const newClient = await res.json();
+        const data = await res.json();
+        const newClient = data.client || data;
         setClients(prev => [newClient, ...prev]);
         setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, status: 'Won' } : l));
         setAdminSection('clients');
@@ -449,72 +553,71 @@ export default function App() {
 
   // Client Handlers
   const handleCreateClient = async (clientData: Partial<Client>) => {
-    try {
-      const res = await fetch('/api/admin/clients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(clientData),
-      });
-      if (res.ok) {
-        const created = await res.json();
-        setClients(prev => [created, ...prev]);
-        fetchAdminData();
-      }
-    } catch (err) {
-      console.error(err);
+    const res = await fetch('/api/admin/clients', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(clientData),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `Failed to create client (${res.status})`);
     }
+    const created = await res.json();
+    setClients(prev => [created, ...prev]);
+    fetchAdminData();
+    return created;
   };
 
   const handleUpdateClient = async (id: string, clientData: Partial<Client>) => {
-    try {
-      const res = await fetch(`/api/admin/clients/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(clientData),
-      });
-      if (res.ok) {
-        const updated = await res.json();
-        setClients(prev => prev.map(c => c.id === id ? updated : c));
-        fetchAdminData();
-      }
-    } catch (err) {
-      console.error(err);
+    const res = await fetch(`/api/admin/clients/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(clientData),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `Failed to update client (${res.status})`);
     }
+    const updated = await res.json();
+    setClients(prev => prev.map(c => c.id === id ? updated : c));
+    fetchAdminData();
+    return updated;
   };
 
   const handleDeleteClient = async (id: string) => {
-    try {
-      await fetch(`/api/admin/clients/${id}`, { method: 'DELETE' });
-      setClients(prev => prev.filter(c => c.id !== id));
-      fetchAdminData();
-    } catch (err) {
-      console.error(err);
+    const res = await fetch(`/api/admin/clients/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `Failed to delete client (${res.status})`);
     }
+    setClients(prev => prev.filter(c => c.id !== id));
+    fetchAdminData();
   };
 
   // Quotation Handlers
   const handleCreateQuotation = async (data: any) => {
-    try {
-      const res = await fetch('/api/admin/quotations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      if (res.ok) {
-        const created = await res.json();
-        setQuotations(prev => [created, ...prev]);
-        fetchAdminData();
-      }
-    } catch (err) {
-      console.error(err);
+    const res = await fetch('/api/admin/quotations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `Failed to create quotation (${res.status})`);
     }
+    const created = await res.json();
+    setQuotations(prev => [created, ...prev]);
+    fetchAdminData();
   };
 
   const handleUpdateQuotation = async (id: string, data: any) => {
     try {
       const res = await fetch(`/api/admin/quotations/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(data),
       });
       if (res.ok) {
@@ -531,11 +634,14 @@ export default function App() {
     try {
       const res = await fetch(`/api/admin/quotations/${quoteId}/convert-to-invoice`, {
         method: 'POST',
+        headers: getAuthHeaders(),
       });
       if (res.ok) {
-        const newInvoice = await res.json();
+        const data = await res.json();
+        const newInvoice = data.invoice || data;
         setInvoices(prev => [newInvoice, ...prev]);
         setQuotations(prev => prev.map(q => q.id === quoteId ? { ...q, status: 'Converted to Invoice' } : q));
+        setActionClient(null);
         setAdminSection('invoices');
         fetchAdminData();
       }
@@ -546,38 +652,34 @@ export default function App() {
 
   // Invoice & Payment Handlers
   const handleCreateInvoice = async (data: any) => {
-    try {
-      const res = await fetch('/api/admin/invoices', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      if (res.ok) {
-        const created = await res.json();
-        setInvoices(prev => [created, ...prev]);
-        fetchAdminData();
-      }
-    } catch (err) {
-      console.error(err);
+    const res = await fetch('/api/admin/invoices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `Failed to create invoice (${res.status})`);
     }
+    const created = await res.json();
+    setInvoices(prev => [created, ...prev]);
+    fetchAdminData();
   };
 
   const handleRecordPayment = async (data: any) => {
-    try {
-      const res = await fetch('/api/admin/payments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      if (res.ok) {
-        const { payment, invoice } = await res.json();
-        setPayments(prev => [payment, ...prev]);
-        setInvoices(prev => prev.map(i => i.id === invoice.id ? invoice : i));
-        fetchAdminData();
-      }
-    } catch (err) {
-      console.error(err);
+    const res = await fetch('/api/admin/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `Failed to record payment (${res.status})`);
     }
+    const { payment, invoice } = await res.json();
+    setPayments(prev => [payment, ...prev]);
+    setInvoices(prev => prev.map(i => i.id === invoice.id ? invoice : i));
+    fetchAdminData();
   };
 
   // Project Handlers
@@ -585,7 +687,7 @@ export default function App() {
     try {
       const res = await fetch('/api/admin/projects', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(data),
       });
       if (res.ok) {
@@ -602,7 +704,7 @@ export default function App() {
     try {
       const res = await fetch(`/api/admin/projects/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(data),
       });
       if (res.ok) {
@@ -617,7 +719,7 @@ export default function App() {
 
   const handleDeleteProject = async (id: string) => {
     try {
-      await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
+      await fetch(`/api/admin/projects/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
       setProjects(prev => prev.filter(p => p.id !== id));
       fetchAdminData();
     } catch (err) {
@@ -629,7 +731,7 @@ export default function App() {
     try {
       const res = await fetch(`/api/admin/projects/${projectId}/tasks`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(task),
       });
       if (res.ok) {
@@ -646,7 +748,7 @@ export default function App() {
     try {
       const res = await fetch(`/api/admin/projects/${projectId}/tasks/${taskId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(updates),
       });
       if (res.ok) {
@@ -668,7 +770,7 @@ export default function App() {
         method,
         headers: { 
           'Content-Type': 'application/json',
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+          ...getAuthHeaders()
         },
         body: JSON.stringify(data),
       });
@@ -685,9 +787,7 @@ export default function App() {
     try {
       await fetch(`/api/admin/cms/${entityType}/${id}`, { 
         method: 'DELETE',
-        headers: {
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
-        }
+        headers: getAuthHeaders()
       });
       await fetchPublicContent();
       await fetchAdminData();
@@ -701,7 +801,7 @@ export default function App() {
     try {
       const res = await fetch('/api/admin/media', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(item),
       });
       if (res.ok) {
@@ -715,7 +815,7 @@ export default function App() {
 
   const handleDeleteMedia = async (id: string) => {
     try {
-      await fetch(`/api/admin/media/${id}`, { method: 'DELETE' });
+      await fetch(`/api/admin/media/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
       setMedia(prev => prev.filter(m => m.id !== id));
     } catch (err) {
       console.error(err);
@@ -729,7 +829,7 @@ export default function App() {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+          ...getAuthHeaders()
         },
         body: JSON.stringify(userData),
       });
@@ -751,7 +851,7 @@ export default function App() {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+          ...getAuthHeaders()
         },
         body: JSON.stringify(userData),
       });
@@ -776,7 +876,7 @@ export default function App() {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+          ...getAuthHeaders()
         },
       });
       const data = await res.json();
@@ -797,7 +897,7 @@ export default function App() {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+          ...getAuthHeaders()
         },
         body: JSON.stringify({ password }),
       });
@@ -816,9 +916,7 @@ export default function App() {
     try {
       const res = await fetch(`/api/admin/users/${id}`, {
         method: 'DELETE',
-        headers: { 
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
-        },
+        headers: getAuthHeaders(),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -834,23 +932,22 @@ export default function App() {
 
   // Settings Handler
   const handleSaveSettings = async (newSettings: Partial<GlobalSettings>) => {
-    try {
-      const res = await fetch('/api/admin/settings', {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
-        },
-        body: JSON.stringify(newSettings),
-      });
-      if (res.ok) {
-        const updated = await res.json();
-        setSettings(prev => ({ ...prev, ...updated }));
-        fetchPublicContent();
-      }
-    } catch (err) {
-      console.error('Failed to save settings:', err);
+    const res = await fetch('/api/admin/settings', {
+      method: 'PATCH',
+      headers: { 
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(newSettings),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `Failed to save settings (${res.status})`);
     }
+    const updated = await res.json();
+    setSettings(prev => ({ ...prev, ...updated }));
+    fetchPublicContent();
+    fetchAdminData();
   };
 
   // Navigation helper for public site supporting both dedicated pages and anchors
@@ -896,6 +993,15 @@ export default function App() {
   // ADMIN MODE RENDER
   if (currentMode === 'admin') {
     if (!currentUser) {
+      if (isVerifyingAuth) {
+        return (
+          <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center text-slate-100">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400 mb-4" />
+            <p className="text-sm text-slate-300 font-medium">Verifying enterprise session...</p>
+          </div>
+        );
+      }
+
       return (
         <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center text-slate-100">
           <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-4 text-cyan-400">
@@ -939,7 +1045,11 @@ export default function App() {
         currentUser={currentUser}
         settings={settings}
         activeSection={adminSection}
-        onSelectSection={setAdminSection}
+        onSelectSection={(section) => {
+          setActionClient(null);
+          setAutoOpenNewClient(false);
+          setAdminSection(section);
+        }}
         onLogout={handleLogout}
         onSwitchRole={handleSwitchRole}
         onViewPublicSite={() => setCurrentMode('public')}
@@ -948,11 +1058,28 @@ export default function App() {
           <DashboardView
             metrics={metrics}
             settings={settings}
-            onNavigate={setAdminSection}
-            onOpenNewQuote={() => setAdminSection('quotations')}
-            onOpenNewInvoice={() => setAdminSection('invoices')}
-            onOpenNewLead={() => setAdminSection('leads')}
-            onOpenNewClient={() => setAdminSection('clients')}
+            onNavigate={(section) => {
+              setActionClient(null);
+              setAutoOpenNewClient(false);
+              setAdminSection(section);
+            }}
+            onOpenNewQuote={() => {
+              setActionClient(null);
+              setAdminSection('quotations');
+            }}
+            onOpenNewInvoice={() => {
+              setActionClient(null);
+              setAdminSection('invoices');
+            }}
+            onOpenNewLead={() => {
+              setActionClient(null);
+              setAdminSection('leads');
+            }}
+            onOpenNewClient={() => {
+              setActionClient(null);
+              setAutoOpenNewClient(true);
+              setAdminSection('clients');
+            }}
           />
         )}
 
@@ -976,6 +1103,8 @@ export default function App() {
             onCreateClient={handleCreateClient}
             onUpdateClient={handleUpdateClient}
             onDeleteClient={handleDeleteClient}
+            autoOpenCreate={autoOpenNewClient}
+            onClearAutoOpenCreate={() => setAutoOpenNewClient(false)}
             onOpenNewQuoteForClient={(c) => {
               setActionClient(c);
               setAdminSection('quotations');

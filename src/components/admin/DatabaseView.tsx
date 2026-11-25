@@ -19,10 +19,17 @@ export const DatabaseView: React.FC = () => {
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [testingConn, setTestingConn] = useState(false);
 
+  const getAuthHeaders = (): Record<string, string> => {
+    const token = localStorage.getItem('saaslink_auth_token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
   const fetchStatus = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/database/status');
+      const res = await fetch('/api/admin/database/status', {
+        headers: getAuthHeaders(),
+      });
       const data = await res.json();
       setDbStatus(data);
     } catch (err) {
@@ -40,7 +47,9 @@ export const DatabaseView: React.FC = () => {
     setExporting(true);
     setExportMessage(null);
     try {
-      const res = await fetch('/api/admin/database/export-sql');
+      const res = await fetch('/api/admin/database/export-sql', {
+        headers: getAuthHeaders(),
+      });
       const text = await res.text();
       let sqlContent = text;
       let filename = `saaslink_mysql_dump_${new Date().toISOString().substring(0, 10)}.sql`;
@@ -80,7 +89,7 @@ export const DatabaseView: React.FC = () => {
     try {
       const res = await fetch('/api/admin/database/test-connection', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
           host: testHost,
           port: testPort,

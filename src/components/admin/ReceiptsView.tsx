@@ -4,6 +4,7 @@ import {
   Calendar, Shield, CreditCard, ArrowUpRight 
 } from 'lucide-react';
 import { Payment, GlobalSettings } from '../../types.ts';
+import { formatMoney } from '../../utils/currency.ts';
 
 interface ReceiptsViewProps {
   payments?: Payment[];
@@ -20,16 +21,25 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
 
   const filtered = safePayments.filter(p => {
     const term = searchTerm.toLowerCase();
+    const companyOrClient = p.clientCompany || p.clientName || '';
+    const refCode = p.paymentReference || p.reference || '';
     return (
       (p.receiptNumber || '').toLowerCase().includes(term) ||
-      (p.clientCompany || '').toLowerCase().includes(term) ||
+      companyOrClient.toLowerCase().includes(term) ||
       (p.invoiceNumber || '').toLowerCase().includes(term) ||
-      (p.reference || '').toLowerCase().includes(term)
+      refCode.toLowerCase().includes(term)
     );
   });
 
-  const totalCollected = safePayments.reduce((sum, p) => sum + p.amount, 0);
-  const currSymbol = settings?.currencySymbol || (settings?.currency === 'KES' ? 'KES ' : '$');
+  const totalsByCurrency = safePayments.reduce<Record<string, number>>((acc, p) => {
+    const code = (p.currency || settings?.currency || 'USD').toUpperCase();
+    acc[code] = (acc[code] || 0) + (p.amount || 0);
+    return acc;
+  }, {});
+  const currencyEntries = Object.entries(totalsByCurrency);
+  const totalSummaryText = currencyEntries.length === 0
+    ? formatMoney(0, settings?.currency, settings)
+    : currencyEntries.map(([code, amt]) => formatMoney(amt, code, settings)).join(' | ');
 
   const handlePrint = () => {
     window.print();
@@ -62,7 +72,7 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
           </div>
 
           <div className="px-3.5 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-mono text-xs font-bold">
-            Total: {currSymbol}{totalCollected.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            Total: {totalSummaryText}
           </div>
         </div>
       </div>
@@ -97,7 +107,7 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
                     </td>
 
                     <td className="py-3.5 px-4">
-                      <div className="font-semibold text-white">{p.clientCompany}</div>
+                      <div className="font-semibold text-white">{p.clientCompany || p.clientName}</div>
                       <div className="text-[10px] text-slate-400">{p.paymentDate}</div>
                     </td>
 
@@ -106,15 +116,15 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
                     </td>
 
                     <td className="py-3.5 px-4 text-slate-300">
-                      {p.method}
+                      {p.paymentMethod || p.method || '—'}
                     </td>
 
                     <td className="py-3.5 px-4 font-mono text-slate-400">
-                      {p.reference}
+                      {p.paymentReference || p.reference || '—'}
                     </td>
 
                     <td className="py-3.5 px-4 font-mono font-bold text-emerald-400 text-sm">
-                      {currSymbol}{p.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      {formatMoney(p.amount, p.currency || settings?.currency, settings)}
                     </td>
 
                     <td className="py-3.5 px-4 text-right">
@@ -202,12 +212,12 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
                 <div className="flex justify-between items-center">
                   <div>
                     <span className="text-[10px] uppercase font-bold text-slate-500 block">Received With Thanks From:</span>
-                    <span className="text-base font-bold text-slate-900">{selectedPayment.clientCompany}</span>
+                    <span className="text-base font-bold text-slate-900">{selectedPayment.clientCompany || selectedPayment.clientName}</span>
                   </div>
                   <div className="text-right">
                     <span className="text-[10px] uppercase font-bold text-slate-500 block">Settlement Amount:</span>
                     <span className="text-2xl font-extrabold font-mono text-emerald-700">
-                      {currSymbol}{selectedPayment.amount.toFixed(2)}
+                      {formatMoney(selectedPayment.amount, selectedPayment.currency || settings?.currency, settings)}
                     </span>
                   </div>
                 </div>
@@ -219,11 +229,11 @@ export const ReceiptsView: React.FC<ReceiptsViewProps> = ({
                   </div>
                   <div>
                     <span className="text-slate-500 block text-[10px]">Payment Method:</span>
-                    <strong>{selectedPayment.method}</strong>
+                    <strong>{selectedPayment.paymentMethod || selectedPayment.method || '—'}</strong>
                   </div>
                   <div>
                     <span className="text-slate-500 block text-[10px]">Transaction Code:</span>
-                    <strong className="font-mono">{selectedPayment.reference}</strong>
+                    <strong className="font-mono">{selectedPayment.paymentReference || selectedPayment.reference || '—'}</strong>
                   </div>
                 </div>
               </div>
